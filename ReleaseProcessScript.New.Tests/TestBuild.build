@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Copyright (c) rubicon IT GmbH, www.rubicon.eu
+ !
+ ! See the NOTICE file distributed with this work for additional information
+ ! regarding copyright ownership.  rubicon licenses this file to you under 
+ ! the Apache License, Version 2.0 (the "License"); you may not use this 
+ ! file except in compliance with the License.  You may obtain a copy of the 
+ ! License at
+ !
+ !   http://www.apache.org/licenses/LICENSE-2.0
+ !
+ ! Unless required by applicable law or agreed to in writing, software 
+ ! distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
+ ! WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
+ ! License for the specific language governing permissions and limitations
+ ! under the License.
+-->
+
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="UpdateAssemblyInfosForDevelopment">
+    <!-- Re-defines the version to append the local build pre-release tag after UpdateVersionProps has been performed. -->
+    <MSBuild Projects="$(MsBuildProjectFile)"
+             BuildInParallel="false"
+             Targets="ConsoleOutput"
+             Properties="ConfigurationID=Debug;$(BuildProperties);Version=$(VersionWithoutPrerelease)-x.9"/>
+  </Target>
+
+  <Target Name="UpdateAssemblyInfosForRelease">
+    <MSBuild Projects="$(MsBuildProjectFile)"
+             BuildInParallel="false"
+             Targets="ConsoleOutput"
+             Properties="ConfigurationID=Debug;$(BuildProperties);"/>
+  </Target>
+
+  <Target Name ="ConsoleOutput">
+    <Message Text="MSBuildCallTarget called!" Importance="high" />
+  </Target>
+
+    <!-- Customization Targets -->
+
+  <Import Project="$(CustomizationsDirectory)*.targets" />
+
+</Project>
