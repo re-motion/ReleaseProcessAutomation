@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+
+        <IsPackable>false</IsPackable>
+
+        <RootNamespace>ReleaseProcessAutomation.Tests</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\license\Apache-2.0.licenseheader" Link="Apache-2.0.licenseheader" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Moq" Version="4.17.2" />
+        <PackageReference Include="nunit" Version="3.13.2" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+        <PackageReference Include="Spectre.Console.Testing" Version="0.43.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\ReleaseProcessAutomation\ReleaseProcessAutomation.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update=".BuildProject">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="ReleaseProcessScript.Test.Config">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="TestBuild.build">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>
