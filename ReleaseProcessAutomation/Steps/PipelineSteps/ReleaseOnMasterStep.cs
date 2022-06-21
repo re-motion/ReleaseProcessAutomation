@@ -91,7 +91,7 @@ public class ReleaseOnMasterStep
 
     _ = GitClient.Checkout("develop");
 
-    _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, nextJiraVersion);
+    _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextJiraVersion);
 
     GitClient.Checkout(releaseBranchName);
 
