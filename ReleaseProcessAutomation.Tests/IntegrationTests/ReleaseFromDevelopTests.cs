@@ -29,18 +29,14 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   public void ReleaseOnMaster_FromDevelop_ReleasesNewMinor ()
   {
     var correctLogs =
-        @"*    (HEAD -> develop, origin/develop) Merge branch 'release/v1.0.0' into develop
+        @"*    (tag: v1.0.0, origin/master, master)Merge branch 'release/v1.0.0'
           |\  
-          * | Update metadata to version '1.1.0'.
-          | | *    (tag: v1.0.0, origin/master, master)Merge branch 'release/v1.0.0'
-          | | |\  
-          | | |/  
-          | |/|   
-          | * |  (origin/release/v1.0.0, release/v1.0.0)Update metadata to version '1.0.0'.
-          |/ /  
-          * | feature4
-          * | feature3
-          * | feature2
+          | *  (origin/release/v1.0.0, release/v1.0.0)Update metadata to version '1.0.0'.
+          | | *  (HEAD -> develop, origin/develop)Update metadata to version '1.1.0'.
+          | |/  
+          | * feature4
+          | * feature3
+          | * feature2
           |/  
           * feature
           * ConfigAndBuildProject
@@ -69,18 +65,14 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   public void ReleaseOnMaster_FromDevelop_WithPreviousRelease ()
   {
     var correctLogs =
-        @"*    (HEAD -> develop, origin/develop) Merge branch 'release/v2.0.0' into develop
+        @"*    (tag: v2.0.0, origin/master, master)Merge branch 'release/v2.0.0'
           |\  
-          * | Update metadata to version '2.1.0'.
-          | | *    (tag: v2.0.0, origin/master, master) Merge branch 'release/v2.0.0'
-          | | |\  
-          | | |/  
-          | |/|   
-          | * |  (origin/release/v2.0.0, release/v2.0.0) Update metadata to version '2.0.0'.
-          |/ /  
-          * | feature4
-          * | feature3
-          * | feature2
+          | *  (origin/release/v2.0.0, release/v2.0.0)Update metadata to version '2.0.0'.
+          | | *  (HEAD -> develop, origin/develop)Update metadata to version '2.1.0'.
+          | |/  
+          | * feature4
+          | * feature3
+          | * feature2
           |/  
           *  (tag: v1.28.3)feature
           * ConfigAndBuildProject
@@ -111,18 +103,14 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   public void ReleaseOnMaster_FromDevelop_WithoutPush ()
   {
     var correctLogs =
-        @"*    (HEAD -> develop)Merge branch 'release/v2.0.0' into develop
+        @"*    (tag: v2.0.0, master)Merge branch 'release/v2.0.0'
           |\  
-          * | Update metadata to version '2.1.0'.
-          | | *    (tag: v2.0.0, master)Merge branch 'release/v2.0.0'
-          | | |\  
-          | | |/  
-          | |/|   
-          | * |  (release/v2.0.0)Update metadata to version '2.0.0'.
-          |/ /  
-          * | feature4
-          * | feature3
-          * | feature2
+          | *  (release/v2.0.0)Update metadata to version '2.0.0'.
+          | | *  (HEAD -> develop)Update metadata to version '2.1.0'.
+          | |/  
+          | * feature4
+          | * feature3
+          | * feature2
           |/  
           *  (tag: v1.28.3)feature
           * ConfigAndBuildProject
@@ -271,14 +259,12 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   public void ReleaseRelease_FromDevelop_ToMasterWithCommitOnRelease ()
   {
     var correctLogs =
-        @"*    (HEAD -> develop, origin/develop)Merge branch 'release/v1.2.0' into develop
+        @"*    (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
           |\  
-          * | Update metadata to version '1.3.0'.
-          | | *  (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
-          | |/| 
-          |/|/  
           | *  (origin/release/v1.2.0, release/v1.2.0)Commit on release branch
           | * Update metadata to version '1.2.0'.
+          |/  
+          | *  (HEAD -> develop, origin/develop)Update metadata to version '1.3.0'.
           |/  
           * ConfigAndBuildProject
           * Initial CommitAll
@@ -305,17 +291,14 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   {
     var correctLogs = 
         @"*  (HEAD -> develop)Commit after finishing on new branch
-          *    (origin/develop)Merge branch 'release/v1.2.0' into develop
-          |\  
-          * | Update metadata to version '1.3.0'.
-          * | Commit after branch
-          | | *    (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
-          | | |\  
-          | | |/  
-          | |/|   
-          | * |  (origin/release/v1.2.0, release/v1.2.0)Update metadata to version '1.2.0'.
-          |/ /  
-          * / Commit for release
+          *  (origin/develop)Update metadata to version '1.3.0'.
+          * Commit after branch
+          | *    (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
+          | |\  
+          | | *  (origin/release/v1.2.0, release/v1.2.0)Update metadata to version '1.2.0'.
+          | |/  
+          |/|   
+          * | Commit for release
           |/  
           * ConfigAndBuildProject
           * Initial CommitAll
@@ -342,18 +325,16 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   public void CloseVersionWithAncestor_FromDevelopRelease_ToMaster ()
   {
     var correctLogs =
-        @"*    (HEAD -> develop, origin/develop)Merge branch 'release/v1.2.0' into develop
+        @"*    (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
           |\  
-          * | Update metadata to version '1.3.0'.
-          | | *  (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
-          | |/| 
-          |/|/  
           | *  (origin/release/v1.2.0, release/v1.2.0)Commit on release branch
           | * Update metadata to version '1.2.0'.
           |/  
+          | *  (HEAD -> develop, origin/develop)Update metadata to version '1.3.0'.
+          |/  
           * ConfigAndBuildProject
           * Initial CommitAll
-          ";
+                    ";
     ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand("commit -m Commit on develop --allow-empty");
 
@@ -375,19 +356,17 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   public void CloseVersionWithNoPush_FromDevelopRelease_ToMasterWithCommitOnRelease ()
   {
     var correctLogs =
-     @"*    (HEAD -> develop)Merge branch 'release/v1.2.0' into develop
-       |\  
-       * | Update metadata to version '1.3.0'.
-       | | *  (tag: v1.2.0, master)Merge branch 'release/v1.2.0'
-       | |/| 
-       |/|/  
-       | *  (release/v1.2.0)Commit on release branch
-       | * Update metadata to version '1.2.0'.
-       |/  
-       * ConfigAndBuildProject
-       *  (origin/master)Initial CommitAll
-       ";
-    
+        @"*    (tag: v1.2.0, master)Merge branch 'release/v1.2.0'
+          |\  
+          | *  (release/v1.2.0)Commit on release branch
+          | * Update metadata to version '1.2.0'.
+          |/  
+          | *  (HEAD -> develop)Update metadata to version '1.3.0'.
+          |/  
+          * ConfigAndBuildProject
+          *  (origin/master)Initial CommitAll
+          ";
+      
     ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand("commit -m Commit on develop --allow-empty");
 
