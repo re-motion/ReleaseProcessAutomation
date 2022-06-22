@@ -334,7 +334,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           |/  
           * ConfigAndBuildProject
           * Initial CommitAll
-                    ";
+          ";
     ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand("commit -m Commit on develop --allow-empty");
 
