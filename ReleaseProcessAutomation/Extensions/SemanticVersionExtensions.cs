@@ -151,6 +151,16 @@ public static class SemanticVersionExtensions
            };
   }
 
+  public static SemanticVersion GetNextMinor (this SemanticVersion semanticVersion)
+  {
+    var nextVersion = new SemanticVersion
+                      {
+                          Major = semanticVersion.Major,
+                          Minor = semanticVersion.Minor + 1,
+                          Patch = 0,
+                      };
+    return nextVersion;
+  }
   public static SemanticVersion GetNextRc (this SemanticVersion semanticVersion)
   {
     var nextVersion = new SemanticVersion

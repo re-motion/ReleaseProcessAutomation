@@ -92,9 +92,28 @@ public class ContinueReleasePatchStep
 
     GitClient.Checkout(mergeTargetBranchName);
 
+    if (!onMaster)
+    {
+      CreateNewSupportBranch(nextVersion);
+    }
+
+    GitClient.Checkout(mergeTargetBranchName);
+    
     if (noPush)
       return;
 
     _pushPatchReleaseStep.Execute(mergeTargetBranchName, tagName, toMergeBranchName);
+  }
+
+  private void CreateNewSupportBranch (SemanticVersion nextVersion)
+  {
+    Console.WriteLine("Do you wish to create a new support branch?");
+    if (!InputReader.ReadConfirmation())
+      return;
+
+    var splitHotfixVersion = nextVersion.GetNextMinor();
+    GitClient.CheckoutNewBranch($"support/v{splitHotfixVersion.Major}.{splitHotfixVersion.Minor}");
+    GitClient.CheckoutNewBranch($"hotfix/v{splitHotfixVersion}");
+    _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, splitHotfixVersion);
   }
 }
