@@ -508,13 +508,24 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void Tag_InitCommit_FindsTagAfterwards ()
+  public void Tag_CreatesTag_FindsTagWithProperMessageAfterwards ()
   {
     var client = new CommandLineGitClient();
 
     client.Tag("v1.0.0");
 
-    var tags = ExecuteGitCommandWithOutput("tag --merged=HEAD");
+    var tags = ExecuteGitCommandWithOutput("tag -n");
+    Assert.That(tags, Does.Contain("Create tag for version v1.0.0"));
+  }
+  
+  [Test]
+  public void Tag_CreatesTag_FindsTagAfterwards ()
+  {
+    var client = new CommandLineGitClient();
+
+    client.Tag("v1.0.0");
+
+    var tags = ExecuteGitCommandWithOutput("tag -n");
     Assert.That(tags, Does.Contain("v1.0.0"));
   }
 
