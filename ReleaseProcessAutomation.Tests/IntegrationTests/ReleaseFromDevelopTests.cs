@@ -427,7 +427,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
 
     var act1 = Program.Main(new[] { "New-Release-Branch" });
 
-    AssertValidLogs(correctLogs);    
+    AssertValidLogs(correctLogs);   
+    Assert.That(TestConsole.Output, Does.Contain("Called UpdateAssemblyInfosForRelease!"));
+    Assert.That(TestConsole.Output, Does.Not.Contain("Called UpdateAssemblyInfosForDevelopment!"));
     Assert.That(act1, Is.EqualTo(0));
   }
 }

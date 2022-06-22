@@ -25,6 +25,7 @@
              BuildInParallel="false"
              Targets="ConsoleOutput"
              Properties="ConfigurationID=Debug;$(BuildProperties);Version=$(VersionWithoutPrerelease)-x.9"/>
+    <Message Text="Called UpdateAssemblyInfosForDevelopment!" Importance = "high"/>
   </Target>
 
   <Target Name="UpdateAssemblyInfosForRelease">
@@ -32,6 +33,8 @@
              BuildInParallel="false"
              Targets="ConsoleOutput"
              Properties="ConfigurationID=Debug;$(BuildProperties);"/>
+    <Message Text="Called UpdateAssemblyInfosForRelease!" Importance = "high"/>
+
   </Target>
 
   <Target Name ="ConsoleOutput">
@@ -39,6 +42,7 @@
   </Target>
 
     <!-- Customization Targets -->
+    
 
   <Import Project="$(CustomizationsDirectory)*.targets" />
 
