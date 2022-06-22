@@ -138,8 +138,8 @@ internal class ContinueReleaseOnMasterStepTests
 
     Assert.That(() => step.Execute(version, false), Throws.Nothing);
     
-    //When only merged once it has to be merged into master
-    gitClientMock.Verify(_ => _.MergeBranch(It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+    gitClientMock.Verify(_ => _.MergeBranch("master", It.IsAny<bool>()), Times.Once);
+    gitClientMock.Verify(_ => _.MergeBranch("develop", It.IsAny<bool>()), Times.Never);
     _nextReleaseStepMock.Verify(_=>_.Execute(It.IsAny<SemanticVersion>()), Times.Once);
   }
 
