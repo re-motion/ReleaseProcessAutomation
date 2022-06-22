@@ -26,7 +26,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
 {
   
   [Test]
-  public void ReleaseWithRC_FromSupportHotfixRelease_ReleasesToSupport ()
+  public void ReleaseWithRC_FromSupportHotfixReleaseWithoutNewSupportBranch_ReleasesToSupport ()
   {
     var correctLogs =
         @"*  (hotfix/v1.3.6)Update metadata to version '1.3.6'.
@@ -56,10 +56,71 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.3.5");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.3.6");
-
+    //Confirms to create new support branch
+    TestConsole.Input.PushTextWithEnter("n");
+    
     var act = Program.Main(new[] { "Release-Version" });
 
     AssertValidLogs(correctLogs);
+    Assert.That(act, Is.EqualTo(0));
+  }
+  
+  [Test]
+  public void ReleaseWithRC_FromSupportHotfixReleaseWithNewSupportBranch_ReleasesToSupportAndCreatesSupportBranch ()
+  {
+    var correctLogs1 =
+        @"*  (hotfix/v1.4.0)Update metadata to version '1.4.0'.
+          | *  (hotfix/v1.3.6)Update metadata to version '1.3.6'.
+          |/  
+          *    (HEAD -> support/v1.3, tag: v1.3.5, origin/support/v1.3, support/v1.4) Merge branch 'release/v1.3.5' into support/v1.3
+          |\  
+          | *  (origin/release/v1.3.5, release/v1.3.5)Update metadata to version '1.3.5'.
+          | *  (hotfix/v1.3.5)feature4
+          | * feature3
+          | * feature2
+          |/  
+          *  (tag: v1.0.0, master)feature
+          * ConfigAndBuildProject
+          *  (origin/master)Initial CommitAll
+          ";
+    
+    var correctLogs2 =
+        @"*  (hotfix/v1.3.6)Update metadata to version '1.3.6'.
+          | *  (hotfix/v1.4.0)Update metadata to version '1.4.0'.
+          |/  
+          *    (HEAD -> support/v1.3, tag: v1.3.5, origin/support/v1.3, support/v1.4) Merge branch 'release/v1.3.5' into support/v1.3
+          |\  
+          | *  (origin/release/v1.3.5, release/v1.3.5)Update metadata to version '1.3.5'.
+          | *  (hotfix/v1.3.5)feature4
+          | * feature3
+          | * feature2
+          |/  
+          *  (tag: v1.0.0, master)feature
+          * ConfigAndBuildProject
+          *  (origin/master)Initial CommitAll
+          ";
+    
+    ExecuteGitCommand("commit -m feature --allow-empty");
+    ExecuteGitCommand("tag v1.0.0");
+    ExecuteGitCommand("checkout -b support/v1.3");
+    ExecuteGitCommand("checkout -b hotfix/v1.3.5");
+
+    ExecuteGitCommand("commit -m feature2 --allow-empty");
+    ExecuteGitCommand("commit -m feature3 --allow-empty");
+    ExecuteGitCommand("commit -m feature4 --allow-empty");
+
+    ExecuteGitCommand("checkout -b release/v1.3.5");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("1.3.5");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("1.3.6");
+    //Confirms to create new support branch
+    TestConsole.Input.PushTextWithEnter("y");
+    
+    var act = Program.Main(new[] { "Release-Version" });
+
+    AssertValidLogs(correctLogs1, correctLogs2);
     Assert.That(act, Is.EqualTo(0));
   }
   

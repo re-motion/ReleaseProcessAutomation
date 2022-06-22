@@ -33,6 +33,7 @@ using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
 using Spectre.Console;
+using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.Tests.Steps.Continues
 {
@@ -60,6 +61,30 @@ namespace ReleaseProcessAutomation.Tests.Steps.Continues
     private Mock<IPushPatchReleaseStep> _pushReleasePatchMock;
     private const string c_configFileName = "ReleaseProcessScript.Test.Config";
 
+    [Test]
+    public void Execute_FromHotfixWithNewBranch_CreatesNewSupportBranch ()
+    {
+      _gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
+      _pushReleasePatchMock.Setup(_ => _.Execute("support/v0.0", "v0.0.0", "release/v0.0.0")).Verifiable();
+      _inputReaderStub.Setup(_ => _.ReadConfirmation(It.IsAny<bool>())).Returns(true);
+      
+      var releasePatchStep = new ContinueReleasePatchStep(
+          _gitClientStub.Object,
+          _config,
+          _inputReaderStub.Object,
+          _msBuildExecutorMock.Object,
+          _pushReleasePatchMock.Object,
+          _consoleStub.Object);
+
+      Assert.That(
+          () => releasePatchStep.Execute(new SemanticVersion(), false, false),
+          Throws.Nothing);
+      _pushReleasePatchMock.Verify();
+      _gitClientStub.Verify(_=>_.CheckoutNewBranch("support/v0.1"), Times.Once);
+      _gitClientStub.Verify(_=>_.CheckoutNewBranch("hotfix/v0.1.0"), Times.Once);
+      _msBuildExecutorMock.Verify(_=>_.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, new SemanticVersion{Major = 0, Minor = 1, Patch = 0}), Times.Once);
+    }
+    
     [Test]
     public void Execute_OnMasterWithoutErrors_CallsNextStep ()
     {
