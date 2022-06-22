@@ -83,7 +83,7 @@ public class ContinueReleasePatchStep
     MergeBranchWithReset(mergeTargetBranchName, toMergeBranchName, IgnoreListType.TagStableMergeIgnoreList);
 
     GitClient.Checkout(mergeTargetBranchName);
-    GitClient.Tag($"-a {tagName} -m {tagName}");
+    GitClient.Tag(tagName);
 
     var nextPatchVersion = nextVersion.GetNextPatchVersion();
     GitClient.CheckoutNewBranch($"hotfix/v{nextPatchVersion}");

@@ -102,7 +102,7 @@ public class ContinueReleaseOnMasterStep
 
     GitClient.MergeBranch(currentBranchName);
     GitClient.ResolveMergeConflicts();
-    
+
     GitClient.Tag($"-a v{currentVersion} -m v{currentVersion}");
 
     GitClient.Checkout("develop");

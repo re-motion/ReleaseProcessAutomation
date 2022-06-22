@@ -299,9 +299,10 @@ public class CommandLineGitClient : IGitClient
     ExecuteGitCommand($"checkout -- {fileName}");
   }
 
-  public void Tag (string arguments)
+  public void Tag (string tagName)
   {
-    ExecuteGitCommand($"tag {arguments}");
+    var arguments = $"tag -a {tagName} -m \"Create tag for version {tagName}\"";
+    ExecuteGitCommand(arguments);
   }
 
   public string? Fetch (string arguments)

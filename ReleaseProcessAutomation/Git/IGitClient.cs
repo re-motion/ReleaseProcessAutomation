@@ -58,7 +58,7 @@ public interface IGitClient
 
   void CheckoutDiscard (string fileName);
 
-  void Tag (string arguments);
+  void Tag (string tagName);
 
   void PushToRepos (IReadOnlyCollection<string> remoteNames, string branchName, string? tagName = null);
 
