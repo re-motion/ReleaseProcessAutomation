@@ -70,7 +70,7 @@ internal class BranchFromReleaseForContinueVersionStep
       _log.Debug("The ancestor is develop, therefore calling continue release on master");
       _continueReleaseOnMasterStep.Execute(nextVersion, noPush);
     }
-    else if (ancestor.Equals("hotfix/"))
+    else if (ancestor.StartsWith("hotfix/"))
     {
       _log.Debug("The ancestor is hotfix/, therefore calling continue release patch");
       _continueReleasePatchStep.Execute(nextVersion, noPush, false);
