@@ -91,11 +91,10 @@ public class ContinueReleasePatchStep
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, nextPatchVersion);
 
     GitClient.Checkout(mergeTargetBranchName);
-
-    if (!onMaster)
-    {
-      CreateNewSupportBranch(nextVersion);
-    }
+    
+    var hotfixVersion = CreateNewSupportBranch(nextVersion);
+    if (hotfixVersion != null)
+      _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, hotfixVersion);
 
     GitClient.Checkout(mergeTargetBranchName);
     
