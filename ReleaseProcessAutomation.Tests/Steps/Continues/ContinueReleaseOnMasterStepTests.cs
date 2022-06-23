@@ -37,7 +37,7 @@ internal class ContinueReleaseOnMasterStepTests
   [SetUp]
   public void Setup ()
   {
-    var path = Path.Join(Environment.CurrentDirectory, c_configFileName);
+    var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
 
     _nextReleaseStepMock = new Mock<IPushMasterReleaseStep>();

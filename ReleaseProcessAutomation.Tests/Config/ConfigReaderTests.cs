@@ -58,7 +58,7 @@ internal class ConfigReaderTests
   public void LoadConfig_InCurrentWorkingDir_LoadsConfigToProperty ()
   {
     var reader = new ConfigReader();
-    var configFilePath = Path.Combine(Environment.CurrentDirectory, c_configFileName);
+    var configFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, c_configFileName);
 
     var config = reader.LoadConfig(configFilePath);
 
@@ -73,7 +73,7 @@ internal class ConfigReaderTests
   {
     var reader = new ConfigReader();
 
-    var configPath = reader.GetConfigPathFromBuildProject(Environment.CurrentDirectory);
+    var configPath = reader.GetConfigPathFromBuildProject(TestContext.CurrentContext.TestDirectory);
 
     Assert.That(configPath, Is.EqualTo("Build/Customizations/ReleaseProcessScript.Test.config"));
   }
