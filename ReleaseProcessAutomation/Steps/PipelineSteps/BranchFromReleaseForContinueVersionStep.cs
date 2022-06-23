@@ -35,7 +35,7 @@ public interface IBranchFromReleaseForContinueVersionStep
 }
 
 /// <inheritdoc cref="IBranchFromReleaseForContinueVersionStep" />
-internal class BranchFromReleaseForContinueVersionStep
+public class BranchFromReleaseForContinueVersionStep
     : ReleaseProcessStepBase, IBranchFromReleaseForContinueVersionStep
 {
   private readonly IAncestorFinder _ancestorFinder;
