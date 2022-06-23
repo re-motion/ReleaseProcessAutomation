@@ -92,7 +92,7 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
       throw new InvalidOperationException(message);
     }
 
-    GitClient.Tag($"-a {tagName} -m {tagName}");
+    CreateTagWithMessage(tagName);
 
     MergeBranchWithReset(baseBranchName, preReleaseBranchName, IgnoreListType.PreReleaseMergeIgnoreList);
 

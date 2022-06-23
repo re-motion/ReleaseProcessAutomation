@@ -299,9 +299,11 @@ public class CommandLineGitClient : IGitClient
     ExecuteGitCommand($"checkout -- {fileName}");
   }
 
-  public void Tag (string arguments)
+  public void Tag (string tagName, string message)
   {
-    ExecuteGitCommand($"tag {arguments}");
+    var argumentedMessage = string.IsNullOrEmpty(message) ? "" : $"-m \"{message}\"";
+    var arguments = $"tag {tagName} {argumentedMessage}";
+    ExecuteGitCommand(arguments);
   }
 
   public string? Fetch (string arguments)

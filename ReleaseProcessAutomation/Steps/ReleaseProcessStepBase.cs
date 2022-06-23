@@ -137,4 +137,10 @@ public abstract class ReleaseProcessStepBase
       GitClient.CheckoutDiscard(ignoredFile);
     }
   }
+
+  protected void CreateTagWithMessage (string tagName)
+  {
+    GitClient.Tag(tagName, $"Create tag with version {tagName}");
+  }
 }
+
