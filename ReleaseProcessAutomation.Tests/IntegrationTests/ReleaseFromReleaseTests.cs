@@ -26,7 +26,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
 {
   
   [Test]
-  public void ReleaseWithRC_FromSupportHotfixReleaseWithoutNewSupportBranch_ReleasesToSupport ()
+  public void ReleaseWithRC_FromSupportHotfixRelease_CreatesHotfixBranch ()
   {
     var correctLogs =
         @"*  (hotfix/v1.3.6)Update metadata to version '1.3.6'.
@@ -66,7 +66,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
   }
   
   [Test]
-  public void ReleaseWithRC_FromSupportHotfixReleaseWithNewSupportBranch_ReleasesToSupportAndCreatesSupportBranch ()
+  public void ReleaseWithRC_FromSupportHotfixReleaseWithUserRequestingNewSupportBranch_CreatesSupportAndHotfixBranch ()
   {
     var correctLogs1 =
         @"*  (hotfix/v1.4.0)Update metadata to version '1.4.0'.

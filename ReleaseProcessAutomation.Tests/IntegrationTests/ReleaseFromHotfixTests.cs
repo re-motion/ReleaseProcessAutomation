@@ -83,7 +83,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
 
   }
   [Test]
-  public void ReleaseNewPatch_FromHotfixWithoutNewSupportBranch_ToSupport ()
+  public void ReleaseNewPatch_FromHotfix_ToSupportWithFollowingHotfix ()
   {
     var correctLogs =
         @"*  (hotfix/v1.1.2)Update metadata to version '1.1.2'.
@@ -114,7 +114,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseNewPatch_FromHotfixWithNewSupportBranch_ToSupportCreatesNewSupportBranch ()
+  public void ReleaseNewPatch_FromHotfixWithUserRequestingNewSupportBranch_CreatesNewSupportBranchAndHotfixBranch ()
   {
     
     var correctLogs1 =
