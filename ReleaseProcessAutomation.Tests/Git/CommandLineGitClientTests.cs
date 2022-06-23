@@ -523,7 +523,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   {
     var client = new CommandLineGitClient();
 
-    client.Tag("v1.0.0", "");
+    client.Tag("v1.0.0", null);
 
     var tags = ExecuteGitCommandWithOutput("tag -n");
     Assert.That(tags, Does.Contain("v1.0.0"));
