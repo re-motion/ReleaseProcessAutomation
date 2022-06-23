@@ -117,7 +117,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   public void ReleaseNewPatch_FromHotfixWithNewSupportBranch_ToSupportCreatesNewSupportBranch ()
   {
     
-    var correctLogs =
+    var correctLogs1 =
         @"*  (hotfix/v1.1.2)Update metadata to version '1.1.2'.
           | *  (hotfix/v1.2.0)Update metadata to version '1.2.0'.
           |/  
@@ -129,7 +129,18 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
           *  (origin/master)Initial CommitAll
           ";
 
-    correctLogs = correctLogs.Replace(" ", "").Replace("\r", "");
+    var correctLogs2 = 
+        @"*  (hotfix/v1.2.0)Update metadata to version '1.2.0'.
+          | *  (hotfix/v1.1.2)Update metadata to version '1.1.2'.
+          |/  
+          *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1, support/v1.2) Merge branch 'release/v1.1.1' into support/v1.1
+          |\  
+          | *  (origin/release/v1.1.1, release/v1.1.1)Update metadata to version '1.1.1'.
+          |/  
+          *  (master, hotfix/v1.1.1)ConfigAndBuildProject
+          *  (origin/master)Initial CommitAll
+          ";
+
     ExecuteGitCommand("checkout -b support/v1.1");
     ExecuteGitCommand("checkout -b hotfix/v1.1.1");
     ExecuteGitCommand("commit -m Commit on hotfix --allow-empty");
@@ -143,7 +154,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
     
-    AssertValidLogs(correctLogs);
+    AssertValidLogs(correctLogs1, correctLogs2);
     Assert.That(act, Is.EqualTo(0));
   }
 
