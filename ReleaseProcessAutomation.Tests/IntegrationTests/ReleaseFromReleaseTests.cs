@@ -230,6 +230,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.3.5");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.4.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act = Program.Main(new[] { "Release-Version" });
 
@@ -259,6 +261,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.3.5");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.4.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act = Program.Main(new[] { "Release-Version" });
 

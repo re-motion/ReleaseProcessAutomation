@@ -54,6 +54,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.0.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.1.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act = Program.Main(new[] { "Release-Version" });
 
@@ -92,6 +94,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("2.0.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("2.1.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act = Program.Main(new[] { "Release-Version", "-n=false", "-p=false" });
 
@@ -130,6 +134,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("2.0.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("2.1.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act = Program.Main(new[] { "Release-Version", "-n" });
 
@@ -276,6 +282,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.2.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.3.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act1 = Program.Main(new[] { "Release-Version", "-p" });
     ExecuteGitCommand("commit -m \"Commit on release branch\" --allow-empty");
@@ -313,7 +321,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.2.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.3.0");
-    
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
+
     var act1 = Program.Main(new[] { "Release-Version", $"-c {releaseCommit}" });
     
     ExecuteGitCommand("commit -m \"Commit after finishing on new branch\" --allow-empty");
@@ -342,6 +352,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.2.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.3.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
+
 
     var act1 = Program.Main(new[] { "Release-Version", "-p" });
     ExecuteGitCommand("commit -m \"Commit on release branch\" --allow-empty");
@@ -374,7 +387,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.2.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.3.0");
-
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
+    
     var act1 = Program.Main(new[] { "Release-Version", "-p" });
     ExecuteGitCommand("commit -m \"Commit on release branch\" --allow-empty");
     var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
