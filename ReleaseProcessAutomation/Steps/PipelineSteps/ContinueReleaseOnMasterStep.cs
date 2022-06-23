@@ -19,6 +19,7 @@ using System;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
+using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 using Spectre.Console;
@@ -40,6 +41,7 @@ public class ContinueReleaseOnMasterStep
     : ReleaseProcessStepBase, IContinueReleaseOnMasterStep
 {
   private readonly IPushMasterReleaseStep _pushMasterReleaseStep;
+  private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ContinueReleaseOnMasterStep>();
 
   public ContinueReleaseOnMasterStep (
@@ -47,10 +49,12 @@ public class ContinueReleaseOnMasterStep
       Config config,
       IInputReader inputReader,
       IPushMasterReleaseStep pushMasterReleaseStep,
-      IAnsiConsole console)
+      IAnsiConsole console,
+      IMSBuildCallAndCommit msBuildCallAndCommit)
       : base(gitClient, config, inputReader, console)
   {
     _pushMasterReleaseStep = pushMasterReleaseStep;
+    _msBuildCallAndCommit = msBuildCallAndCommit;
   }
 
   public void Execute (SemanticVersion nextVersion, bool noPush)
@@ -104,6 +108,10 @@ public class ContinueReleaseOnMasterStep
     GitClient.ResolveMergeConflicts();
 
     CreateTagWithMessage(tagName);
+    
+    var hotfixVersion = CreateNewSupportBranch(currentVersion);
+    if(hotfixVersion != null) 
+      _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, hotfixVersion);
 
     GitClient.Checkout("develop");
   }
