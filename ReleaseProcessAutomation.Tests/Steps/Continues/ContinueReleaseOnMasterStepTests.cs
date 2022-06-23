@@ -110,7 +110,7 @@ internal class ContinueReleaseOnMasterStepTests
   }
 
   [Test]
-  public void ResetItemsOfIgnoreList_WithEmptyIgnoreList_ThrowsException ()
+  public void CreateTagAndMerge_DoesNotMergeIntoDevelop_ContinuesToNextStep ()
   {
       var version = new SemanticVersionParser().ParseVersion("1.0.0");
     var gitClientMock = new Mock<IGitClient>();
@@ -138,7 +138,9 @@ internal class ContinueReleaseOnMasterStepTests
 
     Assert.That(() => step.Execute(version, false), Throws.Nothing);
     
-    gitClientMock.Verify(_ => _.Reset(It.IsAny<string>()), Times.Never);
+    gitClientMock.Verify(_ => _.MergeBranch("master", It.IsAny<bool>()), Times.Once);
+    gitClientMock.Verify(_ => _.MergeBranch("develop", It.IsAny<bool>()), Times.Never);
+    _nextReleaseStepMock.Verify(_=>_.Execute(It.IsAny<SemanticVersion>()), Times.Once);
   }
 
   [Test]

@@ -102,12 +102,7 @@ public class ContinueReleaseOnMasterStep
 
     GitClient.MergeBranch(currentBranchName);
     GitClient.ResolveMergeConflicts();
-
-    EnsureBranchUpToDate("develop");
-
-    MergeBranchWithReset("develop", currentBranchName, IgnoreListType.DevelopStableMergeIgnoreList);
-
-    GitClient.Checkout("master");
+    
     GitClient.Tag($"-a v{currentVersion} -m v{currentVersion}");
 
     GitClient.Checkout("develop");

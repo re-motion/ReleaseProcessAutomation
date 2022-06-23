@@ -143,17 +143,12 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
   public void ReleaseRelease_FromDevelopRelease_WithDevelopAheadOfRoot_ReleasesToMaster ()
   {
     var correctLogs =
-        @"*    (HEAD -> develop, origin/develop)Merge branch 'release/v1.3.5' into develop
+        @"*    (tag: v1.3.5, origin/master, master)Merge branch 'release/v1.3.5'
           |\  
-          | | *    (tag: v1.3.5, origin/master, master)Merge branch 'release/v1.3.5'
-          | | |\  
-          | | |/  
-          | |/|   
-          | * |  (origin/release/v1.3.5, release/v1.3.5)Update metadata to version '1.3.5'.
-          |/ /  
-          * | feature4
-          * | feature3
-          * | feature2
+          | *  (origin/release/v1.3.5, release/v1.3.5)Update metadata to version '1.3.5'.
+          | *  (HEAD -> develop, origin/develop)feature4
+          | * feature3
+          | * feature2
           |/  
           *  (tag: v1.0.0)feature
           * ConfigAndBuildProject
@@ -185,14 +180,11 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
   public void ReleaseWithRC_FromDevelopRelease_WithDevelopNotAheadOfRoot_ReleasesToMaster ()
   {
     var correctLogs =
-        @"*    (HEAD -> develop, origin/develop)Merge branch 'release/v1.3.5' into develop
+        @"*    (tag: v1.3.5, origin/master, master)Merge branch 'release/v1.3.5'
           |\  
-          | | *  (tag: v1.3.5, origin/master, master)Merge branch 'release/v1.3.5'
-          | |/| 
-          |/|/  
           | *  (origin/release/v1.3.5, release/v1.3.5)Update metadata to version '1.3.5'.
           |/  
-          * feature
+          *  (HEAD -> develop, origin/develop)feature
           * ConfigAndBuildProject
           * Initial CommitAll
           ";
