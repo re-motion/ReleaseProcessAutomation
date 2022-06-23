@@ -82,7 +82,6 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     Assert.That(act2, Is.EqualTo(0));
 
   }
-  
   [Test]
   public void ReleaseNewPatch_FromHotfixWithoutNewSupportBranch_ToSupport ()
   {
