@@ -38,7 +38,7 @@ public interface IContinueReleasePatchStep
 
 /// <inheritdoc cref="ContinueReleasePatchStep" />
 public class ContinueReleasePatchStep
-    : ReleaseProcessStepBase, IContinueReleasePatchStep
+    : ContinueReleaseStepWithOptionalSupportBranchStepBase, IContinueReleasePatchStep
 {
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly IPushPatchReleaseStep _pushPatchReleaseStep;
@@ -51,7 +51,7 @@ public class ContinueReleasePatchStep
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IPushPatchReleaseStep pushPatchReleaseStep,
       IAnsiConsole console)
-      : base(gitClient, config, inputReader, console)
+      : base(gitClient, config, inputReader, console, msBuildCallAndCommit)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _pushPatchReleaseStep = pushPatchReleaseStep;
@@ -91,10 +91,8 @@ public class ContinueReleasePatchStep
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, nextPatchVersion);
 
     GitClient.Checkout(mergeTargetBranchName);
-    
-    var hotfixVersion = CreateNewSupportBranch(nextVersion);
-    if (hotfixVersion != null)
-      _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, hotfixVersion);
+
+    CreateSupportBranchWithHotfixForRelease(nextVersion);
 
     GitClient.Checkout(mergeTargetBranchName);
     

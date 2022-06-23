@@ -38,7 +38,7 @@ public interface IContinueReleaseOnMasterStep
 
 /// <inheritdoc cref="IContinueReleaseOnMasterStep" />
 public class ContinueReleaseOnMasterStep
-    : ReleaseProcessStepBase, IContinueReleaseOnMasterStep
+    : ContinueReleaseStepWithOptionalSupportBranchStepBase, IContinueReleaseOnMasterStep
 {
   private readonly IPushMasterReleaseStep _pushMasterReleaseStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
@@ -51,7 +51,7 @@ public class ContinueReleaseOnMasterStep
       IPushMasterReleaseStep pushMasterReleaseStep,
       IAnsiConsole console,
       IMSBuildCallAndCommit msBuildCallAndCommit)
-      : base(gitClient, config, inputReader, console)
+      : base(gitClient, config, inputReader, console, msBuildCallAndCommit)
   {
     _pushMasterReleaseStep = pushMasterReleaseStep;
     _msBuildCallAndCommit = msBuildCallAndCommit;
@@ -109,9 +109,7 @@ public class ContinueReleaseOnMasterStep
 
     CreateTagWithMessage(tagName);
     
-    var hotfixVersion = CreateNewSupportBranch(currentVersion);
-    if(hotfixVersion != null) 
-      _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, hotfixVersion);
+    CreateSupportBranchWithHotfixForRelease(currentVersion);
 
     GitClient.Checkout("develop");
   }
