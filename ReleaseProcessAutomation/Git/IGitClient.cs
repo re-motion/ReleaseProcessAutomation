@@ -46,7 +46,7 @@ public interface IGitClient
 
   string CheckoutNewBranch (string branchName);
 
-  void MergeBranch (string branchName, bool noCommit = false);
+  void MergeBranch (string branchName, bool noCommit = false, bool fixConflicts = false);
 
   void CommitAll (string message);
 

@@ -245,10 +245,11 @@ public class CommandLineGitClient : IGitClient
     return checkout.Output;
   }
 
-  public void MergeBranch (string branchName, bool noCommit = false)
+  public void MergeBranch (string branchName, bool noCommit = false, bool fixConflicts = false)
   {
     var shouldCommit = noCommit ? "--no-commit" : "";
-    var merge = ExecuteGitCommandWithOutput($"merge {branchName} --no-ff {shouldCommit}");
+    var shouldFixConflicts = fixConflicts ? "-Xtheirs" : "";
+    var merge = ExecuteGitCommandWithOutput($"merge {branchName} --no-ff {shouldCommit} {shouldFixConflicts}");
     if (!merge.Success)
     {
       var currentBranch = GetCurrentBranchName();
