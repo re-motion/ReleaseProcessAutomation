@@ -17,7 +17,6 @@
 
 using System;
 using NUnit.Framework;
-using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.Tests.IntegrationTests;
 
@@ -162,5 +161,41 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     ExecuteGitCommand("commit -m \"Commit afterwards\" --allow-empty");
     AssertValidLogs(correctLogs);   
     Assert.That(act1, Is.EqualTo(0));
+  }
+  
+  [Test]
+  public void ReleaseToSupport_WithPauseAndCommitAndCloseVersion_FinishesSuccessfully ()
+  {
+    var correctLogs = 
+        @"*  (hotfix/v1.2.2)Update metadata to version '1.2.2'.
+          *    (HEAD -> support/v1.2, tag: v1.2.1, origin/support/v1.2) Merge branch 'release/v1.2.1' into support/v1.2
+          |\  
+          | *  (origin/release/v1.2.1, release/v1.2.1)Update metadata to version '1.2.1'.
+          | *  (hotfix/v1.2.1)Commit on hotfix
+          |/  
+          *  (tag: v1.2.0, master)ConfigAndBuildProject
+          *  (origin/master)Initial CommitAll
+          ";
+
+    ExecuteGitCommand("checkout -b support/v1.2");
+    ExecuteGitCommand("tag v1.2.0");
+    ExecuteGitCommand("checkout -b hotfix/v1.2.1");
+    ExecuteGitCommand("commit -m \"Commit on hotfix\" --allow-empty");
+    
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("1.2.1");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("1.2.2");
+    
+    var act1 = Program.Main(new[] { "Release-Version" , "-p"});
+    
+    //Get ancestor version from user
+    TestConsole.Input.PushTextWithEnter("hotfix/v1.2.1");
+    
+    var act2 = Program.Main(new[] { "Close-Version" });
+    
+    AssertValidLogs(correctLogs);   
+    Assert.That(act1, Is.EqualTo(0));
+    Assert.That(act2, Is.EqualTo(0));
   }
 }
