@@ -508,22 +508,22 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void Tag_CreatesTag_FindsTagWithProperMessageAfterwards ()
+  public void Tag_WithTagNameAndMessage_CreatesTagWithProperMessage ()
   {
     var client = new CommandLineGitClient();
 
-    client.Tag("v1.0.0");
+    client.Tag("v1.0.0","Create tag for version v1.0.0");
 
     var tags = ExecuteGitCommandWithOutput("tag -n");
     Assert.That(tags, Does.Contain("Create tag for version v1.0.0"));
   }
   
   [Test]
-  public void Tag_CreatesTag_FindsTagAfterwards ()
+  public void Tag_TagWithoutMessage_CreatesTag ()
   {
     var client = new CommandLineGitClient();
 
-    client.Tag("v1.0.0");
+    client.Tag("v1.0.0", "");
 
     var tags = ExecuteGitCommandWithOutput("tag -n");
     Assert.That(tags, Does.Contain("v1.0.0"));
