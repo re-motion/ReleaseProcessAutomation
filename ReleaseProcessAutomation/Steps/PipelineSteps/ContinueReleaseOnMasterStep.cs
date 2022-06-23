@@ -103,7 +103,7 @@ public class ContinueReleaseOnMasterStep
     GitClient.MergeBranch(currentBranchName);
     GitClient.ResolveMergeConflicts();
 
-    GitClient.Tag(tagName);
+    CreateTagWithMessage(tagName);
 
     GitClient.Checkout("develop");
   }
