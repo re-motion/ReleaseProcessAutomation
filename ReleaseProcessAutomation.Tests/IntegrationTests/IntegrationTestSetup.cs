@@ -58,17 +58,17 @@ public abstract class IntegrationTestSetup : GitBackedTests
     Program.Console = TestConsole;
     
     var pathToBuildProject = Path.Combine(PreviousWorkingDirectory, c_buildProject);
-    var destBuildProject = Path.Combine(Environment.CurrentDirectory, c_buildProject);
+    var destBuildProject = Path.Combine(RepositoryPath, c_buildProject);
     File.Copy(pathToBuildProject, destBuildProject);
 
     var pathToConfig = Path.Combine(PreviousWorkingDirectory, c_testConfigName);
-    var destConfigFolder = Path.Combine(Environment.CurrentDirectory, "Build", "Customizations");
+    var destConfigFolder = Path.Combine(RepositoryPath, "Build", "Customizations");
     var destConfigFile = Path.Combine(destConfigFolder, c_testConfigName);
     Directory.CreateDirectory(destConfigFolder);
     File.Copy(pathToConfig, destConfigFile);
 
     var pathToBuildFile = Path.Combine(PreviousWorkingDirectory, c_buildFileName);
-    var destBuildFile = Path.Combine(Environment.CurrentDirectory, c_buildFileName);
+    var destBuildFile = Path.Combine(RepositoryPath, c_buildFileName);
     File.Copy(pathToBuildFile, destBuildFile);
 
     ExecuteGitCommand("add --all --force");
