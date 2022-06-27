@@ -119,13 +119,19 @@ internal class ContinueReleaseOnMasterStepTests
   {
       var version = new SemanticVersionParser().ParseVersion("1.0.0");
     var gitClientMock = new Mock<IGitClient>();
+    bool developLast = false;
     gitClientMock.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     gitClientMock.Setup(_ => _.GetCurrentBranchName()).Returns("release/v1.0.0");
     gitClientMock.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     gitClientMock.Setup(_ => _.GetHash(It.IsAny<string>(), It.IsAny<string>())).Returns("branch");
     gitClientMock.Setup(_ => _.DoesTagExist("v1.0.0")).Returns(false);
     gitClientMock.Setup(_ => _.Reset(It.IsAny<string>())).Verifiable();
-
+    gitClientMock.Setup(_ => _.Checkout("develop")).Callback(() => developLast = true);
+    gitClientMock.Setup(_ => _.Checkout("master")).Callback(() => developLast = false);
+    
+    //checks that the current branch when calling merge branch is not develop, therefore not merging into it
+    gitClientMock.Setup(_ => _.MergeBranch(It.IsAny<string>(), It.IsAny<bool>())).Callback(() => Assert.That(developLast, Is.False));
+    
     var readInputStub = new Mock<IInputReader>();
     readInputStub.Setup(
             _ => _
@@ -143,9 +149,8 @@ internal class ContinueReleaseOnMasterStepTests
     );
 
     Assert.That(() => step.Execute(version, false), Throws.Nothing);
-    
-    gitClientMock.Verify(_ => _.MergeBranch("master", It.IsAny<bool>()), Times.Once);
-    gitClientMock.Verify(_ => _.MergeBranch("develop", It.IsAny<bool>()), Times.Never);
+
+    gitClientMock.Verify(_ => _.MergeBranch("release/v1.0.0", It.IsAny<bool>()), Times.Once);
     _nextReleaseStepMock.Verify(_=>_.Execute(It.IsAny<SemanticVersion>()), Times.Once);
   }
 
