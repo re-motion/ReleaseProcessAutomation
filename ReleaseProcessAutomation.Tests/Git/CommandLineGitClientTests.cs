@@ -462,7 +462,45 @@ internal class CommandLineGitClientTests : GitBackedTests
 
     var client = new CommandLineGitClient();
     
+    
     Assert.That(() => client.MergeBranch("a"), Throws.InstanceOf<Exception>().With.Message.StartsWith("Could not merge branch"));
+  }
+  
+  
+  [Test]
+  public void MergeBranch_WithFileAddedInTargetBranchWithManualCommit_RemovesFileButNoCommit ()
+  {
+    var correctLogs =
+        @"*    (HEAD -> b)Merge branch 'a' into b
+          |\
+          * |  AddedFile
+          |/
+          *  (origin/master)Initial CommitAll
+         ";
+    
+    ExecuteGitCommand("checkout -b a");
+
+    ExecuteGitCommand("checkout master");
+    ExecuteGitCommand("checkout -b b");
+    
+    var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
+    var fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("Branch b added File");
+    fileWriter.Close();
+    
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m AddedFile");
+
+    var client = new CommandLineGitClient();
+    client.MergeBranch("a", false, true);
+    
+    var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
+
+    Assert.That(() => File.Exists(filePath), Is.False);
+    
+    correctLogs = correctLogs.Replace(" ", "").Replace("\r", "");
+    logs = logs.Replace(" ", "");
+    Assert.That(logs, Is.EqualTo(correctLogs));
   }
   
   [Test]
@@ -490,6 +528,8 @@ internal class CommandLineGitClientTests : GitBackedTests
     var client = new CommandLineGitClient();
     client.MergeBranch("a", false, true);
 
+    var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
+
     var fileContents = File.ReadAllText(filePath).ReplaceLineEndings("");
     
     Assert.That(fileContents, Is.EqualTo(originalContent));
@@ -499,6 +539,12 @@ internal class CommandLineGitClientTests : GitBackedTests
   public void MergeBranch_WithFileAddedInTargetBranch_RemovesFile ()
   {
     ExecuteGitCommand("checkout -b a");
+
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m FileAdded");
+
+    ExecuteGitCommand("checkout master");
+    ExecuteGitCommand("checkout -b b");
     
     var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
     var fileWriter = File.CreateText(filePath);
@@ -506,15 +552,12 @@ internal class CommandLineGitClientTests : GitBackedTests
     fileWriter.Close();
     
     ExecuteGitCommand("add file.txt");
-    ExecuteGitCommand("commit -a -m FileAdded");
-
-    ExecuteGitCommand("checkout master");
-    ExecuteGitCommand("checkout -b b");
+    ExecuteGitCommand("git commit -a -m AddedFile");
 
     var client = new CommandLineGitClient();
     client.MergeBranch("a", false, true);
     
-    Assert.That(() => File.Exists(filePath), Is.True);
+    Assert.That(() => File.Exists(filePath), Is.False);
   }
   
   [Test]
