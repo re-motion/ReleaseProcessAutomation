@@ -248,12 +248,38 @@ public class CommandLineGitClient : IGitClient
   public void MergeBranch (string branchName, bool noCommit = false, bool fixConflicts = false)
   {
     var shouldCommit = noCommit ? "--no-commit" : "";
-    var shouldFixConflicts = fixConflicts ? "-Xtheirs" : "";
-    var merge = ExecuteGitCommandWithOutput($"merge {branchName} --no-ff {shouldCommit} {shouldFixConflicts}");
+    if (fixConflicts)
+    {
+      MergeBranchWithTheirsStrategy(branchName, noCommit);
+      return;
+    }
+    var merge = ExecuteGitCommandWithOutput($"merge {branchName} --no-ff {shouldCommit}");
     if (!merge.Success)
     {
       var currentBranch = GetCurrentBranchName();
       var message = $"Could not merge branch {branchName} into {currentBranch}.\nGit error: \n{merge.Output}";
+      throw new Exception(message);
+    }
+  }
+
+  private void MergeBranchWithTheirsStrategy (string branchName, bool noCommit)
+  {
+    if (noCommit)
+    {
+      throw new InvalidOperationException("Cannot merge branch with theirs strategy and not commit.");
+    }
+
+    var currentBranchName = GetCurrentBranchName()!;
+    var intoMessage = currentBranchName.Equals("master") ? "" : $" into {currentBranchName}";
+    var hash = ExecuteGitCommandWithOutput(
+        $"commit-tree -m \"Merge branch '{branchName}'{intoMessage}\" -p HEAD -p {branchName} {branchName}:");
+    ExecuteGitCommandWithOutput($"update-ref HEAD {hash.Output.Trim()}");
+    ExecuteGitCommand("reset --hard");
+
+    var diffOutput = ExecuteGitCommandWithOutput($"diff {branchName}");
+    if (!diffOutput.Success || !diffOutput.Output.Equals(string.Empty))
+    {
+      var message = $"Could not merge branch {branchName} into {currentBranchName}.\nGit error: \n{diffOutput.Output}";
       throw new Exception(message);
     }
   }
