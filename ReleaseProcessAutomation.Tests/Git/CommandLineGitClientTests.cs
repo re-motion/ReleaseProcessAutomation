@@ -462,7 +462,7 @@ internal class CommandLineGitClientTests : GitBackedTests
 
     var client = new CommandLineGitClient();
     
-    Assert.That(() => client.MergeBranch("a"), Throws.InstanceOf<Exception>());
+    Assert.That(() => client.MergeBranch("a"), Throws.InstanceOf<Exception>().With.Message.StartsWith("Could not merge branch"));
   }
   
   [Test]
@@ -493,6 +493,59 @@ internal class CommandLineGitClientTests : GitBackedTests
     var fileContents = File.ReadAllText(filePath).ReplaceLineEndings("");
     
     Assert.That(fileContents, Is.EqualTo(originalContent));
+  }
+  
+  [Test]
+  public void MergeBranch_WithFileAddedInTargetBranch_RemovesFile ()
+  {
+    ExecuteGitCommand("checkout -b a");
+    
+    var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
+    var fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("Branch b added File");
+    fileWriter.Close();
+    
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m FileAdded");
+
+    ExecuteGitCommand("checkout master");
+    ExecuteGitCommand("checkout -b b");
+
+    var client = new CommandLineGitClient();
+    client.MergeBranch("a", false, true);
+    
+    Assert.That(() => File.Exists(filePath), Is.True);
+  }
+  
+  [Test]
+  public void MergeBranch_FileRemovedInTargetBranch_RestoresFile ()
+  {
+    var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
+    var fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("File added on master");
+    fileWriter.Close();
+    
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m FileAdded");
+    
+    ExecuteGitCommand("checkout -b a");
+
+    fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("Added some stuff on a branch");
+    fileWriter.Close();
+    ExecuteGitCommand("commit -a -m FileChanged");
+
+    
+    ExecuteGitCommand("checkout master");
+    ExecuteGitCommand("checkout -b b");
+    
+    File.Delete(filePath);
+    ExecuteGitCommand("commit -a -m \"Deleted File\"");
+    
+    var client = new CommandLineGitClient();
+    client.MergeBranch("a", false, true);
+    
+    Assert.That(() => File.Exists(filePath), Is.True);
   }
 
   [Test]
