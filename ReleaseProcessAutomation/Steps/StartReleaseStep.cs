@@ -19,6 +19,7 @@ using System;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
 using Serilog;
+using Spectre.Console;
 
 namespace ReleaseProcessAutomation.Steps;
 
@@ -45,16 +46,19 @@ public class StartReleaseStep
   private readonly IBranchFromMasterStep _branchFromMasterStep;
   private readonly IBranchFromReleaseStep _branchFromReleaseStep;
   private readonly IGitClient _gitClient;
+  private readonly IAnsiConsole _console;
   private readonly ILogger _log = Log.ForContext<StartReleaseStep>();
 
   public StartReleaseStep (
       IGitClient gitClient,
+      IAnsiConsole console,
       IBranchFromDevelopStep branchFromDevelopStep,
       IBranchFromReleaseStep branchFromReleaseStep,
       IBranchFromHotfixStep branchFromHotfixStep,
       IBranchFromMasterStep branchFromMasterStep)
   {
     _gitClient = gitClient;
+    _console = console;
     _branchFromDevelopStep = branchFromDevelopStep;
     _branchFromReleaseStep = branchFromReleaseStep;
     _branchFromHotfixStep = branchFromHotfixStep;
@@ -69,30 +73,37 @@ public class StartReleaseStep
       throw new ArgumentException(message);
     }
 
-    if (_gitClient.IsOnBranch("hotfix/"))
-    {
-      _log.Debug("On branch 'hotfix', calling branch from hotfix");
-      _branchFromHotfixStep.Execute(commitHash, startReleasePhase, pauseForCommit, noPush);
-    }
-    else if (_gitClient.IsOnBranch("develop"))
-    {      
-      _log.Debug("On branch 'develop', calling branch from develop");
-      _branchFromDevelopStep.Execute(commitHash, pauseForCommit, noPush, startReleasePhase);
-    }
-    else if (_gitClient.IsOnBranch("master"))
-    {
-      _log.Debug("On branch 'master', calling branch from master");
-      _branchFromMasterStep.Execute(commitHash, startReleasePhase, pauseForCommit, noPush);
-    }
-    else if (_gitClient.IsOnBranch("release/"))
+    if (_gitClient.IsOnBranch("release/"))
     {
       _log.Debug("On branch 'release', calling branch from release");
       _branchFromReleaseStep.Execute(commitHash, pauseForCommit, noPush);
     }
     else
     {
-      const string message = "You have to be on either a 'hotfix/*' or 'release/*' or 'develop' or 'master' branch to release a version";
-      throw new InvalidOperationException(message);
+      if(!startReleasePhase)
+        _console.WriteLine(
+            "As you are not on a release branch, you won't be able to release a release candidate version.\nTo create a release branch, use the command [green]'New-Release-Branch'[/]");
+      
+      if (_gitClient.IsOnBranch("hotfix/"))
+      {
+        _log.Debug("On branch 'hotfix', calling branch from hotfix");
+        _branchFromHotfixStep.Execute(commitHash, startReleasePhase, pauseForCommit, noPush);
+      }
+      else if (_gitClient.IsOnBranch("develop"))
+      {      
+        _log.Debug("On branch 'develop', calling branch from develop");
+        _branchFromDevelopStep.Execute(commitHash, pauseForCommit, noPush, startReleasePhase);
+      }
+      else if (_gitClient.IsOnBranch("master"))
+      {
+        _log.Debug("On branch 'master', calling branch from master");
+        _branchFromMasterStep.Execute(commitHash, startReleasePhase, pauseForCommit, noPush);
+      }
+      else
+      {
+        const string message = "You have to be on either a 'hotfix/*' or 'release/*' or 'develop' or 'master' branch to release a version";
+        throw new InvalidOperationException(message);
+      }
     }
   }
 }
