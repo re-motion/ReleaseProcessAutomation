@@ -64,8 +64,8 @@ public class ContinueReleasePatchStep
     var mergeTargetBranchName = onMaster ? "master" : $"support/v{nextVersion.Major}.{nextVersion.Minor}";
     var toMergeBranchName = $"release/v{nextVersion}";
 
-    _log.Debug("The branch '{ToMergeBranchName} 'will be merged into '{MergeTargetBranchName}'",toMergeBranchName, mergeTargetBranchName);
-    
+    _log.Debug("The branch '{ToMergeBranchName} 'will be merged into '{MergeTargetBranchName}'", toMergeBranchName, mergeTargetBranchName);
+
     EnsureBranchUpToDate(mergeTargetBranchName);
     EnsureBranchUpToDate(toMergeBranchName);
 
@@ -95,11 +95,10 @@ public class ContinueReleasePatchStep
     CreateSupportBranchWithHotfixForRelease(nextVersion);
 
     GitClient.Checkout(mergeTargetBranchName);
-    
+
     if (noPush)
       return;
 
     _pushPatchReleaseStep.Execute(mergeTargetBranchName, tagName, toMergeBranchName);
   }
-  
 }
