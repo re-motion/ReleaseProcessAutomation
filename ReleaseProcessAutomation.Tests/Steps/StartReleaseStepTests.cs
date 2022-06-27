@@ -21,7 +21,6 @@ using NUnit.Framework;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.Steps;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
-using Spectre.Console;
 using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.Tests.Steps
