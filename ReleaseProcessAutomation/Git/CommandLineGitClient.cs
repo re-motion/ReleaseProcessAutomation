@@ -245,15 +245,9 @@ public class CommandLineGitClient : IGitClient
     return checkout.Output;
   }
 
-  public void MergeBranch (string branchName, bool noCommit = false, bool fixConflicts = false)
+  public void MergeBranchWithoutCommit (string branchName)
   {
-    var shouldCommit = noCommit ? "--no-commit" : "";
-    if (fixConflicts)
-    {
-      MergeBranchWithTheirsStrategy(branchName, noCommit);
-      return;
-    }
-    var merge = ExecuteGitCommandWithOutput($"merge {branchName} --no-ff {shouldCommit}");
+    var merge = ExecuteGitCommandWithOutput($"merge {branchName} --no-ff --no-commit");
     if (!merge.Success)
     {
       var currentBranch = GetCurrentBranchName();
@@ -262,13 +256,8 @@ public class CommandLineGitClient : IGitClient
     }
   }
 
-  private void MergeBranchWithTheirsStrategy (string branchName, bool noCommit)
+  public void MergeBranchOnlyUseChangesOfBaseBranch (string branchName)
   {
-    if (noCommit)
-    {
-      throw new InvalidOperationException("Cannot merge branch with theirs strategy and not commit.");
-    }
-
     var currentBranchName = GetCurrentBranchName()!;
     var intoMessage = currentBranchName.Equals("master") ? "" : $" into {currentBranchName}";
     var hash = ExecuteGitCommandWithOutput(

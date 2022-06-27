@@ -104,7 +104,7 @@ public class ContinueReleaseOnMasterStep
 
     GitClient.Checkout("master");
 
-    GitClient.MergeBranch(currentBranchName, noCommit: false, fixConflicts: true);
+    GitClient.MergeBranchOnlyUseChangesOfBaseBranch(currentBranchName);
 
     CreateTagWithMessage(tagName);
     

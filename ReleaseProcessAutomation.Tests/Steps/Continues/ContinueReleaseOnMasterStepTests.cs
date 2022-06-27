@@ -150,7 +150,7 @@ internal class ContinueReleaseOnMasterStepTests
 
     Assert.That(() => step.Execute(version, false), Throws.Nothing);
 
-    gitClientMock.Verify(_ => _.MergeBranch("release/v1.0.0", It.IsAny<bool>()), Times.Once);
+    gitClientMock.Verify(_ => _.MergeBranchOnlyUseChangesOfBaseBranch("release/v1.0.0", It.IsAny<bool>()), Times.Once);
     _nextReleaseStepMock.Verify(_=>_.Execute(It.IsAny<SemanticVersion>()), Times.Once);
   }
 
