@@ -24,6 +24,7 @@ using NUnit.Framework;
 using ReleaseProcessAutomation.Configuration;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
+using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
 using Spectre.Console;
@@ -42,11 +43,13 @@ internal class ContinueReleaseOnMasterStepTests
     _nextReleaseStepMock = new Mock<IPushMasterReleaseStep>();
     _nextReleaseStepMock.Setup(_ => _.Execute(It.IsAny<SemanticVersion>())).Verifiable();
     _consoleStub = new Mock<IAnsiConsole>();
+    _msBuildCallAndCommitStub = new Mock<IMSBuildCallAndCommit>();
   }
 
   private Mock<IAnsiConsole> _consoleStub;
   private Configuration.Data.Config _config;
   private Mock<IPushMasterReleaseStep> _nextReleaseStepMock;
+  private Mock<IMSBuildCallAndCommit> _msBuildCallAndCommitStub;
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
 
   [Test]
@@ -69,7 +72,8 @@ internal class ContinueReleaseOnMasterStepTests
         _config,
         readInputStub.Object,
         _nextReleaseStepMock.Object,
-        _consoleStub.Object
+        _consoleStub.Object,
+        _msBuildCallAndCommitStub.Object
     );
 
     Assert.That(
@@ -100,7 +104,8 @@ internal class ContinueReleaseOnMasterStepTests
         _config,
         readInputStub.Object,
         _nextReleaseStepMock.Object,
-        _consoleStub.Object
+        _consoleStub.Object,
+        _msBuildCallAndCommitStub.Object
     );
 
     Assert.That(
@@ -133,7 +138,8 @@ internal class ContinueReleaseOnMasterStepTests
         _config,
         readInputStub.Object,
         _nextReleaseStepMock.Object,
-        _consoleStub.Object
+        _consoleStub.Object,
+        _msBuildCallAndCommitStub.Object
     );
 
     Assert.That(() => step.Execute(version, false), Throws.Nothing);
@@ -166,7 +172,8 @@ internal class ContinueReleaseOnMasterStepTests
         _config,
         readInputStub.Object,
         _nextReleaseStepMock.Object,
-        _consoleStub.Object
+        _consoleStub.Object,
+        _msBuildCallAndCommitStub.Object
     );
 
     step.Execute(version, false);
@@ -197,7 +204,8 @@ internal class ContinueReleaseOnMasterStepTests
         _config,
         readInputStub.Object,
         _nextReleaseStepMock.Object,
-        _consoleStub.Object
+        _consoleStub.Object,
+        _msBuildCallAndCommitStub.Object
     );
 
     step.Execute(version, true);

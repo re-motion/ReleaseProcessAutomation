@@ -34,24 +34,22 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
           *  (support/v1.1, master)ConfigAndBuildProject
           *  (origin/master)Initial CommitAll
           ";
-    
+
     ExecuteGitCommand("checkout -b support/v1.1");
     ExecuteGitCommand("checkout -b hotfix/v1.1.1-alpha.1");
     ExecuteGitCommand("commit -m Commit on hotfix --allow-empty");
-    
+
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("1.1.1-alpha.2");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.1.2");
-    
 
-    var act = Program.Main(new[] { "Release-Version"});
-    
+    var act = Program.Main(new[] { "Release-Version" });
+
     AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
   }
-  
-  
+
   [Test]
   public void ReleaseAlphaBeta_FromHotfix_WithAdditionalCommitAndContinue ()
   {
@@ -72,23 +70,22 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.1.1-beta.1");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.1.1-beta.2");
-    
+
     var act1 = Program.Main(new[] { "Release-Version", "-p" });
     ExecuteGitCommand("commit -m \"Commit on prerelease branch\" --allow-empty");
-    var act2 = Program.Main(new[] { "Close-Version"});
-    
+    var act2 = Program.Main(new[] { "Close-Version" });
+
     AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
-
   }
 
   [Test]
-  public void ReleaseNewPatch_FromHotfix_ToSupport ()
+  public void ReleaseNewPatch_FromHotfix_ToSupportWithFollowingHotfix ()
   {
     var correctLogs =
         @"*  (hotfix/v1.1.2)Update metadata to version '1.1.2'.
-          *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1)Merge branch 'release/v1.1.1' into support/v1.1
+          *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1) Merge branch 'release/v1.1.1' into support/v1.1
           |\  
           | *  (origin/release/v1.1.1, release/v1.1.1)Update metadata to version '1.1.1'.
           |/  
@@ -105,10 +102,56 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.1.1");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.1.2");
+    //Confirms to create new support branch
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act = Program.Main(new[] { "Release-Version" });
 
     AssertValidLogs(correctLogs);
+    Assert.That(act, Is.EqualTo(0));
+  }
+
+  [Test]
+  public void ReleaseNewPatch_FromHotfixWithUserRequestingNewSupportBranch_CreatesNewSupportBranchAndHotfixBranch ()
+  {
+    var correctLogs1 =
+        @"*  (hotfix/v1.1.2)Update metadata to version '1.1.2'.
+          | *  (hotfix/v1.2.0)Update metadata to version '1.2.0'.
+          |/  
+          *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1, support/v1.2) Merge branch 'release/v1.1.1' into support/v1.1
+          |\  
+          | *  (origin/release/v1.1.1, release/v1.1.1)Update metadata to version '1.1.1'.
+          |/  
+          *  (master, hotfix/v1.1.1)ConfigAndBuildProject
+          *  (origin/master)Initial CommitAll
+          ";
+
+    var correctLogs2 =
+        @"*  (hotfix/v1.2.0)Update metadata to version '1.2.0'.
+          | *  (hotfix/v1.1.2)Update metadata to version '1.1.2'.
+          |/  
+          *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1, support/v1.2) Merge branch 'release/v1.1.1' into support/v1.1
+          |\  
+          | *  (origin/release/v1.1.1, release/v1.1.1)Update metadata to version '1.1.1'.
+          |/  
+          *  (master, hotfix/v1.1.1)ConfigAndBuildProject
+          *  (origin/master)Initial CommitAll
+          ";
+
+    ExecuteGitCommand("checkout -b support/v1.1");
+    ExecuteGitCommand("checkout -b hotfix/v1.1.1");
+    ExecuteGitCommand("commit -m Commit on hotfix --allow-empty");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("1.1.1");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("1.1.2");
+    //Confirms to create new support branch
+    TestConsole.Input.PushTextWithEnter("y");
+
+    var act = Program.Main(new[] { "Release-Version" });
+
+    AssertValidLogs(correctLogs1, correctLogs2);
     Assert.That(act, Is.EqualTo(0));
   }
 
@@ -122,7 +165,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
 
     ExecuteGitCommand("checkout -b hotfix/v1.2.1");
     ExecuteGitCommand("commit -m Commit on hotfix --allow-empty");
-    
+
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("1.2.2");
     //Get next release version from user for jira
@@ -130,14 +173,14 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
 
     var act1 = Program.Main(new[] { "New-Release-Branch" });
 
-    AssertValidLogs(correctLogs);   
+    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
   }
 
   [Test]
   public void ReleaseNewBranchWithGivenCommit_FromHotfix_ReleaseBranchOnGivenCommit ()
   {
-    var correctLogs = 
+    var correctLogs =
         @"*  (HEAD -> release/v1.2.1) Commit afterwards
           | *  (hotfix/v1.2.1) Commit on hotfix
           |/
@@ -150,16 +193,16 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     ExecuteGitCommand("commit -m \"Commit for release\" --allow-empty");
     var releaseCommit = ExecuteGitCommandWithOutput("log -1 --pretty=%H");
     ExecuteGitCommand("commit -m \"Commit on hotfix\" --allow-empty");
-    
+
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("1.2.2");
-    
+
     var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
 
-    var act1 = Program.Main(new[] { "New-Release-Branch" , $"-c {releaseCommit}"});
-    
+    var act1 = Program.Main(new[] { "New-Release-Branch", $"-c {releaseCommit}" });
+
     ExecuteGitCommand("commit -m \"Commit afterwards\" --allow-empty");
-    AssertValidLogs(correctLogs);   
+    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
   }
   

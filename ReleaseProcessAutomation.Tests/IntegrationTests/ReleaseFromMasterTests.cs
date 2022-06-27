@@ -51,6 +51,8 @@ internal class ReleaseFromMasterTests : IntegrationTestSetup
     //Get release version from user
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.0.2");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act = Program.Main(new[] { "Release-Version" });
 

@@ -38,7 +38,7 @@ public interface IContinueReleasePatchStep
 
 /// <inheritdoc cref="ContinueReleasePatchStep" />
 public class ContinueReleasePatchStep
-    : ReleaseProcessStepBase, IContinueReleasePatchStep
+    : ContinueReleaseStepWithOptionalSupportBranchStepBase, IContinueReleasePatchStep
 {
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly IPushPatchReleaseStep _pushPatchReleaseStep;
@@ -51,7 +51,7 @@ public class ContinueReleasePatchStep
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IPushPatchReleaseStep pushPatchReleaseStep,
       IAnsiConsole console)
-      : base(gitClient, config, inputReader, console)
+      : base(gitClient, config, inputReader, console, msBuildCallAndCommit)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _pushPatchReleaseStep = pushPatchReleaseStep;
@@ -64,8 +64,8 @@ public class ContinueReleasePatchStep
     var mergeTargetBranchName = onMaster ? "master" : $"support/v{nextVersion.Major}.{nextVersion.Minor}";
     var toMergeBranchName = $"release/v{nextVersion}";
 
-    _log.Debug("The branch '{ToMergeBranchName} 'will be merged into '{MergeTargetBranchName}'",toMergeBranchName, mergeTargetBranchName);
-    
+    _log.Debug("The branch '{ToMergeBranchName} 'will be merged into '{MergeTargetBranchName}'", toMergeBranchName, mergeTargetBranchName);
+
     EnsureBranchUpToDate(mergeTargetBranchName);
     EnsureBranchUpToDate(toMergeBranchName);
 
@@ -89,6 +89,10 @@ public class ContinueReleasePatchStep
     GitClient.CheckoutNewBranch($"hotfix/v{nextPatchVersion}");
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, nextPatchVersion);
+
+    GitClient.Checkout(mergeTargetBranchName);
+
+    CreateSupportBranchWithHotfixForRelease(nextVersion);
 
     GitClient.Checkout(mergeTargetBranchName);
 
