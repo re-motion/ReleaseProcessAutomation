@@ -139,4 +139,25 @@ public class GitBackedTests
 
     return currentLogs.Equals(otherLogs);
   }
+  
+  protected void AssertValidLogs (string expectedLogs)
+  {
+    expectedLogs = expectedLogs.Replace(" ", "").Replace("\r", "");
+
+    var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
+    logs = logs.Replace(" ", "");
+
+    Assert.That(logs, Is.EqualTo(expectedLogs));
+  }
+  
+  protected void AssertValidLogs (string expectedLogs1, string expectedLogs2)
+  {
+    expectedLogs1 = expectedLogs1.Replace(" ", "").Replace("\r", "");
+    expectedLogs2 = expectedLogs2.Replace(" ", "").Replace("\r", "");
+
+    var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
+    logs = logs.Replace(" ", "");
+
+    Assert.That(logs, Is.EqualTo(expectedLogs1).Or.EqualTo(expectedLogs2));
+  }
 }
