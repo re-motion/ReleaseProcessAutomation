@@ -89,7 +89,6 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     ExecuteGitCommand("commit -m feature3 --allow-empty");
     ExecuteGitCommand("commit -m feature4 --allow-empty");
 
-
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("2.0.0");
     //Get next release version from user for jira
@@ -226,7 +225,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.0.0-alpha.2");
 
     var act = Program.Main(new[] { "Release-Version" });
-    
+
     AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
   }
@@ -293,11 +292,11 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
   }
-  
+
   [Test]
   public void ReleaseRelease_FromDevelop_ToMasterWithCommitHash ()
   {
-    var correctLogs = 
+    var correctLogs =
         @"*  (HEAD -> develop)Commit after finishing on new branch
           *  (origin/develop)Update metadata to version '1.3.0'.
           * Commit after branch
@@ -311,12 +310,12 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * ConfigAndBuildProject
           * Initial CommitAll
           ";
-    
+
     ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand("commit -m \"Commit for release\" --allow-empty");
     var releaseCommit = ExecuteGitCommandWithOutput("log -1 --pretty=%H");
     ExecuteGitCommand("commit -m \"Commit after branch\" --allow-empty");
-    
+
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("1.2.0");
     //Get next release version from user for jira
@@ -325,13 +324,13 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("n");
 
     var act1 = Program.Main(new[] { "Release-Version", $"-c {releaseCommit}" });
-    
+
     ExecuteGitCommand("commit -m \"Commit after finishing on new branch\" --allow-empty");
     AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
   }
-  
-[Test]
+
+  [Test]
   public void CloseVersionWithAncestor_FromDevelopRelease_ToMaster ()
   {
     var correctLogs =
@@ -355,16 +354,15 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     //Do not want to create support branch
     TestConsole.Input.PushTextWithEnter("n");
 
-
     var act1 = Program.Main(new[] { "Release-Version", "-p" });
     ExecuteGitCommand("commit -m \"Commit on release branch\" --allow-empty");
-    var act2 = Program.Main(new[] { "Close-Version" , "-a develop"});
+    var act2 = Program.Main(new[] { "Close-Version", "-a develop" });
 
     AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
   }
-  
+
   [Test]
   public void CloseVersionWithNoPush_FromDevelopRelease_ToMasterWithCommitOnRelease ()
   {
@@ -379,7 +377,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * ConfigAndBuildProject
           *  (origin/master)Initial CommitAll
           ";
-      
+
     ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand("commit -m Commit on develop --allow-empty");
 
@@ -389,18 +387,17 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.3.0");
     //Do not want to create support branch
     TestConsole.Input.PushTextWithEnter("n");
-    
+
     var act1 = Program.Main(new[] { "Release-Version", "-p" });
     ExecuteGitCommand("commit -m \"Commit on release branch\" --allow-empty");
     var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
     logs = logs.Replace(" ", "");
-    var act2 = Program.Main(new[] { "Close-Version" , "--noPush"});
+    var act2 = Program.Main(new[] { "Close-Version", "--noPush" });
 
     AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
   }
-  
 
   [Test]
   public void ReleaseNewBranch_FromDevelop ()
@@ -421,7 +418,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
 
     var act1 = Program.Main(new[] { "New-Release-Branch" });
 
-    AssertValidLogs(correctLogs);   
+    AssertValidLogs(correctLogs);
     Assert.That(TestConsole.Output, Does.Contain("Called UpdateAssemblyInfosForRelease!"));
     Assert.That(TestConsole.Output, Does.Not.Contain("Called UpdateAssemblyInfosForDevelopment!"));
     Assert.That(act1, Is.EqualTo(0));
