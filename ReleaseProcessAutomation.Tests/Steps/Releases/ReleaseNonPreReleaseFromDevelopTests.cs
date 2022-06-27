@@ -36,7 +36,7 @@ namespace ReleaseProcessAutomation.Tests.Steps.Releases
     [SetUp]
     public void setup()
     {
-      var path = Path.Join(Environment.CurrentDirectory, c_configFileName);
+      var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
       _config = new ConfigReader().LoadConfig(path);
       _msBuildInvokerMock = new Mock<IMSBuildCallAndCommit>();
       _continueReleaseOnMasterMock = new Mock<IContinueReleaseOnMasterStep>();

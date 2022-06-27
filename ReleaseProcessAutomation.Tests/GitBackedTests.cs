@@ -19,6 +19,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 
 namespace ReleaseProcessAutomation.Tests;
 
@@ -33,7 +34,7 @@ public class GitBackedTests
   [SetUp]
   public void GitTestSetup()
   {
-    PreviousWorkingDirectory = Environment.CurrentDirectory;
+    PreviousWorkingDirectory = TestContext.CurrentContext.TestDirectory;
     var temp = Path.GetTempPath();
 
     var guid = Guid.NewGuid();

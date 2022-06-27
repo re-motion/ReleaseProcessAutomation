@@ -48,7 +48,7 @@ namespace ReleaseProcessAutomation.Tests.Steps.Continues
       _pushReleasePatchMock = new Mock<IPushPatchReleaseStep>();
       _consoleStub = new Mock<IAnsiConsole>();
 
-      var path = Path.Join(Environment.CurrentDirectory, c_configFileName);
+      var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
       _config = new ConfigReader().LoadConfig(path);
 
     }

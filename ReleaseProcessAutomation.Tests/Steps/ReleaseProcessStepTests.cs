@@ -219,7 +219,7 @@ internal class ReleaseProcessStepTests : GitBackedTests
     {
       _config.DevelopStableMergeIgnoreList.FileName[index] = fileName;
     }
-    var combinePath = Path.Combine(Environment.CurrentDirectory, fileName);
+    var combinePath = Path.Combine(RepositoryPath, fileName);
     using var fs = File.Create(combinePath);
     fs.Close();
     ExecuteGitCommand($"add {fileName}");
@@ -244,10 +244,10 @@ internal class ReleaseProcessStepTests : GitBackedTests
     {
       _config.DevelopStableMergeIgnoreList.FileName[index] = fileName;
     }
-    var combinePath = Path.Combine(Environment.CurrentDirectory, fileName);
+    var combinePath = Path.Combine(RepositoryPath, fileName);
     using var fs = File.Create(combinePath);
     fs.Close();
-    var otherCombinePath = Path.Combine(Environment.CurrentDirectory, otherFileName);
+    var otherCombinePath = Path.Combine(RepositoryPath, otherFileName);
     using var ofs = File.Create(otherCombinePath);
     ofs.Close();
     File.WriteAllText(otherCombinePath, "Permanent Text");
@@ -279,10 +279,10 @@ internal class ReleaseProcessStepTests : GitBackedTests
     {
       _config.DevelopStableMergeIgnoreList.FileName[index] = "";
     }
-    var combinePath = Path.Combine(Environment.CurrentDirectory, fileName);
+    var combinePath = Path.Combine(RepositoryPath, fileName);
     using var fs = File.Create(combinePath);
     fs.Close();
-    var otherCombinePath = Path.Combine(Environment.CurrentDirectory, otherFileName);
+    var otherCombinePath = Path.Combine(RepositoryPath, otherFileName);
     using var ofs = File.Create(otherCombinePath);
     ofs.Close();
     File.WriteAllText(otherCombinePath, "Permanent Text");
