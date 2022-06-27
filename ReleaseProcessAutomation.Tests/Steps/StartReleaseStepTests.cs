@@ -21,6 +21,8 @@ using NUnit.Framework;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.Steps;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Spectre.Console;
+using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.Tests.Steps
 {
@@ -34,8 +36,10 @@ namespace ReleaseProcessAutomation.Tests.Steps
       _releaseBranchStub = new Mock<IBranchFromReleaseStep>();
       _masterBranchStub = new Mock<IBranchFromMasterStep>();
       _hotfixBranchStub = new Mock<IBranchFromHotfixStep>();
+      _console = new TestConsole();
     }
 
+    private TestConsole _console;
     private Mock<IBranchFromDevelopStep> _developBranchMock;
     private Mock<IBranchFromReleaseStep> _releaseBranchStub;
     private Mock<IBranchFromMasterStep> _masterBranchStub;
@@ -46,13 +50,58 @@ namespace ReleaseProcessAutomation.Tests.Steps
     {
       var gitClientStub = new Mock<IGitClient>();
       var commitHash = "1029384781827834äöäöä";
-      gitClientStub.Setup(_ => _.IsCommitHash(commitHash)); 
-      var startReleaseStep = new StartReleaseStep(gitClientStub.Object, _developBranchMock.Object, _releaseBranchStub.Object, _hotfixBranchStub.Object, _masterBranchStub.Object);
+      gitClientStub.Setup(_ => _.IsCommitHash(commitHash));
+      var startReleaseStep = new StartReleaseStep(
+          gitClientStub.Object,
+          _console,
+          _developBranchMock.Object,
+          _releaseBranchStub.Object,
+          _hotfixBranchStub.Object,
+          _masterBranchStub.Object);
 
 
       Assert.That(() => startReleaseStep.Execute(commitHash,false,false),
           Throws.InstanceOf<ArgumentException>()
               .With.Message.EqualTo("The given commit hash was not found in the repository"));
+    }
+
+    [Test]
+    public void Execute_OnNonReleaseBranch_OutputsMessageToConsole ()
+    {
+      var gitClientStub = new Mock<IGitClient>();
+      gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(false);
+      gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
+
+      var startReleaseStep = new StartReleaseStep(
+          gitClientStub.Object,
+          _console,
+          _developBranchMock.Object,
+          _releaseBranchStub.Object,
+          _hotfixBranchStub.Object,
+          _masterBranchStub.Object);
+
+      startReleaseStep.Execute(null);
+
+      Assert.That(_console.Output.ReplaceLineEndings(""), Is.EqualTo("As you are not on a release branch, you won't be able to release a release candidate version.To create a release branch, use the command [green]'New-Release-Branch'[/]"));
+    }
+    
+    [Test]
+    public void Execute_OnReleaseBranch_OutputsNoMessageToConsole ()
+    {
+      var gitClientStub = new Mock<IGitClient>();
+      gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
+
+      var startReleaseStep = new StartReleaseStep(
+          gitClientStub.Object,
+          _console,
+          _developBranchMock.Object,
+          _releaseBranchStub.Object,
+          _hotfixBranchStub.Object,
+          _masterBranchStub.Object);
+
+      startReleaseStep.Execute(null);
+
+      Assert.That(_console.Output.ReplaceLineEndings(""), Is.EqualTo(""));
     }
 
     [Test]
@@ -64,8 +113,14 @@ namespace ReleaseProcessAutomation.Tests.Steps
       gitClientStub.Setup(_ => _.IsCommitHash(commitHash)).Returns(true);
       gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
       _developBranchMock.Setup(_ => _.Execute(commitHash, false, false, false)).Verifiable();
-      
-      var startReleaseStep = new StartReleaseStep(gitClientStub.Object, _developBranchMock.Object, _releaseBranchStub.Object, _hotfixBranchStub.Object, _masterBranchStub.Object);
+
+      var startReleaseStep = new StartReleaseStep(
+          gitClientStub.Object,
+          _console,
+          _developBranchMock.Object,
+          _releaseBranchStub.Object,
+          _hotfixBranchStub.Object,
+          _masterBranchStub.Object);
 
 
       Assert.That(
