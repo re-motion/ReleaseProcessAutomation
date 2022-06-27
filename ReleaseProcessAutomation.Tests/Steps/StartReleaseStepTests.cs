@@ -86,6 +86,26 @@ namespace ReleaseProcessAutomation.Tests.Steps
     }
     
     [Test]
+    public void Execute_OnNonReleaseBranchWithStartReleasePhase_OutputsNothingToConsole ()
+    {
+      var gitClientStub = new Mock<IGitClient>();
+      gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(false);
+      gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
+
+      var startReleaseStep = new StartReleaseStep(
+          gitClientStub.Object,
+          _console,
+          _developBranchMock.Object,
+          _releaseBranchStub.Object,
+          _hotfixBranchStub.Object,
+          _masterBranchStub.Object);
+
+      startReleaseStep.Execute(null, startReleasePhase: true);
+
+      Assert.That(_console.Output.ReplaceLineEndings(""), Is.EqualTo(string.Empty));
+    }
+    
+    [Test]
     public void Execute_OnReleaseBranch_OutputsNoMessageToConsole ()
     {
       var gitClientStub = new Mock<IGitClient>();
@@ -101,7 +121,7 @@ namespace ReleaseProcessAutomation.Tests.Steps
 
       startReleaseStep.Execute(null);
 
-      Assert.That(_console.Output.ReplaceLineEndings(""), Is.EqualTo(""));
+      Assert.That(_console.Output.ReplaceLineEndings(""), Is.EqualTo(string.Empty));
     }
 
     [Test]
