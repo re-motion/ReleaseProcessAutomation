@@ -229,6 +229,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.2.1");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.2.2");
+    //Does not create support branch
+    TestConsole.Input.PushTextWithEnter("n");
     
     var act1 = Program.Main(new[] { "Release-Version" , "-p"});
     
