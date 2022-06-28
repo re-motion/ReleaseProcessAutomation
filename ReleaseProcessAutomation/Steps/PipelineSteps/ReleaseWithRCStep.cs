@@ -105,12 +105,12 @@ public class ReleaseWithRCStep : ReleaseProcessStepBase, IReleaseWithRCStep
     if (ancestor.Equals("develop"))
     {
       _log.Debug("Getting next possible jira versions for develop from '{nextVersion}'.", nextVersion);
-      nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
+      nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     }
     else if (ancestor.StartsWith("hotfix/"))
     {
       _log.Debug("Getting next possible jira versions for hotfix from '{nextVersion}'.", nextVersion);
-      nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
+      nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromHotfix();
     }
     else
     {

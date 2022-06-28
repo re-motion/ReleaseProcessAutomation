@@ -74,7 +74,7 @@ internal class ReleaseWithRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("release/v0.0.1");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
-    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
 
     var withRcStep = new ReleaseWithRCStep (
@@ -103,7 +103,7 @@ internal class ReleaseWithRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("release/v0.0.1");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
-    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
 
     var withRcStep = new ReleaseWithRCStep (
@@ -132,7 +132,7 @@ internal class ReleaseWithRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("release/v0.0.1");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
-    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
     var withRcStep = new ReleaseWithRCStep (
@@ -162,7 +162,7 @@ internal class ReleaseWithRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("release/v0.0.1");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
-    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
     var withRcStep = new ReleaseWithRCStep (
@@ -193,7 +193,7 @@ internal class ReleaseWithRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("release/v0.0.1");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.1")).Returns(false);
-    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
     var withRcStep = new ReleaseWithRCStep (
@@ -224,7 +224,7 @@ internal class ReleaseWithRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("release/v0.0.1");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.1")).Returns(false);
-    var nextPossibleVersions = new SemanticVersion().GetNextPossibleVersionsDevelop();
+    var nextPossibleVersions = new SemanticVersion().GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
     var withRcStep = new ReleaseWithRCStep (

@@ -26,6 +26,45 @@ public static class SemanticVersionExtensions
 {
   private static readonly ILogger s_log = Log.ForContext(typeof(SemanticVersionExtensions));
 
+  public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsForReleaseBranchFromDevelop (this SemanticVersion semanticVersion)
+  {
+    if (semanticVersion.Pre == PreReleaseStage.rc)
+    {
+      return GetReleaseRCOrCurrent(semanticVersion);
+    }
+    else
+    {
+      return new[]
+             {
+                 GetNextMinorWithAlpha(semanticVersion),
+                 GetNextMinorWithBeta(semanticVersion),
+                 GetNextMinorRelease(semanticVersion),
+                 GetNextMajorWithAlpha(semanticVersion),
+                 GetNextMajorWithBeta(semanticVersion),
+                 GetNextMajorRelease(semanticVersion),
+             };
+    }
+  }
+
+  public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsForReleaseBranchFromHotfix (this SemanticVersion semanticVersion)
+  {
+    if (semanticVersion.Pre == PreReleaseStage.rc)
+    {
+      return GetReleaseRCOrCurrent(semanticVersion);
+    }
+    else
+    {
+
+      var nextPatchVersion = GetNextPatchVersion(semanticVersion);
+      return new[]
+             {
+                 GetNextAlpha(nextPatchVersion, changeToAlpha1: true),
+                 GetNextBeta(nextPatchVersion, changeToBeta1: true),
+                 nextPatchVersion
+             };
+    }
+  }
+
   public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsDevelop (
       this SemanticVersion semanticVersion,
       bool withoutPreRelease = false)
@@ -61,6 +100,7 @@ public static class SemanticVersionExtensions
       if (semanticVersion.Pre == PreReleaseStage.rc)
         return new[]
                {
+                   GetNextRC(semanticVersion),
                    GetCurrentFullVersion(semanticVersion),
                    GetNextMajorWithAlpha(semanticVersion),
                    GetNextMajorWithBeta(semanticVersion),
@@ -206,6 +246,15 @@ public static class SemanticVersionExtensions
                                Patch = semanticVersion.Patch
                            };
     return nextPatchRelease;
+  }
+
+  private static IReadOnlyCollection<SemanticVersion> GetReleaseRCOrCurrent (SemanticVersion semanticVersion)
+  {
+    return new[]
+           {
+               GetNextRC(semanticVersion),
+               GetCurrentFullVersion(semanticVersion)
+           };
   }
 
   private static SemanticVersion GetNextAlpha (SemanticVersion semanticVersion, bool changeToAlpha1 = false)

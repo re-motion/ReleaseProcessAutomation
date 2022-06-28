@@ -26,7 +26,7 @@ namespace ReleaseProcessAutomation.UnitTests.SemanticVersioning;
 public class SemanticVersionTests
 {
   [Test]
-  public void GetNextPossibleVersionsDevelop_WithPreReleaseAlpha_ReturnsSixVersions ()
+  public void GetNextPossibleVersionsDevelop_WithPreReleaseAlpha_ReturnsExpectedVersions ()
   {
     var parser = new SemanticVersionParser();
     var baseVersion = parser.ParseVersion("1.3.5-alpha.1");
@@ -42,7 +42,86 @@ public class SemanticVersionTests
   }
 
   [Test]
-  public void GetNextPossibleVersionsHotfix_WithNonPreRelease_ReturnsVersions ()
+  public void GetNextPossibleVersionsDevelop_WithPreReleaseRC_ReturnsExpectedVersions()
+  {
+    var parser = new SemanticVersionParser();
+    var expectedVersions = new SemanticVersion[]
+                           {
+                               parser.ParseVersion("1.3.0-rc.2"),
+                               parser.ParseVersion("1.3.0"),
+                               parser.ParseVersion("2.0.0-alpha.1"),
+                               parser.ParseVersion("2.0.0-beta.1"),
+                               parser.ParseVersion("2.0.0")
+                           };
+    var baseVersion = parser.ParseVersion("1.3.0-rc.1");
+
+    var possibleVersions = baseVersion.GetNextPossibleVersionsDevelop();
+
+    Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
+  }
+  
+  [Test]
+  public void GetNextPossibleVersionsDevelop_WithMajorVersionWithoutPreRelease_ReturnsExpectedVersions()
+  {
+    var parser = new SemanticVersionParser();
+    var expectedVersions = new SemanticVersion[]
+                           {
+                               parser.ParseVersion("1.1.0"),
+                               parser.ParseVersion("2.0.0")
+
+                           };
+    var baseVersion = parser.ParseVersion("1.0.0");
+
+    var possibleVersions = baseVersion.GetNextPossibleVersionsDevelop(true);
+
+    Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
+  }
+  
+  [Test]
+  public void GetNextPossibleVersionsDevelop_WithMinorVersion_ReturnsExpectedVersions()
+  {
+    var parser = new SemanticVersionParser();
+    var expectedVersions = new SemanticVersion[]
+                           {
+                               parser.ParseVersion("1.2.0-alpha.1"),
+                               parser.ParseVersion("1.2.0-beta.1"),
+                               parser.ParseVersion("1.2.0"),
+                               parser.ParseVersion("2.0.0-alpha.1"),
+                               parser.ParseVersion("2.0.0-beta.1"),
+                               parser.ParseVersion("2.0.0")
+
+                           };
+    var baseVersion = parser.ParseVersion("1.1.0");
+
+    var possibleVersions = baseVersion.GetNextPossibleVersionsDevelop();
+
+    Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
+  }
+  
+  
+  [Test]
+  public void GetNextPossibleVersionsDevelop_WithMajorVersion_ReturnsExpectedVersions()
+  {
+    var parser = new SemanticVersionParser();
+    var expectedVersions = new SemanticVersion[]
+                           {
+                               parser.ParseVersion("1.1.0-alpha.1"),
+                               parser.ParseVersion("1.1.0-beta.1"),
+                               parser.ParseVersion("1.1.0"),
+                               parser.ParseVersion("2.0.0-alpha.1"),
+                               parser.ParseVersion("2.0.0-beta.1"),
+                               parser.ParseVersion("2.0.0")
+
+                           };
+    var baseVersion = parser.ParseVersion("1.0.0");
+
+    var possibleVersions = baseVersion.GetNextPossibleVersionsDevelop();
+
+    Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
+  }
+  
+  [Test]
+  public void GetNextPossibleVersionsHotfix_WithNonPreRelease_ReturnsExpectedVersions ()
   {
     var parser = new SemanticVersionParser();
     var expectedVersions = new[]
@@ -59,7 +138,7 @@ public class SemanticVersionTests
   }
 
   [Test]
-  public void GetNextPossibleVersionsHotfix_WithPreReleaseAlpha_ReturnsThreeVersions ()
+  public void GetNextPossibleVersionsHotfix_WithPreReleaseAlpha_ReturnsExpectedVersions ()
   {
     var parser = new SemanticVersionParser();
     var expectedVersions = new[]
@@ -76,7 +155,7 @@ public class SemanticVersionTests
   }
 
   [Test]
-  public void GetNextPossibleVersionsHotfix_WithPreReleaseBeta_ReturnsTwoVersions ()
+  public void GetNextPossibleVersionsHotfix_WithPreReleaseBeta_ReturnsExpectedVersions ()
   {
     var parser = new SemanticVersionParser();
     var expectedVersions = new[]
@@ -92,7 +171,7 @@ public class SemanticVersionTests
   }
 
   [Test]
-  public void GetNextPossibleVersionsHotfix_WithPreReleaseRC_ReturnsTwoVersions ()
+  public void GetNextPossibleVersionsHotfix_WithPreReleaseRC_ReturnsExpectedVersions ()
   {
     var parser = new SemanticVersionParser();
     var expectedVersions = new[]
@@ -108,7 +187,7 @@ public class SemanticVersionTests
   }
 
   [Test]
-  public void GetCurrentPossibleVersionsHotfix_FullRelease_ReturnsVersions ()
+  public void GetCurrentPossibleVersionsHotfix_FullRelease_ReturnsExpectedVersions ()
   {
     var parser = new SemanticVersionParser();
     var expectedVersions = new[]
@@ -125,7 +204,7 @@ public class SemanticVersionTests
   }
 
   [Test]
-  public void GetCurrentPossibleVersionsHotfix_WithPreReleaseAlpha_ReturnsVersions ()
+  public void GetCurrentPossibleVersionsHotfix_WithPreReleaseAlpha_ReturnsExpectedVersions ()
   {
     var parser = new SemanticVersionParser();
     var expectedVersions = new[]
@@ -142,7 +221,7 @@ public class SemanticVersionTests
   }
 
   [Test]
-  public void GetCurrentPossibleVersionsHotfix_WithPreReleaseBeta_ReturnsVersions ()
+  public void GetCurrentPossibleVersionsHotfix_WithPreReleaseBeta_ReturnsExpectedVersions ()
 
   {
     var parser = new SemanticVersionParser();
@@ -159,7 +238,7 @@ public class SemanticVersionTests
   }
 
   [Test]
-  public void GetCurrentPossibleVersionsHotfix_WithPreReleaseRC_ReturnsVersions ()
+  public void GetCurrentPossibleVersionsHotfix_WithPreReleaseRC_ReturnsExpectedVersions ()
   {
     var parser = new SemanticVersionParser();
     var expectedVersions = new[]
@@ -170,6 +249,95 @@ public class SemanticVersionTests
     var baseVersion = parser.ParseVersion("1.3.5-rc.1");
 
     var possibleVersions = baseVersion.GetCurrentPossibleVersionsHotfix();
+
+    Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
+  }
+  
+  [Test]
+  public void GetNextPossibleVersionsReleaseBranchFromDevelop_WithPreReleaseRC_ReturnsExpectedVersions ()
+  {
+    var parser = new SemanticVersionParser();
+    var expectedVersions = new SemanticVersion[]
+                           {
+                               parser.ParseVersion("1.3.5-rc.2"),
+                               parser.ParseVersion("1.3.5")
+                           };
+    var baseVersion = parser.ParseVersion("1.3.5-rc.1");
+
+    var possibleVersions = baseVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
+
+    Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
+  }
+  
+  [Test]
+  public void GetNextPossibleVersionsReleaseBranchFromDevelop_WithFullRelease_ReturnsExpectedVersions ()
+  {
+    var parser = new SemanticVersionParser();
+    var expectedVersions = new SemanticVersion[]
+                           {                               
+                               parser.ParseVersion("2.1.0-alpha.1"),
+                               parser.ParseVersion("2.1.0-beta.1"),
+                               parser.ParseVersion("2.1.0"),
+                               parser.ParseVersion("3.0.0-alpha.1"),
+                               parser.ParseVersion("3.0.0-beta.1"),
+                               parser.ParseVersion("3.0.0"),
+                           };
+    var baseVersion = parser.ParseVersion("2.0.0");
+
+    var possibleVersions = baseVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
+
+    Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
+  }
+  
+  [Test]
+  public void GetNextPossibleVersionsReleaseBranchFromDevelop_WithMinorRelease_ReturnsExpectedVersions ()
+  {
+    var parser = new SemanticVersionParser();
+    var expectedVersions = new SemanticVersion[]
+                           {                               
+                               parser.ParseVersion("2.2.0-alpha.1"),
+                               parser.ParseVersion("2.2.0-beta.1"),
+                               parser.ParseVersion("2.2.0"),
+                               parser.ParseVersion("3.0.0-alpha.1"),
+                               parser.ParseVersion("3.0.0-beta.1"),
+                               parser.ParseVersion("3.0.0"),
+                           };
+    var baseVersion = parser.ParseVersion("2.1.0");
+
+    var possibleVersions = baseVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
+
+    Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
+  }
+  
+  [Test]
+  public void GetNextPossibleVersionsReleaseBranchFromHotfix_WithPreReleaseRC_ReturnsExpectedVersions ()
+  {
+    var parser = new SemanticVersionParser();
+    var expectedVersions = new SemanticVersion[]
+                           {
+                               parser.ParseVersion("1.3.5-rc.2"),
+                               parser.ParseVersion("1.3.5")
+                           };
+    var baseVersion = parser.ParseVersion("1.3.5-rc.1");
+
+    var possibleVersions = baseVersion.GetNextPossibleVersionsForReleaseBranchFromHotfix();
+
+    Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
+  }
+  
+  [Test]
+  public void GetNextPossibleVersionsReleaseBranchFromHotfix_WithFullRelease_ReturnsExpectedVersions ()
+  {
+    var parser = new SemanticVersionParser();
+    var expectedVersions = new SemanticVersion[]
+                           {
+                               parser.ParseVersion("1.3.6-alpha.1"),
+                               parser.ParseVersion("1.3.6-beta.1"),
+                               parser.ParseVersion("1.3.6")
+                           };
+    var baseVersion = parser.ParseVersion("1.3.5");
+
+    var possibleVersions = baseVersion.GetNextPossibleVersionsForReleaseBranchFromHotfix();
 
     Assert.That(possibleVersions, Is.EqualTo(expectedVersions));
   }

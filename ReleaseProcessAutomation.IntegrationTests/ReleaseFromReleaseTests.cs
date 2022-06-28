@@ -153,7 +153,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("1.3.5-rc.1");
     //Get next release version from user for jira
-    TestConsole.Input.PushTextWithEnter("1.3.6");
+    TestConsole.Input.PushTextWithEnter("1.3.5");
 
     var act = RunProgram(new[] { "Release-Version" });
 
@@ -227,7 +227,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("2.0.0");
     //Get next release version from user for jira
-    TestConsole.Input.PushTextWithEnter("2.1.0");
+    TestConsole.Input.PushTextWithEnter("3.0.0");
     //Do not want to create support branch
     TestConsole.Input.PushTextWithEnter("n");
 
@@ -238,7 +238,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseWithRC_FromDevelopRelease_WithDevelopNotAheadOfRoot_ReleasesToMaster ()
+  public void ReleaseWithRC_FromDevelopReleaseWithMinorNextVersion_ReleasesToMaster ()
   {
     var correctLogs =
         @"*    (tag: v2.0.0, origin/master, master)Merge branch 'release/v2.0.0'
@@ -259,6 +259,37 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("2.0.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("2.1.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("n");
+
+    var act = RunProgram(new[] { "Release-Version" });
+
+    Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
+  }
+  
+  [Test]
+  public void ReleaseWithRC_FromDevelopReleaseWithMajorNextVersion_ReleasesToMaster ()
+  {
+    var correctLogs =
+        @"*    (tag: v2.0.0, origin/master, master)Merge branch 'release/v2.0.0'
+          |\  
+          | *  (origin/release/v2.0.0, release/v2.0.0)Update metadata to version '2.0.0'.
+          |/  
+          *  (HEAD -> develop, origin/develop)feature
+          * ConfigAndBuildProject
+          * Initial CommitAll
+          ";
+
+    ExecuteGitCommand("commit -m feature --allow-empty");
+    ExecuteGitCommand("checkout -b develop");
+
+    ExecuteGitCommand("checkout -b release/v2.0.0");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("2.0.0");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("3.0.0");
     //Do not want to create support branch
     TestConsole.Input.PushTextWithEnter("n");
 

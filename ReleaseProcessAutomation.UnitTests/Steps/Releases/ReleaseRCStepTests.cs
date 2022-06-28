@@ -48,7 +48,7 @@ internal class ReleaseRCStepTests
   private Mock<IContinueAlphaBetaStep> _continueAlphaBetaMock;
 
   [SetUp]
-  public void Setup ()
+  public void SetUp ()
   {
     _gitClientStub = new Mock<IGitClient>();
     _inputReaderMock = new Mock<IInputReader>();
@@ -64,7 +64,7 @@ internal class ReleaseRCStepTests
   }
 
   [Test]
-  public void Execute_callsNextVersionFromDevelop_WithProperVersionCollection ()
+  public void Execute_WithDevelopAncestor_UsesPossibleVersionsReleaseBranchFromDevelop ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -72,10 +72,12 @@ internal class ReleaseRCStepTests
     _gitClientStub.Setup(_ => _.IsCommitHash("")).Returns(true);
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("branchName");
-    _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
-    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
+    _gitClientStub.Setup(_ => _.DoesBranchExist(It.IsAny<string>())).Returns(false);
 
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
+
+    _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, false)).Verifiable();
 
     var rcStep = new ReleaseRCStep(
         _gitClientStub.Object,
@@ -87,15 +89,14 @@ internal class ReleaseRCStepTests
         _consoleStub.Object,
         _releaseVersionAndMoveIssueMock.Object);
 
-    Assert.That(
-        () => rcStep.Execute(nextVersion, "", false, false, "develop"),
-        Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    rcStep.Execute(nextVersion, "", false, false, "develop");
+
     _inputReaderMock.Verify();
+    _releaseVersionAndMoveIssueMock.Verify();
   }
 
   [Test]
-  public void Execute_callsNextVersionFromRelease_WithProperVersionCollection ()
+  public void Execute_WithReleaseAncestor_UsesNextPossibleVersionReleaseBranchFromDevelop ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -104,9 +105,11 @@ internal class ReleaseRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("branchName");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
-    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
 
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
+
+    _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, false)).Verifiable();
 
     var rcStep = new ReleaseRCStep(
         _gitClientStub.Object,
@@ -118,15 +121,14 @@ internal class ReleaseRCStepTests
         _consoleStub.Object,
         _releaseVersionAndMoveIssueMock.Object);
 
-    Assert.That(
-        () => rcStep.Execute(nextVersion, "", false, false, "release/v1.3.5"),
-        Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    rcStep.Execute(nextVersion, "", false, false, "release/v1.3.5");
+
     _inputReaderMock.Verify();
+    _releaseVersionAndMoveIssueMock.Verify();
   }
 
   [Test]
-  public void Execute_callsNextVersionFromHotfix_WithProperVersionCollection ()
+  public void Execute_CallsNextVersionFromHotfix_WithProperVersionCollection ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -135,9 +137,11 @@ internal class ReleaseRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("branchName");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
+
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
-
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
+
+    _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, false)).Verifiable();
 
     var rcStep = new ReleaseRCStep(
         _gitClientStub.Object,
@@ -149,15 +153,14 @@ internal class ReleaseRCStepTests
         _consoleStub.Object,
         _releaseVersionAndMoveIssueMock.Object);
 
-    Assert.That(
-        () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
-        Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5");
+
     _inputReaderMock.Verify();
+    _releaseVersionAndMoveIssueMock.Verify();
   }
 
   [Test]
-  public void Execute_WithPauseForCommit_DoesNotCallNextStep ()
+  public void Execute_WithHotfixAncestorAndPauseForCommit_DoesNotCallNextStep ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -166,8 +169,8 @@ internal class ReleaseRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("branchName");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
-    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
 
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
     var rcStep = new ReleaseRCStep(
@@ -189,7 +192,7 @@ internal class ReleaseRCStepTests
   }
 
   [Test]
-  public void Execute_WithoutErrors_CallsNextStep ()
+  public void Execute_WithoutPauseForCommit_CallsNextStep ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -198,8 +201,8 @@ internal class ReleaseRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("branchName");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
-    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
 
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
     var rcStep = new ReleaseRCStep(
@@ -212,15 +215,14 @@ internal class ReleaseRCStepTests
         _consoleStub.Object,
         _releaseVersionAndMoveIssueMock.Object);
 
-    Assert.That(
-        () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
-        Throws.Nothing);
+    rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5");
+
     _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _continueAlphaBetaMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<string>(), It.IsAny<string>(), false));
   }
 
   [Test]
-  public void Execute_WithoutErrors_CallsMBuildInvokeAndCommit ()
+  public void Execute_CallsMBuildInvokeAndCommit ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -229,6 +231,7 @@ internal class ReleaseRCStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("branchName");
     _gitClientStub.Setup(_ => _.DoesBranchExist("prerelease/v0.0.0")).Returns(false);
+
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
@@ -245,6 +248,7 @@ internal class ReleaseRCStepTests
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
+
     _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion));
   }
