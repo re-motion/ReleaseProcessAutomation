@@ -16,6 +16,7 @@
 //
 
 using System;
+using System.IO;
 using ReleaseProcessAutomation.Configuration;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Extensions;
@@ -57,7 +58,14 @@ public class MSBuildCallAndCommit
     if (string.IsNullOrEmpty(msBuildPath))
     {
       _log.Warning("No MSBuild Path specified in config, will continue without MSBuild");
-      _console.WriteLine("There was no MSBuildPath specified in the config, will continue without Invoking MSBuild");
+      _console.WriteLine("There was no MSBuildPath specified in the config\nWill continue without invoking MSBuild");
+      return -1;
+    }
+
+    if (!File.Exists(msBuildPath))
+    {
+      _log.Warning("The configured MSBuildpath does not exist");
+      _console.WriteLine("The configured MSBuildPath does not exist\nPlease configure a proper MSBuildPath in the config\nWill continue without invoking MSBuild");
       return -1;
     }
 
