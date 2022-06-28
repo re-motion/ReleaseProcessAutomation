@@ -128,7 +128,7 @@ namespace ReleaseProcessAutomation.Tests.MSBuild
         var act = msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version);
 
         Assert.That(act, Is.EqualTo(-1));
-        Assert.That(testConsole.Output, Does.Contain("The configured MSBuildPath does not exist"));
+        Assert.That(testConsole.Output.ReplaceLineEndings(""), Does.Contain($"The configured MSBuildPath '{_config.MSBuildSettings.MSBuildPath}' does not exist"));
         msBuildMock.Verify(n => n.CallMSBuild("", It.IsAny<string>()),Times.Never);
     }
 
