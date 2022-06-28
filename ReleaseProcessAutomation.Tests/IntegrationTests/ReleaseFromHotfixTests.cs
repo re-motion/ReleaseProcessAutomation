@@ -46,8 +46,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -75,9 +75,9 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     ExecuteGitCommand("commit -m \"Commit on prerelease branch\" --allow-empty");
     var act2 = Program.Main(new[] { "Close-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -107,8 +107,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -151,8 +151,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs1, correctLogs2);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs1, correctLogs2);
   }
 
   [Test]
@@ -173,8 +173,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
 
     var act1 = Program.Main(new[] { "New-Release-Branch" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -202,8 +202,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     var act1 = Program.Main(new[] { "New-Release-Branch", $"-c {releaseCommit}" });
 
     ExecuteGitCommand("commit -m \"Commit afterwards\" --allow-empty");
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
   
   [Test]
@@ -239,8 +239,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     
     var act2 = Program.Main(new[] { "Close-Version" });
     
-    AssertValidLogs(correctLogs);   
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);   
   }
 }

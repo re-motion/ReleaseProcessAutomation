@@ -56,7 +56,7 @@ internal class ReleaseFromMasterTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 }

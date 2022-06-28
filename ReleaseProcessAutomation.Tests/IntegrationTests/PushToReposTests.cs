@@ -37,8 +37,8 @@ internal class PushToReposTests : IntegrationTestSetup
 
     var act1 = Program.Main(new[] { "Push-Remote-Repos", "develop" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
   
   [Test]
@@ -57,7 +57,7 @@ internal class PushToReposTests : IntegrationTestSetup
 
     var act1 = Program.Main(new[] { "Push-Remote-Repos", "develop", "-t v1.0.0" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 }

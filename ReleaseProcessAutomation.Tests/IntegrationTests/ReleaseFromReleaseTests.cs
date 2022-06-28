@@ -61,8 +61,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
   
   [Test]
@@ -120,8 +120,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs1, correctLogs2);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs1, correctLogs2);
   }
   
   [Test]
@@ -159,8 +159,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
   
   [Test]
@@ -196,8 +196,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -235,8 +235,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -266,8 +266,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -306,9 +306,9 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     ExecuteGitCommand("commit -m \"Another commit on prerelease\" --allow-empty");
     var act2 = Program.Main(new[] { "Close-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -338,8 +338,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     ExecuteGitCommand("commit -m \"Commit on prerelease branch\" --allow-empty");
     var act2 = Program.Main(new[] { "Close-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 }
