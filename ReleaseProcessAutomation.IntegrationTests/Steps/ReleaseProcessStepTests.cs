@@ -48,11 +48,6 @@ internal class ReleaseProcessStepTests : GitBackedTests
     {
     }
 
-    public new void EnsureBranchUpToDate (string branchName)
-    {
-      base.EnsureBranchUpToDate(branchName);
-    }
-
     public new void EnsureWorkingDirectoryClean ()
     {
       base.EnsureWorkingDirectoryClean();
@@ -72,101 +67,6 @@ internal class ReleaseProcessStepTests : GitBackedTests
     _console = new TestConsole();
   }
 
-  [Test]
-  public void EnsureBranchUpToDate_WithoutProperConfig_ThrowsException ()
-  {
-    _config.RemoteRepositories.RemoteNames = new string[] { };
-
-    var gitClientStub = new Mock<IGitClient>();
-    var readerMock = new Mock<IInputReader>();
-    var rps = new NestedReleaseProcessStepBase(gitClientStub.Object, _config, readerMock.Object, _console);
-
-    Assert.That(
-        () => rps.EnsureBranchUpToDate(""),
-        Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("There were no remotes specified in the config. Stopping execution."));
-  }
-
-  [Test]
-  public void EnsureBranchUpToDate_WithOneRemoteUpToDate_DoesNotThrow ()
-  {
-    _config.RemoteRepositories.RemoteNames = new[]
-                                             {
-                                                 "origin"
-                                             };
-
-    var gitClientStub = new Mock<IGitClient>();
-    gitClientStub.Setup(_ => _.GetHash(It.IsAny<string>(), It.IsAny<string>())).Returns("hash");
-    gitClientStub.Setup(_ => _.GetMostRecentCommonAncestorWithRemote("branch", "branch", "origin")).Returns("hash");
-
-    var readerMock = new Mock<IInputReader>();
-    var rps = new NestedReleaseProcessStepBase(gitClientStub.Object, _config, readerMock.Object, _console);
-
-    Assert.That(() => rps.EnsureBranchUpToDate("branch"), Throws.Nothing);
-  }
-
-  [Test]
-  public void EnsureBranchUpToDate_WithRemoteBehindUpToDate_DoesNotThrow ()
-  {
-    _config.RemoteRepositories.RemoteNames = new[]
-                                             {
-                                                 "origin"
-                                             };
-
-    var gitClientStub = new Mock<IGitClient>();
-    gitClientStub.Setup(_ => _.GetHash("branch", "")).Returns("laterHash");
-    gitClientStub.Setup(_ => _.GetHash("branch", "origin")).Returns("hash");
-    gitClientStub.Setup(_ => _.GetMostRecentCommonAncestorWithRemote("branch", "branch", "origin")).Returns("hash");
-
-    var readerMock = new Mock<IInputReader>();
-    var rps = new NestedReleaseProcessStepBase(gitClientStub.Object, _config, readerMock.Object, _console);
-
-    Assert.That(() => rps.EnsureBranchUpToDate("branch"), Throws.Nothing);
-  }
-
-  [Test]
-  public void EnsureBranchUpToDate_WithCurrentBehindUpToDate_DoesThrow ()
-  {
-    _config.RemoteRepositories.RemoteNames = new[]
-                                             {
-                                                 "origin"
-                                             };
-
-    var gitClientStub = new Mock<IGitClient>();
-    gitClientStub.Setup(_ => _.GetHash("branch", "")).Returns("hash");
-    gitClientStub.Setup(_ => _.GetHash("branch", "origin")).Returns("laterHash");
-    gitClientStub.Setup(_ => _.GetMostRecentCommonAncestorWithRemote("branch", "branch", "origin")).Returns("hash");
-
-    var readerMock = new Mock<IInputReader>();
-    var rps = new NestedReleaseProcessStepBase(gitClientStub.Object, _config, readerMock.Object, _console);
-
-    Assert.That(
-        () => rps.EnsureBranchUpToDate("branch"),
-        Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("Need to pull, local 'branch' branch is behind on repository 'origin'."));
-  }
-
-  [Test]
-  public void EnsureBranchUpToDate_WithDivergingHashes_DoesThrow ()
-  {
-    _config.RemoteRepositories.RemoteNames = new[]
-                                             {
-                                                 "origin"
-                                             };
-
-    var gitClientStub = new Mock<IGitClient>();
-    gitClientStub.Setup(_ => _.GetHash("branch", "")).Returns("laterHash");
-    gitClientStub.Setup(_ => _.GetHash("branch", "origin")).Returns("latestHash");
-    gitClientStub.Setup(_ => _.GetMostRecentCommonAncestorWithRemote("branch", "branch", "origin")).Returns("hash");
-
-    var readerMock = new Mock<IInputReader>();
-    var rps = new NestedReleaseProcessStepBase(gitClientStub.Object, _config, readerMock.Object, _console);
-
-    Assert.That(
-        () => rps.EnsureBranchUpToDate("branch"),
-        Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("'branch' diverged, need to rebase at repository 'origin'."));
-  }
 
   [Test]
   public void EnsureWorkingDirectoryClean_CleanDir_DoesNotThrow ()

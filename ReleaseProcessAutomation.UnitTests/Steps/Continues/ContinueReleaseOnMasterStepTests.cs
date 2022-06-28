@@ -39,6 +39,7 @@ internal class ContinueReleaseOnMasterStepTests
   private Configuration.Data.Config _config;
   private Mock<IPushMasterReleaseStep> _nextReleaseStepMock;
   private Mock<IMSBuildCallAndCommit> _msBuildCallAndCommitStub;
+  private Mock<IGitBranchOperations> _gitBranchOperationsStub;
 
   [SetUp]
   public void Setup ()
@@ -50,6 +51,7 @@ internal class ContinueReleaseOnMasterStepTests
     _nextReleaseStepMock.Setup(_ => _.Execute(It.IsAny<SemanticVersion>())).Verifiable();
     _consoleStub = new Mock<IAnsiConsole>();
     _msBuildCallAndCommitStub = new Mock<IMSBuildCallAndCommit>();
+    _gitBranchOperationsStub = new Mock<IGitBranchOperations>();
   }
 
   [Test]
@@ -59,7 +61,7 @@ internal class ContinueReleaseOnMasterStepTests
     var gitClientStub = new Mock<IGitClient>();
     gitClientStub.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
-    gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns((string) null);
+    gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns((string)null);
 
     var readInputStub = new Mock<IInputReader>();
     readInputStub.Setup(
@@ -73,7 +75,8 @@ internal class ContinueReleaseOnMasterStepTests
         readInputStub.Object,
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
-        _msBuildCallAndCommitStub.Object
+        _msBuildCallAndCommitStub.Object,
+        _gitBranchOperationsStub.Object
     );
 
     Assert.That(
@@ -96,7 +99,7 @@ internal class ContinueReleaseOnMasterStepTests
     var readInputStub = new Mock<IInputReader>();
     readInputStub.Setup(
             _ => _
-                .ReadVersionChoice(It.IsAny<string>(), It.IsAny<IReadOnlyCollection<SemanticVersion>>()))
+                    .ReadVersionChoice(It.IsAny<string>(), It.IsAny<IReadOnlyCollection<SemanticVersion>>()))
         .Returns(new SemanticVersion());
 
     var step = new ContinueReleaseOnMasterStep(
@@ -105,7 +108,8 @@ internal class ContinueReleaseOnMasterStepTests
         readInputStub.Object,
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
-        _msBuildCallAndCommitStub.Object
+        _msBuildCallAndCommitStub.Object,
+        _gitBranchOperationsStub.Object
     );
 
     Assert.That(
@@ -119,7 +123,7 @@ internal class ContinueReleaseOnMasterStepTests
   {
     var version = new SemanticVersionParser().ParseVersion("1.0.0");
     var gitClientMock = new Mock<IGitClient>();
-    bool developLast = false;
+    var developLast = false;
     gitClientMock.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     gitClientMock.Setup(_ => _.GetCurrentBranchName()).Returns("release/v1.0.0");
     gitClientMock.Setup(_ => _.IsOnBranch("release/")).Returns(true);
@@ -130,8 +134,9 @@ internal class ContinueReleaseOnMasterStepTests
     gitClientMock.Setup(_ => _.Checkout("master")).Callback(() => developLast = false);
 
     //checks that the current branch when calling merge branch is not develop, therefore not merging into it
-    gitClientMock.Setup(_ => _.MergeBranchToOnlyContainChangesFromMergedBranch(It.IsAny<string>())).Callback(() => Assert.That(developLast, Is.False));
-    
+    gitClientMock.Setup(_ => _.MergeBranchToOnlyContainChangesFromMergedBranch(It.IsAny<string>()))
+        .Callback(() => Assert.That(developLast, Is.False));
+
     var readInputStub = new Mock<IInputReader>();
     readInputStub.Setup(
             _ => _
@@ -145,7 +150,8 @@ internal class ContinueReleaseOnMasterStepTests
         readInputStub.Object,
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
-        _msBuildCallAndCommitStub.Object
+        _msBuildCallAndCommitStub.Object,
+        _gitBranchOperationsStub.Object
     );
 
     Assert.That(() => step.Execute(version, false), Throws.Nothing);
@@ -178,7 +184,8 @@ internal class ContinueReleaseOnMasterStepTests
         readInputStub.Object,
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
-        _msBuildCallAndCommitStub.Object
+        _msBuildCallAndCommitStub.Object,
+        _gitBranchOperationsStub.Object
     );
 
     step.Execute(version, false);
@@ -210,7 +217,8 @@ internal class ContinueReleaseOnMasterStepTests
         readInputStub.Object,
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
-        _msBuildCallAndCommitStub.Object
+        _msBuildCallAndCommitStub.Object,
+        _gitBranchOperationsStub.Object
     );
 
     step.Execute(version, true);

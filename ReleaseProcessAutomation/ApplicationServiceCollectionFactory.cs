@@ -24,6 +24,7 @@ public class ApplicationServiceCollectionFactory
     var services = new ServiceCollection();
     services
         .AddTransient<IGitClient, CommandLineGitClient>()
+        .AddTransient<IGitBranchOperations, GitBranchOperations>()
         .AddTransient<IInputReader, InputReader>()
         .AddTransient<IMSBuild, MSBuild.MSBuild>()
         .AddTransient<IMSBuildCallAndCommit, MSBuildCallAndCommit>()

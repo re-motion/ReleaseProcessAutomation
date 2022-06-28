@@ -36,17 +36,20 @@ public interface IPushMasterReleaseStep
 
 /// <inheritdoc cref="IPushMasterReleaseStep" />
 public class PushMasterReleaseStep
-    : ReleaseProcessStepBase, IPushMasterReleaseStep
+    : IPushMasterReleaseStep
 {
-  private readonly ILogger _log = Log.ForContext<PushMasterReleaseStep>();
+  private readonly IGitClient _gitClient;
+  private readonly Config _config;
+  private readonly IGitBranchOperations _gitBranchOperations;
 
   public PushMasterReleaseStep (
       IGitClient gitClient,
       Config config,
-      IInputReader inputReader,
-      IAnsiConsole console)
-      : base(gitClient, config, inputReader, console)
+      IGitBranchOperations gitBranchOperations)
   {
+    _gitClient = gitClient;
+    _config = config;
+    _gitBranchOperations = gitBranchOperations;
   }
 
   public void Execute (SemanticVersion nextVersion)
@@ -54,20 +57,20 @@ public class PushMasterReleaseStep
     var branchName = $"release/v{nextVersion}";
     var tagName = $"v{nextVersion}";
 
-    if (!GitClient.DoesBranchExist(branchName))
+    if (!_gitClient.DoesBranchExist(branchName))
     {
       var message = $"The Branch '{branchName}' does not exist. Please create a release branch by using 'new-release-branch' first.";
       throw new InvalidOperationException(message);
     }
 
-    EnsureBranchUpToDate(branchName);
-    var remoteNames = Config.RemoteRepositories.RemoteNames;
-    GitClient.PushToRepos(remoteNames, branchName);
+    _gitBranchOperations.EnsureBranchUpToDate(branchName);
+    var remoteNames = _config.RemoteRepositories.RemoteNames;
+    _gitClient.PushToRepos(remoteNames, branchName);
 
-    EnsureBranchUpToDate("master");
-    EnsureBranchUpToDate("develop");
+    _gitBranchOperations.EnsureBranchUpToDate("master");
+    _gitBranchOperations.EnsureBranchUpToDate("develop");
 
-    GitClient.PushToRepos(remoteNames, "master", tagName);
-    GitClient.PushToRepos(remoteNames, "develop");
+    _gitClient.PushToRepos(remoteNames, "master", tagName);
+    _gitClient.PushToRepos(remoteNames, "develop");
   }
 }

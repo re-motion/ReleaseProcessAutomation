@@ -40,6 +40,7 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
 {
   private readonly IAncestorFinder _ancestorFinder;
   private readonly IPushPreReleaseStep _pushPreReleaseStep;
+  private readonly IGitBranchOperations _gitBranchOperations;
   private readonly ILogger _log = Log.ForContext<ContinueAlphaBetaStep>();
 
   public ContinueAlphaBetaStep (
@@ -48,11 +49,13 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
       IInputReader inputReader,
       IAncestorFinder ancestorFinder,
       IPushPreReleaseStep pushPreReleaseStep,
+      IGitBranchOperations gitBranchOperations,
       IAnsiConsole console)
       : base(gitClient, config, inputReader, console)
   {
     _ancestorFinder = ancestorFinder;
     _pushPreReleaseStep = pushPreReleaseStep;
+    _gitBranchOperations = gitBranchOperations;
   }
 
   public void Execute (SemanticVersion nextVersion, string? ancestor, string? currentBranchName, bool noPush)
@@ -79,8 +82,8 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
         _ => _ancestorFinder.GetAncestor("release/v", "develop", "hotfix/v")
     };
 
-    EnsureBranchUpToDate(baseBranchName);
-    EnsureBranchUpToDate(preReleaseBranchName);
+    _gitBranchOperations.EnsureBranchUpToDate(baseBranchName);
+    _gitBranchOperations.EnsureBranchUpToDate(preReleaseBranchName);
 
     GitClient.Checkout(preReleaseBranchName);
 

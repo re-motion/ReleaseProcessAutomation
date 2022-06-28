@@ -31,13 +31,13 @@ namespace ReleaseProcessAutomation.UnitTests.Steps.Continues;
 internal class ContinueAlphaBetaStepTests
 {
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
-
-  private Mock<IAncestorFinder> _ancestorMock;
   private Configuration.Data.Config _config;
   private Mock<IAnsiConsole> _consoleStub;
   private Mock<IGitClient> _gitClientMock;
   private Mock<IInputReader> _inputReaderStub;
   private Mock<IPushPreReleaseStep> _pushPreReleaseMock;
+  private Mock<IAncestorFinder> _ancestorMock;
+  private Mock<IGitBranchOperations> _gitBranchOperationsStub;
 
   [SetUp]
   public void Setup ()
@@ -47,7 +47,8 @@ internal class ContinueAlphaBetaStepTests
     _pushPreReleaseMock = new Mock<IPushPreReleaseStep>();
     _ancestorMock = new Mock<IAncestorFinder>();
     _consoleStub = new Mock<IAnsiConsole>();
-
+    _gitBranchOperationsStub = new Mock<IGitBranchOperations>();
+    
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
   }
@@ -66,6 +67,7 @@ internal class ContinueAlphaBetaStepTests
         _inputReaderStub.Object,
         _ancestorMock.Object,
         _pushPreReleaseMock.Object,
+        _gitBranchOperationsStub.Object,
         _consoleStub.Object);
 
     Assert.That(
@@ -87,7 +89,9 @@ internal class ContinueAlphaBetaStepTests
         _inputReaderStub.Object,
         _ancestorMock.Object,
         _pushPreReleaseMock.Object,
+        _gitBranchOperationsStub.Object,
         _consoleStub.Object);
+
 
     Assert.That(
         () => continueAlphaBetaStep.Execute(new SemanticVersion(), "ancestor", "", true),
@@ -111,7 +115,9 @@ internal class ContinueAlphaBetaStepTests
         _inputReaderStub.Object,
         _ancestorMock.Object,
         _pushPreReleaseMock.Object,
+        _gitBranchOperationsStub.Object,
         _consoleStub.Object);
+
 
     Assert.That(
         () => continueAlphaBetaStep.Execute(new SemanticVersion(), "", "", false),
@@ -133,6 +139,7 @@ internal class ContinueAlphaBetaStepTests
         _inputReaderStub.Object,
         _ancestorMock.Object,
         _pushPreReleaseMock.Object,
+        _gitBranchOperationsStub.Object,
         _consoleStub.Object);
 
     Assert.That(

@@ -56,56 +56,6 @@ public abstract class ReleaseProcessStepBase
     GitClient.ResolveMergeConflicts();
   }
 
-  protected void EnsureBranchUpToDate (string branchName)
-  {
-    _log.Debug("Ensuring branch '{BranchName}' is up to date.", branchName);
-
-    GitClient.Checkout(branchName);
-
-    var remoteNames = Config.RemoteRepositories.RemoteNames.Where(n => n is { Length: > 0 }).ToArray();
-
-    if (remoteNames.Length == 0)
-    {
-      const string message = "There were no remotes specified in the config. Stopping execution.";
-      throw new InvalidOperationException(message);
-    }
-
-    foreach (var remoteName in remoteNames)
-    {
-      if (!string.IsNullOrEmpty(GitClient.GetRemoteOfBranch(remoteName)))
-        continue;
-
-      var fetch = GitClient.Fetch($"{remoteName} {branchName}");
-      if (fetch != null)
-        Console.WriteLine(fetch);
-
-      var local = GitClient.GetHash(branchName) ?? "";
-      var remote = GitClient.GetHash(branchName, remoteName) ?? "";
-      var basis = GitClient.GetMostRecentCommonAncestorWithRemote(branchName, branchName, remoteName) ?? "";
-
-      if (local.Equals(remote))
-      {
-        _log.Debug("'{BranchName}' and remote '{RemoteName}' are up to date.", branchName, remoteName);
-        //Up-To-Date. OK
-      }
-      else if (local.Equals(basis))
-      {
-        var message = $"Need to pull, local '{branchName}' branch is behind on repository '{remoteName}'.";
-        throw new InvalidOperationException(message);
-      }
-      else if (remote.Equals(basis))
-      {
-        _log.Debug("Remote branch on '{RemoteName}' is behind of '{BranchName}'.", remoteName, branchName);
-        //Need to push, remote branch is behind. Ok
-      }
-      else
-      {
-        var message = $"'{branchName}' diverged, need to rebase at repository '{remoteName}'.";
-        throw new InvalidOperationException(message);
-      }
-    }
-  }
-
   protected void EnsureWorkingDirectoryClean ()
   {
     if (GitClient.IsWorkingDirectoryClean())

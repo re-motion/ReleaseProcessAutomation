@@ -28,11 +28,13 @@ public class SemanticVersionedGitRepository
     : ISemanticVersionedGitRepository
 {
   private readonly IGitClient _gitClient;
+  private readonly IGitBranchOperations _gitBranchOperations;
   private readonly ILogger _log = Log.ForContext<SemanticVersionedGitRepository>();
 
-  public SemanticVersionedGitRepository (IGitClient gitClient)
+  public SemanticVersionedGitRepository (IGitClient gitClient, IGitBranchOperations gitBranchOperations)
   {
     _gitClient = gitClient;
+    _gitBranchOperations = gitBranchOperations;
   }
 
   public IReadOnlyList<SemanticVersion> GetVersionsSorted (string from = "HEAD", string to = "")
@@ -54,6 +56,11 @@ public class SemanticVersionedGitRepository
   {
     _log.Debug("Trying to get first version from '{From}' to '{To}'.", from, to);
 
+    if (!from.Equals("HEAD"))
+      _gitBranchOperations.EnsureBranchUpToDate(from);
+    if (!string.IsNullOrEmpty(to))
+      _gitBranchOperations.EnsureBranchUpToDate(to);
+    
     var validVersions = GetVersionsSorted(from, to);
     version = validVersions.FirstOrDefault();
 

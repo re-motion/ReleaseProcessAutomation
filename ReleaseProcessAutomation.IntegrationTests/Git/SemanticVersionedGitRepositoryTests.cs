@@ -28,6 +28,14 @@ namespace ReleaseProcessAutomation.IntegrationTests.Git;
 [TestFixture]
 internal class SemanticVersionedGitRepositoryTests : GitBackedTests
 {
+  private Mock<IGitBranchOperations> _gitBranchOperationsMock;
+
+  [SetUp]
+  public void Setup ()
+  {
+    _gitBranchOperationsMock = new Mock<IGitBranchOperations>();
+  }
+
   [Test]
   public void GetVersionsSorted_With3Versions_ReturnsThemInCorrectOrder ()
   {
@@ -41,7 +49,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
             "vHelp",
             "v1.0.1-beta.2"
         });
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClientMock.Object);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClientMock.Object, _gitBranchOperationsMock.Object);
 
     var versions = semVeredGitRepo.GetVersionsSorted();
 
@@ -75,7 +83,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
                              Patch = 0
                          };
 
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClientMock.Object);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClientMock.Object, _gitBranchOperationsMock.Object);
 
     var versionExist = semVeredGitRepo.TryGetCurrentVersion(out var output);
 
@@ -88,7 +96,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   {
     var gitClient = new CommandLineGitClient();
     var readerMock = new Mock<IInputReader>();
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient, _gitBranchOperationsMock.Object);
 
     var versionExist = semVeredGitRepo.TryGetCurrentVersion(out var output);
 
@@ -131,7 +139,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
                             };
 
     var gitClient = new CommandLineGitClient();
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient, _gitBranchOperationsMock.Object);
 
     var version = semVeredGitRepo.GetMostRecentHotfixVersion();
 
@@ -164,7 +172,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
                             };
 
     var gitClient = new CommandLineGitClient();
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient, _gitBranchOperationsMock.Object);
 
     var version = semVeredGitRepo.GetMostRecentHotfixVersion();
 
@@ -189,7 +197,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
                             };
 
     var gitClient = new CommandLineGitClient();
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient, _gitBranchOperationsMock.Object);
 
     var version = semVeredGitRepo.GetMostRecentHotfixVersion();
 
@@ -234,7 +242,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
                             };
 
     var gitClient = new CommandLineGitClient();
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient, _gitBranchOperationsMock.Object);
 
     var version = semVeredGitRepo.GetMostRecentHotfixVersion();
 
@@ -242,7 +250,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void GetMostRecentHotfixVersion_FallsBackToVersionBasedOnBranchName_IrnogresMinorTagFromSupportBranchFork ()
+  public void GetMostRecentHotfixVersion_FallsBackToVersionBasedOnBranchName_IgnoresMinorTagFromSupportBranchFork ()
   {
     ExecuteGitCommand("checkout -b support/v2.28");
     ExecuteGitCommand("commit -m \"Commit on Support Branch\" --allow-empty");
@@ -262,7 +270,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
                             };
 
     var gitClient = new CommandLineGitClient();
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient, _gitBranchOperationsMock.Object);
 
     var version = semVeredGitRepo.GetMostRecentHotfixVersion();
 
@@ -289,7 +297,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
                             };
 
     var gitClient = new CommandLineGitClient();
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient, _gitBranchOperationsMock.Object);
 
     var version = semVeredGitRepo.GetMostRecentHotfixVersion();
 
@@ -316,7 +324,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
                             };
 
     var gitClient = new CommandLineGitClient();
-    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient);
+    var semVeredGitRepo = new SemanticVersionedGitRepository(gitClient, _gitBranchOperationsMock.Object);
 
     var version = semVeredGitRepo.GetMostRecentHotfixVersion();
 

@@ -560,6 +560,30 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     Assert.That(act4, Is.EqualTo(0));
   }
 
+  [Test]
+  public void ReleaseVersion_WithMajorReleaseTagOnMasterAndAfterFetching_SuggestsAlphaVersions ()
+  {
+    ExecuteGitCommand("tag v2.0.0 -m v2.0.0");
+    ExecuteGitCommand("checkout -b develop");
+    ExecuteGitCommand("commit -m \"Commit on develop\" --allow-empty");
+    var resetCommit = ExecuteGitCommandWithOutput("log -1 --pretty=%H");
+    ExecuteGitCommand("commit -m \"Commit on develop\" --allow-empty");
+    ExecuteGitCommand($"push {RemoteName}");
+    ExecuteGitCommand($"reset --hard {resetCommit}");
+    ExecuteGitCommand($"fetch {RemoteName}");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("3.0.0-alpha.1");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("3.0.0");
+
+    var act1 = RunProgram(new[] { "Release-Version" });
+
+    Assert.That(act1, Is.EqualTo(0));
+    Assert.That(TestConsole.Output, Does.Contain("3.0.0-alpha.1"));
+    Assert.That(TestConsole.Output, Does.Contain("2.1.0-alpha.1"));
+  }
+
   private void CreateAndAddFilesWithText (string text)
   {
     var firstFilePath = Path.Combine(Environment.CurrentDirectory, "file1.txt");

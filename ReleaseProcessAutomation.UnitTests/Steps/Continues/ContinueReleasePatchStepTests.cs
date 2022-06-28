@@ -41,6 +41,7 @@ internal class ContinueReleasePatchStepTests
   private Mock<IInputReader> _inputReaderStub;
   private Mock<IMSBuildCallAndCommit> _msBuildExecutorMock;
   private Mock<IPushPatchReleaseStep> _pushReleasePatchMock;
+  private Mock<IGitBranchOperations> _gitBranchOperationsMock;
 
   [SetUp]
   public void Setup ()
@@ -50,6 +51,7 @@ internal class ContinueReleasePatchStepTests
     _msBuildExecutorMock = new Mock<IMSBuildCallAndCommit>();
     _pushReleasePatchMock = new Mock<IPushPatchReleaseStep>();
     _consoleStub = new Mock<IAnsiConsole>();
+    _gitBranchOperationsMock = new Mock<IGitBranchOperations>();
 
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
@@ -67,6 +69,7 @@ internal class ContinueReleasePatchStepTests
         _inputReaderStub.Object,
         _msBuildExecutorMock.Object,
         _pushReleasePatchMock.Object,
+        _gitBranchOperationsMock.Object,
         _consoleStub.Object);
 
     Assert.That(
@@ -87,6 +90,7 @@ internal class ContinueReleasePatchStepTests
         _inputReaderStub.Object,
         _msBuildExecutorMock.Object,
         _pushReleasePatchMock.Object,
+        _gitBranchOperationsMock.Object,
         _consoleStub.Object);
 
     Assert.That(
@@ -108,6 +112,7 @@ internal class ContinueReleasePatchStepTests
         _inputReaderStub.Object,
         _msBuildExecutorMock.Object,
         _pushReleasePatchMock.Object,
+        _gitBranchOperationsMock.Object,
         _consoleStub.Object);
 
     Assert.That(
@@ -130,6 +135,7 @@ internal class ContinueReleasePatchStepTests
         _inputReaderStub.Object,
         _msBuildExecutorMock.Object,
         _pushReleasePatchMock.Object,
+        _gitBranchOperationsMock.Object,
         _consoleStub.Object);
 
     Assert.That(
