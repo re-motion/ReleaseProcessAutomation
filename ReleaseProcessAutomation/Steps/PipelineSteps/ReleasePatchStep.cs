@@ -23,6 +23,7 @@ using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Serilog;
 using Spectre.Console;
 
@@ -42,7 +43,7 @@ public interface IReleasePatchStep
 public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
 {
   private readonly IContinueReleasePatchStep _continueReleasePatchStep;
-  private readonly IJiraFunctionality _ijIraFunctionality;
+  private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
   private readonly IPushNewReleaseBranchStep _pushNewReleaseBranchStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ReleasePatchStep>();
@@ -55,13 +56,14 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
       IContinueReleasePatchStep continueReleasePatchStep,
       IPushNewReleaseBranchStep pushNewReleaseBranchStep,
       IAnsiConsole console,
-      IJiraFunctionality ijIraFunctionality)
+      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep)
       : base(gitClient, config, inputReader, console)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _continueReleasePatchStep = continueReleasePatchStep;
-    _ijIraFunctionality = ijIraFunctionality;
+    _releaseVersionAndMoveIssuesSubStep = releaseVersionAndMoveIssuesSubStep;
     _pushNewReleaseBranchStep = pushNewReleaseBranchStep;
+
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool startReleasePhase, bool pauseForCommit, bool noPush, bool onMaster)
@@ -124,7 +126,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
       return;
     }
 
-    _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

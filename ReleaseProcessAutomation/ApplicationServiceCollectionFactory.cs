@@ -13,6 +13,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.Steps;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using ReleaseProcessAutomation.Steps.SubSteps;
 
 namespace ReleaseProcessAutomation;
 
@@ -33,7 +34,6 @@ public class ApplicationServiceCollectionFactory
         .AddTransient<IJiraCredentialManager, JiraCredentialManager>()
         .AddTransient<IJiraCredentialAPI, AdysTechCredentialApi>()
         .AddTransient<IJiraAuthenticator, JiraAuthenticator>()
-        .AddTransient<IJiraFunctionality, JiraFunctionality>()
         .AddSingleton<IJiraRestClientProvider, JiraRestClientProvider>()
         .AddTransient<IJiraVersionCreator, JiraVersionCreator>()
         .AddTransient<IJiraVersionReleaser, JiraVersionReleaser>()
@@ -73,7 +73,9 @@ public class ApplicationServiceCollectionFactory
         .AddTransient<IPushPreReleaseStep, PushPreReleaseStep>()
         .AddTransient<IPushPatchReleaseStep, PushPatchReleaseStep>()
         .AddTransient<IPushNewReleaseBranchStep, PushNewReleaseBranchStep>()
-        
+
+        //Sub steps
+        .AddTransient<IReleaseVersionAndMoveIssuesSubStep, ReleaseVersionAndMoveIssuesSubStep>()
         .AddSingleton(
             _ =>
             {

@@ -38,69 +38,6 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestAllFunctionality ()
-  {
-    JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1", "4.1.2", "4.2.0");
-
-    // Create versions
-    _service.CreateVersion(c_jiraProjectKey, "4.1.0", DateTime.Today.AddDays(1));
-    _service.CreateSubsequentVersion(c_jiraProjectKey, "4\\.1\\..*", 3, DayOfWeek.Monday);
-    _service.CreateSubsequentVersion(c_jiraProjectKey, "4\\.1\\..*", 3, DayOfWeek.Tuesday);
-    _service.CreateVersion(c_jiraProjectKey, "4.2.0", DateTime.Today.AddDays(7));
-
-    // Get latest unreleased version
-    var versions = _versionFinder.FindUnreleasedVersions(c_jiraProjectKey, "4.1.").ToList();
-    Assert.That(versions.Count(), Is.EqualTo(3));
-
-    var versionToRelease = versions.First();
-    Assert.That(versionToRelease.name, Is.EqualTo("4.1.0"));
-
-    var versionToFollow = versions.Skip(1).First();
-    Assert.That(versionToFollow.name, Is.EqualTo("4.1.1"));
-
-    var versions2 = _versionFinder.FindUnreleasedVersions(c_jiraProjectKey, "4.2.");
-    Assert.That(versions2.Count(), Is.EqualTo(1));
-
-    var additionalVersion = versions2.First();
-    Assert.That(additionalVersion.name, Is.EqualTo("4.2.0"));
-
-    // Add issues to versionToRelease
-    var myTestIssue = JiraTestUtility.AddTestIssueToVersion("My Test", false, c_jiraProjectKey, _restClient, versionToRelease);
-
-    var myClosedIssue = JiraTestUtility.AddTestIssueToVersion("My closed Test", true, c_jiraProjectKey, _restClient, versionToRelease);
-    var myMultipleFixVersionTest = JiraTestUtility.AddTestIssueToVersion(
-        "My multiple fixVersion Test",
-        false,
-        c_jiraProjectKey,
-        _restClient,
-        versionToRelease,
-        additionalVersion);
-
-    // Release version
-    _service.ReleaseVersion(versionToRelease.id, versionToFollow.id);
-
-    // Get latest unreleased version again
-    versions = _versionFinder.FindUnreleasedVersions(c_jiraProjectKey, "4.1.").ToList();
-    Assert.That(versions.Count(), Is.EqualTo(2));
-
-    var versionThatFollowed = versions.First();
-    Assert.That(versionThatFollowed.name, Is.EqualTo("4.1.1"));
-
-    // Check whether versionThatFollowed has all the non-closed issues from versionToRelease
-    var issues = _issueService.FindAllNonClosedIssues(versionThatFollowed.id);
-    Assert.That(issues.Count(), Is.EqualTo(2));
-
-    // Check whether the additionalVersion still has its issue
-    additionalVersion = _versionFinder.FindUnreleasedVersions(c_jiraProjectKey, "4.2.").First();
-    var additionalVersionIssues = _issueService.FindAllNonClosedIssues(additionalVersion.id);
-    Assert.That(additionalVersionIssues.Count(), Is.EqualTo(1));
-
-    JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1", "4.1.2", "4.2.0");
-
-    JiraTestUtility.DeleteIssues(_restClient, myTestIssue.ID, myClosedIssue.ID, myMultipleFixVersionTest.ID);
-  }
-
-  [Test]
   public void TestGetUnreleasedVersionsWithNonExistentPattern ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "a.b.c.d");
@@ -146,6 +83,9 @@ public class JiraProjectVersionServiceTest
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-beta.1");
 
+    JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1", "4.1.2", "4.2.0");
+    _service = new JiraProjectVersionService(_restClientProviderMock.Object, _issueService, _versionFinder);
+
     //Create versions mangled to verify they are ordered before squashed
     _service.CreateVersion(c_jiraProjectKey, "6.0.1-alpha.2", null);
     _service.CreateVersion(c_jiraProjectKey, "6.0.1-beta.1", null);
@@ -155,7 +95,7 @@ public class JiraProjectVersionServiceTest
     var alpha2Version = _versionFinder.FindVersions(c_jiraProjectKey, "6.0.1.alpha.2").Single(x => x.name == "6.0.1-alpha.2");
     var beta1Version = _versionFinder.FindVersions(c_jiraProjectKey, "6.0.1-beta.1").Single(x => x.name == "6.0.1-beta.1");
 
-    _service.ReleaseVersion(alpha2Version.id, beta1Version.id);
+    _service.ReleaseVersion(alpha2Version.id);
 
     Assert.That(
         () => { _service.ReleaseVersionAndSquashUnreleased(alpha1Version.id, beta1Version.id, c_jiraProjectKey); },

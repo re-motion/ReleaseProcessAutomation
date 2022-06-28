@@ -65,7 +65,7 @@ public class JiraIssueService
   public IEnumerable<JiraToBeMovedIssue> FindAllNonClosedIssues (string versionId)
   {
     var jql = $"fixVersion={versionId} and resolution = \"unresolved\"";
-    var resource = $"search?jql={jql}&fields=id,fixVersions";
+    var resource = $"search?jql={jql}&fields=id,fixVersions,summary";
     var request = _jiraRestClientProvider.GetJiraRestClient().CreateRestRequest(resource, Method.GET);
 
     var response = _jiraRestClientProvider.GetJiraRestClient().DoRequest<JiraNonClosedIssues>(request, HttpStatusCode.OK);

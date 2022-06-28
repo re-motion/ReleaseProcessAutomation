@@ -63,6 +63,7 @@ public class JiraProjectVersionService : IJiraProjectVersionService
     var lastUnreleasedVersion = _jiraProjectVersionFinder.FindUnreleasedVersions(projectKey, versionPattern).Last();
     if (lastUnreleasedVersion.name == null)
       throw new InvalidOperationException("The last found unreleased version did not have a name assigned.");
+
     var nextVersionName = IncrementVersion(lastUnreleasedVersion.name, versionComponentToIncrement);
 
     // Determine next release day
@@ -119,17 +120,6 @@ public class JiraProjectVersionService : IJiraProjectVersionService
 
     ++versionParts[componentToIncrement - 1];
     return versionParts.Select(p => p.ToString()).Aggregate((l, r) => l + "." + r);
-  }
-
-  public void ReleaseVersion (string versionID, string nextVersionID)
-  {
-    if (versionID != nextVersionID)
-    {
-      var nonClosedIssues = _jiraIssueService.FindAllNonClosedIssues(versionID);
-      _jiraIssueService.MoveIssuesToVersion(nonClosedIssues, versionID, nextVersionID);
-    }
-
-    ReleaseVersion(versionID);
   }
 
   public void ReleaseVersionAndSquashUnreleased (string versionID, string nextVersionID, string projectKey)
@@ -202,7 +192,7 @@ public class JiraProjectVersionService : IJiraProjectVersionService
         }
       }
 
-      ReleaseVersion(versionID, nextVersionID);
+      ReleaseVersion(versionID);
     }
   }
 
@@ -210,10 +200,11 @@ public class JiraProjectVersionService : IJiraProjectVersionService
   {
     if (jiraVersion.JiraProjectVersion == null)
       throw new InvalidOperationException("The version did not have a proper jira project version assigned.");
+
     return jiraVersion.JiraProjectVersion.released;
   }
 
-  private void ReleaseVersion (string versionID)
+  public void ReleaseVersion (string versionID)
   {
     var resource = $"version/{versionID}";
     var request = _jiraRestClientProvider.GetJiraRestClient().CreateRestRequest(resource, Method.PUT);

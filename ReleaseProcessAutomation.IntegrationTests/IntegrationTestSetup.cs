@@ -23,6 +23,7 @@ using Moq;
 using NUnit.Framework;
 using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.Jira.Utility;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.IntegrationTests;
@@ -83,8 +84,11 @@ public abstract class IntegrationTestSetup : GitBackedTests
   protected int RunProgram (string[] args)
   {
     var services = new ApplicationServiceCollectionFactory().CreateServiceCollection();
-    var jiraFunctionalityStub = new Mock<IJiraFunctionality>();
-    var jiraFunctionalityDescriptor = new ServiceDescriptor(typeof(IJiraFunctionality), x => jiraFunctionalityStub.Object, ServiceLifetime.Singleton);
+    var releaseVersionAndMoveIssuesMock = new Mock<IReleaseVersionAndMoveIssuesSubStep>();
+    var releaseVersionAndMoveIssuesDescriptor = new ServiceDescriptor(
+        typeof(IReleaseVersionAndMoveIssuesSubStep),
+        x => releaseVersionAndMoveIssuesMock.Object,
+        ServiceLifetime.Singleton);
 
     var jiraRestClientProviderStub = new Mock<IJiraRestClientProvider>();
     var jiraRestClientProviderDescriptor = new ServiceDescriptor(
@@ -92,7 +96,7 @@ public abstract class IntegrationTestSetup : GitBackedTests
         x => jiraRestClientProviderStub.Object,
         ServiceLifetime.Singleton);
 
-    services.Replace(jiraFunctionalityDescriptor);
+    services.Replace(releaseVersionAndMoveIssuesDescriptor);
     services.Replace(jiraRestClientProviderDescriptor);
 
     var app = new ApplicationCommandAppFactory().CreateConfiguredCommandApp(services);

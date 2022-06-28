@@ -52,6 +52,8 @@ public class JiraToBeMovedIssue
 public class JiraNonClosedIssueFields
 {
   public List<JiraVersion> FixVersions { get; set; }
+  
+  public string Summary { get; set; }
 }
 
 public class JiraVersion

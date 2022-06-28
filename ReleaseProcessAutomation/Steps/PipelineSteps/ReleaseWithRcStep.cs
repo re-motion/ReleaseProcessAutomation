@@ -24,6 +24,7 @@ using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Serilog;
 using Spectre.Console;
 
@@ -47,7 +48,7 @@ public class ReleaseWithRcStep : ReleaseProcessStepBase, IReleaseWithRcStep
   private readonly IAncestorFinder _ancestorFinder;
   private readonly IContinueReleaseOnMasterStep _continueReleaseOnMasterStep;
   private readonly IContinueReleasePatchStep _continueReleasePatchStep;
-  private readonly IJiraFunctionality _ijIraFunctionality;
+  private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ReleaseWithRcStep>();
 
@@ -60,14 +61,14 @@ public class ReleaseWithRcStep : ReleaseProcessStepBase, IReleaseWithRcStep
       IContinueReleaseOnMasterStep continueReleaseOnMasterStep,
       IContinueReleasePatchStep continueReleasePatchStep,
       IAnsiConsole console,
-      IJiraFunctionality ijIraFunctionality)
+      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep)
       : base(gitClient, config, inputReader, console)
   {
     _ancestorFinder = ancestorFinder;
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _continueReleaseOnMasterStep = continueReleaseOnMasterStep;
     _continueReleasePatchStep = continueReleasePatchStep;
-    _ijIraFunctionality = ijIraFunctionality;
+    _releaseVersionAndMoveIssuesSubStep = releaseVersionAndMoveIssuesSubStep;
   }
 
   public void Execute (bool pauseForCommit, bool noPush, string ancestor)
@@ -119,7 +120,7 @@ public class ReleaseWithRcStep : ReleaseProcessStepBase, IReleaseWithRcStep
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Choose next version (open JIRA issues get moved there):", nextPossibleVersions);
 
-    _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

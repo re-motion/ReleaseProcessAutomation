@@ -7,7 +7,6 @@
         <ToolCommandName>rpa</ToolCommandName>
         <Nullable>enable</Nullable>
         <RootNamespace>ReleaseProcessAutomation</RootNamespace>
-        <OutputPath>./nupkg</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

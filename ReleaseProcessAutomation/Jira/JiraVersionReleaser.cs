@@ -36,9 +36,9 @@ public class JiraVersionReleaser
     _projectVersionService = projectVersionService;
   }
 
-  public void ReleaseVersion (string versionID, string nextVersionID, bool sortReleasedVersion)
+  public void ReleaseVersion (string versionID, bool sortReleasedVersion)
   {
-    _projectVersionService.ReleaseVersion(versionID, nextVersionID);
+    _projectVersionService.ReleaseVersion(versionID);
 
     if (sortReleasedVersion)
       _projectVersionRepairer.RepairVersionPosition(versionID);

@@ -23,6 +23,7 @@ using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Serilog;
 using Spectre.Console;
 
@@ -45,7 +46,7 @@ public class ReleaseOnMasterStep
   private readonly IContinueReleaseOnMasterStep _continueReleaseOnMasterStep;
   private readonly IPushNewReleaseBranchStep _pushNewReleaseBranchStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
-  private readonly IJiraFunctionality _ijIraFunctionality;
+  private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
   private readonly ILogger _log = Log.ForContext<ReleaseOnMasterStep>();
 
   public ReleaseOnMasterStep (
@@ -56,13 +57,13 @@ public class ReleaseOnMasterStep
       Config config,
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IAnsiConsole console,
-      IJiraFunctionality ijIraFunctionality)
+      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep)
       : base(gitClient, config, inputReader, console)
   {
     _continueReleaseOnMasterStep = continueReleaseOnMasterStep;
     _pushNewReleaseBranchStep = pushNewReleaseBranchStep;
     _msBuildCallAndCommit = msBuildCallAndCommit;
-    _ijIraFunctionality = ijIraFunctionality;
+    _releaseVersionAndMoveIssuesSubStep = releaseVersionAndMoveIssuesSubStep;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool startReleasePhase, bool pauseForCommit, bool noPush)
@@ -107,7 +108,7 @@ public class ReleaseOnMasterStep
       _pushNewReleaseBranchStep.Execute(releaseBranchName, "develop");
       return;
     }
-    _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

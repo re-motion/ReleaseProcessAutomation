@@ -24,6 +24,7 @@ using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Serilog;
 using Spectre.Console;
 
@@ -44,7 +45,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
 {
   private readonly IAncestorFinder _ancestorFinder;
   private readonly IContinueAlphaBetaStep _continueAlphaBetaStep;
-  private readonly IJiraFunctionality _ijIraFunctionality;
+  private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ReleaseRCStep>();
 
@@ -56,13 +57,13 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IContinueAlphaBetaStep continueAlphaBetaStep,
       IAnsiConsole console,
-      IJiraFunctionality ijIraFunctionality)
+      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep)
       : base(gitClient, config, inputReader, console)
   {
     _ancestorFinder = ancestorFinder;
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _continueAlphaBetaStep = continueAlphaBetaStep;
-    _ijIraFunctionality = ijIraFunctionality;
+    _releaseVersionAndMoveIssuesSubStep = releaseVersionAndMoveIssuesSubStep;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool pauseForCommit, bool noPush, string ancestor = "")
@@ -106,7 +107,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
     }
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there): ", nextPossibleVersions);
-    _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
 
     var preReleaseBranchName = $"prerelease/v{nextVersion}";
     _log.Debug("Will try to create pre release branch with name '{PrereleaseBranchName}'.", preReleaseBranchName);

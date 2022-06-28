@@ -24,6 +24,7 @@ using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Serilog;
 using Spectre.Console;
 
@@ -44,7 +45,7 @@ public class ReleaseAlphaBetaStep
     : ReleaseProcessStepBase, IReleaseAlphaBetaStep
 {
   private readonly IContinueAlphaBetaStep _continueAlphaBetaStep;
-  private readonly IJiraFunctionality _ijIraFunctionality;
+  private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ReleaseAlphaBetaStep>();
 
@@ -55,12 +56,12 @@ public class ReleaseAlphaBetaStep
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IContinueAlphaBetaStep continueAlphaBetaStep,
       IAnsiConsole console,
-      IJiraFunctionality ijIraFunctionality)
+      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep)
       : base(gitClient, config, inputReader, console)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _continueAlphaBetaStep = continueAlphaBetaStep;
-    _ijIraFunctionality = ijIraFunctionality;
+    _releaseVersionAndMoveIssuesSubStep = releaseVersionAndMoveIssuesSubStep;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool pauseForCommit, bool noPush)
@@ -94,7 +95,7 @@ public class ReleaseAlphaBetaStep
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there):", nextPossibleJiraVersions);
 
-    _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

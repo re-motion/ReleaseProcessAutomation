@@ -28,6 +28,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Spectre.Console;
 
 namespace ReleaseProcessAutomation.UnitTests.Steps.Releases;
@@ -43,7 +44,7 @@ internal class ReleaseRcStepTests
   private Configuration.Data.Config _config;
   private Mock<IAncestorFinder> _ancestorStub;
   private Mock<IMSBuildCallAndCommit> _msBuildInvokerMock;
-  private Mock<IJiraFunctionality> _jiraFunctionalityMock;
+  private Mock<IReleaseVersionAndMoveIssuesSubStep> _releaseVersionAndMoveIssueMock;
   private Mock<IContinueAlphaBetaStep> _continueAlphaBetaMock;
 
   [SetUp]
@@ -54,7 +55,7 @@ internal class ReleaseRcStepTests
     _ancestorStub = new Mock<IAncestorFinder>();
     _msBuildInvokerMock = new Mock<IMSBuildCallAndCommit>();
     _continueAlphaBetaMock = new Mock<IContinueAlphaBetaStep>();
-    _jiraFunctionalityMock = new Mock<IJiraFunctionality>();
+    _releaseVersionAndMoveIssueMock = new Mock<IReleaseVersionAndMoveIssuesSubStep>();
 
     _consoleStub = new Mock<IAnsiConsole>();
 
@@ -84,12 +85,12 @@ internal class ReleaseRcStepTests
         _msBuildInvokerMock.Object,
         _continueAlphaBetaMock.Object,
         _consoleStub.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssueMock.Object);
 
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "develop"),
         Throws.Nothing);
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
     _inputReaderMock.Verify();
   }
 
@@ -115,12 +116,12 @@ internal class ReleaseRcStepTests
         _msBuildInvokerMock.Object,
         _continueAlphaBetaMock.Object,
         _consoleStub.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssueMock.Object);
 
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "release/v1.3.5"),
         Throws.Nothing);
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
     _inputReaderMock.Verify();
   }
 
@@ -146,12 +147,12 @@ internal class ReleaseRcStepTests
         _msBuildInvokerMock.Object,
         _continueAlphaBetaMock.Object,
         _consoleStub.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssueMock.Object);
 
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
     _inputReaderMock.Verify();
   }
 
@@ -177,13 +178,13 @@ internal class ReleaseRcStepTests
         _msBuildInvokerMock.Object,
         _continueAlphaBetaMock.Object,
         _consoleStub.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssueMock.Object);
 
     Assert.That(
         () => rcStep.Execute(nextVersion, "", true, false, "hotfix/v1.3.5"),
         Throws.Nothing);
 
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
     _continueAlphaBetaMock.Verify(_ => _.Execute(nextVersion, It.IsAny<string>(), It.IsAny<string>(), false), Times.Never);
   }
 
@@ -209,12 +210,12 @@ internal class ReleaseRcStepTests
         _msBuildInvokerMock.Object,
         _continueAlphaBetaMock.Object,
         _consoleStub.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssueMock.Object);
 
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
     _continueAlphaBetaMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<string>(), It.IsAny<string>(), false));
   }
 
@@ -239,12 +240,12 @@ internal class ReleaseRcStepTests
         _msBuildInvokerMock.Object,
         _continueAlphaBetaMock.Object,
         _consoleStub.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssueMock.Object);
 
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion));
   }
 }

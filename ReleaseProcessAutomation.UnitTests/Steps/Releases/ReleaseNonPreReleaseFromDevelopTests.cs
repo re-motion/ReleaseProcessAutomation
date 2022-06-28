@@ -27,6 +27,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Spectre.Console;
 
 namespace ReleaseProcessAutomation.UnitTests.Steps.Releases;
@@ -40,8 +41,8 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   private Configuration.Data.Config _config;
   private Mock<IMSBuildCallAndCommit> _msBuildInvokerMock;
   private Mock<IContinueReleaseOnMasterStep> _continueReleaseOnMasterMock;
-  private Mock<IJiraFunctionality> _jiraFunctionalityMock;
   private Mock<IPushNewReleaseBranchStep> _pushNewReleaseBranchMock;
+  private Mock<IReleaseVersionAndMoveIssuesSubStep> _releaseVersionAndMoveIssuesMock;
 
   [SetUp]
   public void Setup ()
@@ -51,8 +52,8 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     _msBuildInvokerMock = new Mock<IMSBuildCallAndCommit>();
     _continueReleaseOnMasterMock = new Mock<IContinueReleaseOnMasterStep>();
     _consoleMock = new Mock<IAnsiConsole>();
-    _jiraFunctionalityMock = new Mock<IJiraFunctionality>();
     _pushNewReleaseBranchMock = new Mock<IPushNewReleaseBranchStep>(MockBehavior.Strict);
+    _releaseVersionAndMoveIssuesMock = new Mock<IReleaseVersionAndMoveIssuesSubStep>();
   }
 
   [Test]
@@ -73,7 +74,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
         () => step.Execute(new SemanticVersion(), "", false, false, false),
@@ -105,7 +106,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
         () => step.Execute(nextVersion, "commitHash", false, false, false),
@@ -139,11 +140,11 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object);
 
     step.Execute(nextVersion, "commitHash", false, false, false);
 
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()));
   }
 
@@ -175,11 +176,11 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object);
 
     step.Execute(nextVersion, "commitHash", true, false, false);
 
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Never);
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Never);
     _pushNewReleaseBranchMock.Verify(_ => _.Execute($"release/v{nextVersion}", "develop"));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
   }
@@ -211,10 +212,10 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object);
 
     step.Execute(nextVersion, "commitHash", false, true, false);
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
 
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
   }

@@ -36,7 +36,7 @@ public interface IJiraProjectVersionService
   /// <summary>
   /// Releases a project version and moves all open issues to another project version.
   /// </summary>
-  void ReleaseVersion (string versionID, string nextVersionID);
+  void ReleaseVersion (string versionID);
 
   /// <summary>
   /// Releases a project and moves all open issues to the next project version

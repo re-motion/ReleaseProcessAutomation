@@ -28,6 +28,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Spectre.Console;
 
 namespace ReleaseProcessAutomation.UnitTests.Steps.Releases;
@@ -41,7 +42,7 @@ internal class ReleaseAlphaBetaStepTests
   private Mock<IContinueAlphaBetaStep> _continueAlphaBetaMock;
   private Mock<IGitClient> _gitClientStub;
   private Mock<IInputReader> _inputReaderStub;
-  private Mock<IJiraFunctionality> _jiraFunctionalityMock;
+  private Mock<IReleaseVersionAndMoveIssuesSubStep> _releaseVersionAndMoveIssuesMock;
   private Mock<IMSBuildCallAndCommit> _msBuildInvokerMock;
 
   [SetUp]
@@ -52,7 +53,7 @@ internal class ReleaseAlphaBetaStepTests
     _msBuildInvokerMock = new Mock<IMSBuildCallAndCommit>();
     _continueAlphaBetaMock = new Mock<IContinueAlphaBetaStep>();
     _consoleMock = new Mock<IAnsiConsole>();
-    _jiraFunctionalityMock = new Mock<IJiraFunctionality>();
+    _releaseVersionAndMoveIssuesMock = new Mock<IReleaseVersionAndMoveIssuesSubStep>();
 
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
@@ -82,13 +83,13 @@ internal class ReleaseAlphaBetaStepTests
         _msBuildInvokerMock.Object,
         _continueAlphaBetaMock.Object,
         _consoleMock.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
         () => alphaBetaStep.Execute(nextVersion, "", false, false),
         Throws.Nothing);
     _continueAlphaBetaMock.Verify(_ => _.Execute(nextVersion, "develop", "develop", false));
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
   }
 
   [Test]
@@ -115,14 +116,14 @@ internal class ReleaseAlphaBetaStepTests
         _msBuildInvokerMock.Object,
         _continueAlphaBetaMock.Object,
         _consoleMock.Object,
-        _jiraFunctionalityMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
         () => alphaBetaStep.Execute(nextVersion, "", true, false),
         Throws.Nothing);
 
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(It.IsAny<MSBuildMode>(), nextVersion));
-    _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
     _continueAlphaBetaMock.Verify(_ => _.Execute(nextVersion, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
   }
 }
