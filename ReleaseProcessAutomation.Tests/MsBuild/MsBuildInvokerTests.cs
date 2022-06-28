@@ -26,6 +26,7 @@ using ReleaseProcessAutomation.MSBuild;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using Spectre.Console;
+using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.Tests.MSBuild
 {
@@ -59,14 +60,76 @@ namespace ReleaseProcessAutomation.Tests.MSBuild
       var gitClientStub = new Mock<IGitClient>();
       var msBuildMock = new Mock<IMSBuild>();
       msBuildMock.Setup(_ => _.CallMSBuild("", It.IsAny<string>())).Verifiable();
+      var testConsole = new TestConsole();
 
       var msBuildInvoker = new MSBuildCallAndCommit(gitClientStub.Object, _config, msBuildMock.Object,
-          _consoleStub.Object);
+          testConsole);
 
       var act = msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version);
 
       Assert.That(act, Is.EqualTo(-1));
+      Assert.That(testConsole.Output, Does.Contain("There was no MSBuildPath specified in the config"));
+
       msBuildMock.Verify(n => n.CallMSBuild("", It.IsAny<string>()),Times.Never);
+    }
+    
+    [Test]
+    public void InvokeMSBuildAndCommit_CorrectMSBuildPathSpecified_FinishesWithoutErrors()
+    {
+        
+        var version = new SemanticVersion
+                      {
+                              Major = 1,
+                              Minor = 1,
+                              Patch = 1,
+                      };
+
+        _config.MSBuildSettings.MSBuildPath = Path.Combine(TestContext.CurrentContext.TestDirectory, "msbuild.exe");
+        File.Delete(_config.MSBuildSettings.MSBuildPath);
+        var writer = File.Create(_config.MSBuildSettings.MSBuildPath);
+        writer.Close();
+        var gitClientStub = new Mock<IGitClient>();
+        gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
+        var msBuildMock = new Mock<IMSBuild>();
+        
+        var testConsole = new TestConsole();
+
+        var msBuildInvoker = new MSBuildCallAndCommit(gitClientStub.Object, _config, msBuildMock.Object,
+                testConsole);
+
+        var act = msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version);
+
+        Assert.That(act, Is.EqualTo(0));
+
+        msBuildMock.Verify(n => n.CallMSBuild(It.IsAny<string>(), It.IsAny<string>()));
+        File.Delete(_config.MSBuildSettings.MSBuildPath);
+    }
+    
+    [Test]
+    public void InvokeMSBuildAndCommit_WrongMSBuildPathSpecified_EndsEarlyWithProperMessage()
+    {
+        var version = new SemanticVersion
+                      {
+                              Major = 1,
+                              Minor = 1,
+                              Patch = 1,
+                      };
+
+        _config.MSBuildSettings.MSBuildPath = "DefinitelyNotAFolder/DefinitelyNotAnMSBuildPath.definitelyNotAnExe";
+        var gitClientStub = new Mock<IGitClient>();
+        var msBuildMock = new Mock<IMSBuild>();
+        msBuildMock.Setup(_ => _.CallMSBuild("", It.IsAny<string>())).Verifiable();
+
+        var testConsole = new TestConsole();
+
+        var msBuildInvoker = new MSBuildCallAndCommit(gitClientStub.Object, _config, msBuildMock.Object,
+                testConsole);
+
+        var act = msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version);
+
+        Assert.That(act, Is.EqualTo(-1));
+        Assert.That(testConsole.Output, Does.Contain("The configured MSBuildPath does not exist"));
+        msBuildMock.Verify(n => n.CallMSBuild("", It.IsAny<string>()),Times.Never);
     }
 
     [Test]
