@@ -59,8 +59,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -98,8 +98,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version", "-n=false", "-p=false" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -138,8 +138,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version", "-n" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -192,8 +192,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version", "-n=false", "-p=true" });
 
-    AssertValidLogs(correctLogs1, correctLogs2);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs1, correctLogs2);
   }
 
   [Test]
@@ -226,8 +226,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
 
     var act = Program.Main(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -255,9 +255,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     ExecuteGitCommand("commit -m \"Commit on prerelease branch\" --allow-empty");
     var act2 = Program.Main(new[] { "Close-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -288,9 +288,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     ExecuteGitCommand("commit -m \"Commit on release branch\" --allow-empty");
     var act2 = Program.Main(new[] { "Close-Version" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -326,8 +326,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     var act1 = Program.Main(new[] { "Release-Version", $"-c {releaseCommit}" });
 
     ExecuteGitCommand("commit -m \"Commit after finishing on new branch\" --allow-empty");
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -358,9 +358,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     ExecuteGitCommand("commit -m \"Commit on release branch\" --allow-empty");
     var act2 = Program.Main(new[] { "Close-Version", "-a develop" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -394,9 +394,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     logs = logs.Replace(" ", "");
     var act2 = Program.Main(new[] { "Close-Version", "--noPush" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -418,9 +418,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
 
     var act1 = Program.Main(new[] { "New-Release-Branch" });
 
-    AssertValidLogs(correctLogs);
     Assert.That(TestConsole.Output, Does.Contain("Called UpdateAssemblyInfosForRelease!"));
     Assert.That(TestConsole.Output, Does.Not.Contain("Called UpdateAssemblyInfosForDevelopment!"));
     Assert.That(act1, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
   }
 }
