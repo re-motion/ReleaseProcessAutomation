@@ -130,7 +130,7 @@ internal class ContinueReleaseOnMasterStepTests
     gitClientMock.Setup(_ => _.Checkout("master")).Callback(() => developLast = false);
     
     //checks that the current branch when calling merge branch is not develop, therefore not merging into it
-    gitClientMock.Setup(_ => _.MergeBranchToOnlyContainChangesFromMergedBranch(It.IsAny<string>(), It.IsAny<bool>())).Callback(() => Assert.That(developLast, Is.False));
+    gitClientMock.Setup(_ => _.MergeBranchToOnlyContainChangesFromMergedBranch(It.IsAny<string>())).Callback(() => Assert.That(developLast, Is.False));
     
     var readInputStub = new Mock<IInputReader>();
     readInputStub.Setup(
@@ -150,7 +150,7 @@ internal class ContinueReleaseOnMasterStepTests
 
     Assert.That(() => step.Execute(version, false), Throws.Nothing);
 
-    gitClientMock.Verify(_ => _.MergeBranchToOnlyContainChangesFromMergedBranch("release/v1.0.0", It.IsAny<bool>()), Times.Once);
+    gitClientMock.Verify(_ => _.MergeBranchToOnlyContainChangesFromMergedBranch("release/v1.0.0"), Times.Once);
     _nextReleaseStepMock.Verify(_=>_.Execute(It.IsAny<SemanticVersion>()), Times.Once);
   }
 

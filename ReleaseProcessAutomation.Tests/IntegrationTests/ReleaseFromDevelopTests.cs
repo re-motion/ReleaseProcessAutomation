@@ -463,6 +463,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.0.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("2.0.0");
+    //Do not create a new support branch
+    TestConsole.Input.PushTextWithEnter("n");
     
     var act2 = Program.Main(new[] { "Release-Version" });
 
@@ -482,6 +484,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("2.0.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("3.0.0");
+    //Do not create a new support branch
+    TestConsole.Input.PushTextWithEnter("n");
     
     var act4 = Program.Main(new[] { "Release-Version" });
 
