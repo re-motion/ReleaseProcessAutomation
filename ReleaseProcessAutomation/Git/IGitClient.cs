@@ -48,7 +48,7 @@ public interface IGitClient
 
   void MergeBranchWithoutCommit (string branchName);
 
-  void MergeBranchOnlyUseChangesOfBaseBranch (string baseBranchName);
+  void MergeBranchToOnlyContainChangesFromMergedBranch (string baseBranchName);
 
   void CommitAll (string message);
 

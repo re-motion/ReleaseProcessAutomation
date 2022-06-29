@@ -80,7 +80,7 @@ public class ContinueReleasePatchStep
 
     GitClient.Checkout(mergeTargetBranchName);
 
-    MergeBranchWithReset(mergeTargetBranchName, toMergeBranchName, IgnoreListType.TagStableMergeIgnoreList);
+    MergeBranchAndSkipIgnoredFiles(mergeTargetBranchName, toMergeBranchName, IgnoreListType.TagStableMergeIgnoreList);
 
     GitClient.Checkout(mergeTargetBranchName);
     CreateTagWithMessage(tagName);

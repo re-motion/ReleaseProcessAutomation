@@ -493,7 +493,7 @@ internal class CommandLineGitClientTests : GitBackedTests
     ExecuteGitCommand("commit -a -m FileAdded");
 
     var client = new CommandLineGitClient();
-    client.MergeBranchOnlyUseChangesOfBaseBranch("a");
+    client.MergeBranchToOnlyContainChangesFromMergedBranch("a");
 
     var fileContents = File.ReadAllText(filePath).ReplaceLineEndings("");
 
@@ -526,7 +526,7 @@ internal class CommandLineGitClientTests : GitBackedTests
     ExecuteGitCommand("commit -a -m AddedFile");
 
     var client = new CommandLineGitClient();
-    client.MergeBranchOnlyUseChangesOfBaseBranch("a");
+    client.MergeBranchToOnlyContainChangesFromMergedBranch("a");
 
     Assert.That(() => File.Exists(filePath), Is.False);
     AssertValidLogs(correctLogs);
@@ -567,7 +567,7 @@ internal class CommandLineGitClientTests : GitBackedTests
     ExecuteGitCommand("commit -a -m \"Deleted File\"");
 
     var client = new CommandLineGitClient();
-    client.MergeBranchOnlyUseChangesOfBaseBranch("a");
+    client.MergeBranchToOnlyContainChangesFromMergedBranch("a");
 
     Assert.That(() => File.Exists(filePath), Is.True);
     AssertValidLogs(correctLogs);

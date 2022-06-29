@@ -256,7 +256,7 @@ public class CommandLineGitClient : IGitClient
     }
   }
 
-  public void MergeBranchOnlyUseChangesOfBaseBranch (string branchName)
+  public void MergeBranchToOnlyContainChangesFromMergedBranch (string branchName)
   {
     var currentBranchName = GetCurrentBranchName()!;
     var intoMessage = currentBranchName.Equals("master") ? "" : $" into {currentBranchName}";
