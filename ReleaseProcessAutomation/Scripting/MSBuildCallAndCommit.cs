@@ -64,8 +64,8 @@ public class MSBuildCallAndCommit
 
     if (!File.Exists(msBuildPath))
     {
-      _log.Warning("The configured MSBuildpath '{MSBuildpath}' does not exist.", msBuildPath);
-      _console.WriteLine($"The configured MSBuildPath '{msBuildPath}' does not exist.\nPlease configure a proper MSBuildPath in the config.\nWill continue without invoking MSBuild.");
+      _log.Warning("The configured MSBuildpath '{1}' does not exist.Current directory: '{2}'", msBuildPath, Environment.CurrentDirectory);
+      _console.WriteLine($"The configured MSBuildPath '{msBuildPath}' does not exist.\nCurrent directory: '{Environment.CurrentDirectory}'\nPlease configure a proper MSBuildPath in the config.\nWill continue without invoking MSBuild.");
       return -1;
     }
 
