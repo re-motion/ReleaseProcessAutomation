@@ -14,6 +14,7 @@ using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.IntegrationTests.Steps;
 
+[Explicit]
 [TestFixture]
 public class ReleaseVersionAndMoveIssuesSubStepTests
 {

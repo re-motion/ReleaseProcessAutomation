@@ -197,6 +197,17 @@ public static class SemanticVersionExtensions
     return nextPatchVersion;
   }
 
+  public static SemanticVersion GetCurrentFullVersion (this SemanticVersion semanticVersion)
+  {
+    var nextPatchRelease = new SemanticVersion
+                           {
+                               Major = semanticVersion.Major,
+                               Minor = semanticVersion.Minor,
+                               Patch = semanticVersion.Patch
+                           };
+    return nextPatchRelease;
+  }
+
   private static SemanticVersion GetNextAlpha (SemanticVersion semanticVersion, bool changeToAlpha1 = false)
   {
     var nextVersion = new SemanticVersion
@@ -303,17 +314,6 @@ public static class SemanticVersionExtensions
                                PreReleaseCounter = 1
                            };
     return nextMinorRelease;
-  }
-
-  private static SemanticVersion GetCurrentFullVersion (SemanticVersion semanticVersion)
-  {
-    var nextPatchRelease = new SemanticVersion
-                           {
-                               Major = semanticVersion.Major,
-                               Minor = semanticVersion.Minor,
-                               Patch = semanticVersion.Patch
-                           };
-    return nextPatchRelease;
   }
 
   private static SemanticVersion GetNextPreReleaseVersion (SemanticVersion semanticVersion)

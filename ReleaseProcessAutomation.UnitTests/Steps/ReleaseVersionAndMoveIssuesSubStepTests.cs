@@ -1,5 +1,6 @@
 ﻿using Moq;
 using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Jira;
@@ -54,14 +55,16 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
     _jiraVersionCreatorMock.Setup(_ => _.CreateNewVersionWithVersionNumber(nextVersion.ToString()))
         .Returns("next").Verifiable();
 
-    var jiraSubStep = new ReleaseVersionAndMoveIssuesSubStep(
+    _jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(It.IsAny<string>())).Returns(Array.Empty<JiraToBeMovedIssue>());
+
+    var releaseVersionAndMoveIssuesSubStep = new ReleaseVersionAndMoveIssuesSubStep(
         _console,
         _inputReaderMock.Object,
         _jiraIssueServiceMock.Object,
         _jiraVersionCreatorMock.Object,
         _jiraReleaserMock.Object);
 
-    Assert.That(() => jiraSubStep.Execute(currentVersion, nextVersion, true), Throws.Nothing);
+    Assert.That(() => releaseVersionAndMoveIssuesSubStep.Execute(currentVersion, nextVersion, true), Throws.Nothing);
 
     Assert.That(_console.Output, Does.Contain("Releasing version '0.0.0' on JIRA."));
 
@@ -80,6 +83,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
     _jiraVersionCreatorMock.Setup(_ => _.CreateNewVersionWithVersionNumber(currentVersion.ToString()))
         .Returns(versionID);
     _jiraVersionCreatorMock.Setup(_ => _.CreateNewVersionWithVersionNumber(nextVersion.ToString())).Returns(nextID);
+    _jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(It.IsAny<string>())).Returns(Array.Empty<JiraToBeMovedIssue>());
 
     var jiraSubStep = new ReleaseVersionAndMoveIssuesSubStep(
         _console,
@@ -111,6 +115,9 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
         .Returns(versionID);
     _jiraVersionCreatorMock.Setup(_ => _.CreateNewVersionWithVersionNumber(nextVersion.ToString())).Returns(nextID);
 
+    _jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(It.IsAny<string>())).Returns(Array.Empty<JiraToBeMovedIssue>());
+
+    
     var jiraSubStep = new ReleaseVersionAndMoveIssuesSubStep(
         _console,
         _inputReaderMock.Object,
@@ -128,6 +135,131 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
   }
 
   [Test]
+  public void MoveClosedIssuesToNewVersion_MovesTheClosedIssues ()
+  {
+    var currentVersion = new SemanticVersion { Pre = PreReleaseStage.alpha, PreReleaseCounter = 1 };
+    var nextVersion = new SemanticVersion { Pre = PreReleaseStage.alpha, PreReleaseCounter = 2 };
+    var currentProjectVersion = new JiraProjectVersion { id = "curr" };
+    var nextProjectVersion = new JiraProjectVersion { id = "next" };
+    var fullProjectVersion = new JiraProjectVersion { id = "full" };
+
+    _jiraVersionCreatorMock.Setup(_ => _.FindAllVersionsStartingWithVersionNumber("0.0.0")).Returns(
+            new[]
+            {
+                    new JiraProjectVersion()
+            });
+    _jiraVersionCreatorMock.Setup(_ => _.FindVersionWithVersionNumber(currentVersion.ToString()))
+        .Returns(currentProjectVersion);
+    _jiraVersionCreatorMock.Setup(_ => _.FindVersionWithVersionNumber(new SemanticVersion().ToString()))
+        .Returns(fullProjectVersion);
+    _jiraVersionCreatorMock.Setup(_ => _.FindVersionWithVersionNumber(nextVersion.ToString())).Returns(nextProjectVersion);
+    _jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(It.IsAny<string>())).Returns(new[]
+                                                                                           {
+                                                                                                   new JiraToBeMovedIssue()
+                                                                                           });
+
+    _jiraIssueServiceMock.Setup(
+            _ => _.FindIssuesWithOnlyExactFixVersion(
+                It.IsAny<IEnumerable<JiraProjectVersion>>(),
+                fullProjectVersion))
+        .Returns(new[] { new JiraToBeMovedIssue { Key = "key", Fields = new JiraNonClosedIssueFields { Summary = "summary" } } });
+    _inputReaderMock.Setup(_ => _.ReadConfirmation(true)).Returns(true);
+
+    var releaseVersionAndMoveIssuesSubStep = new ReleaseVersionAndMoveIssuesSubStep(
+        _console,
+        _inputReaderMock.Object,
+        _jiraIssueServiceMock.Object,
+        _jiraVersionCreatorMock.Object,
+        _jiraReleaserMock.Object);
+
+    Assert.That(() => releaseVersionAndMoveIssuesSubStep.Execute(currentVersion, nextVersion, false, true), Throws.Nothing);
+
+    _jiraIssueServiceMock.Verify(
+        _ => _.MoveIssuesToVersion(It.IsAny<IEnumerable<JiraToBeMovedIssue>>(), fullProjectVersion.id, currentProjectVersion.id),
+        Times.Once());
+  }
+
+  [Test]
+  public void MoveClosedIssuesToNewVersion_WithoutCurrentVersionInJira_ErrorOutput ()
+  {
+    JiraProjectVersion nullVersion = null;
+    var currentVersion = new SemanticVersion();
+    var nextVersion = new SemanticVersion { Pre = PreReleaseStage.alpha, PreReleaseCounter = 1 };
+    var currentProjectVersion = new JiraProjectVersion { id = "curr" };
+    var nextProjectVersion = new JiraProjectVersion { id = "next" };
+    
+    _jiraVersionCreatorMock.Setup(_ => _.FindAllVersionsStartingWithVersionNumber("0.0.0")).Returns(
+            new[]
+            {
+                    new JiraProjectVersion()
+            });
+    _jiraVersionCreatorMock.Setup(_ => _.FindVersionWithVersionNumber(currentVersion.ToString()))
+        .Returns(nullVersion);
+    _jiraVersionCreatorMock.Setup(_ => _.FindVersionWithVersionNumber(nextVersion.ToString())).Returns(nextProjectVersion);
+    _jiraIssueServiceMock.Setup(
+            _ => _.FindIssuesWithOnlyExactFixVersion(
+                It.IsAny<IEnumerable<JiraProjectVersion>>(),
+                currentProjectVersion))
+        .Returns(new[] { new JiraToBeMovedIssue { Key = "key", Fields = new JiraNonClosedIssueFields { Summary = "summary" } } });
+    _inputReaderMock.Setup(_ => _.ReadConfirmation(true)).Returns(true);
+    
+    var releaseVersionAndMoveIssuesSubStep = new ReleaseVersionAndMoveIssuesSubStep(
+        _console,
+        _inputReaderMock.Object,
+        _jiraIssueServiceMock.Object,
+        _jiraVersionCreatorMock.Object,
+        _jiraReleaserMock.Object);
+
+    releaseVersionAndMoveIssuesSubStep.Execute(currentVersion, nextVersion, false, true);
+    Assert.That(_console.Output, Does.Contain($"Could not find any version with version number '{currentVersion}'."));
+
+    _jiraIssueServiceMock.Verify(_ => _.FindAllClosedIssues(It.IsAny<string>()), Times.Never);
+    _jiraIssueServiceMock.Verify(
+        _ => _.MoveIssuesToVersion(It.IsAny<IEnumerable<JiraToBeMovedIssue>>(), It.IsAny<string>(), It.IsAny<string>()),
+        Times.Never);
+  }
+
+  [Test]
+  public void MoveClosedIssuesToNewVersion_WithoutNextVersionInJira_ErrorOutput ()
+  {
+    JiraProjectVersion nullVersion = null;
+    var currentVersion = new SemanticVersion { Pre = PreReleaseStage.alpha, PreReleaseCounter = 1 };
+    var nextVersion = new SemanticVersion { Pre = PreReleaseStage.alpha, PreReleaseCounter = 2 };
+    var fullVersion = new SemanticVersion();
+    var currentProjectVersion = new JiraProjectVersion { id = "curr" };
+
+    _jiraVersionCreatorMock.Setup(_ => _.FindAllVersionsStartingWithVersionNumber("0.0.0")).Returns(
+            new[]
+            {
+                    new JiraProjectVersion()
+            });
+    _jiraVersionCreatorMock.Setup(_ => _.FindVersionWithVersionNumber(currentVersion.ToString()))
+        .Returns(currentProjectVersion);
+    _jiraVersionCreatorMock.Setup(_ => _.FindVersionWithVersionNumber(fullVersion.ToString())).Returns(nullVersion);
+    _jiraIssueServiceMock.Setup(
+            _ => _.FindIssuesWithOnlyExactFixVersion(
+                It.IsAny<IEnumerable<JiraProjectVersion>>(),
+                currentProjectVersion))
+        .Returns(new[] { new JiraToBeMovedIssue { Key = "key", Fields = new JiraNonClosedIssueFields { Summary = "summary" } } });
+    _inputReaderMock.Setup(_ => _.ReadConfirmation(true)).Returns(true);
+
+    var releaseVersionAndMoveIssuesSubStep = new ReleaseVersionAndMoveIssuesSubStep(
+        _console,
+        _inputReaderMock.Object,
+        _jiraIssueServiceMock.Object,
+        _jiraVersionCreatorMock.Object,
+        _jiraReleaserMock.Object);
+
+    releaseVersionAndMoveIssuesSubStep.Execute(currentVersion, nextVersion, false, true);
+    Assert.That(_console.Output, Does.Contain($"Could not find any version with version number '{fullVersion}'."));
+
+    _jiraIssueServiceMock.Verify(_ => _.FindAllClosedIssues(It.IsAny<string>()), Times.Never);
+    _jiraIssueServiceMock.Verify(
+        _ => _.MoveIssuesToVersion(It.IsAny<IEnumerable<JiraToBeMovedIssue>>(), It.IsAny<string>(), It.IsAny<string>()),
+        Times.Never);
+  }
+
+  [Test]
   public void Execute_WithoutIssues_DoesNotAskForConfirmation ()
   {
     var versionID = "curr";
@@ -139,7 +271,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
         .Returns(versionID);
     _jiraVersionCreatorMock.Setup(_ => _.CreateNewVersionWithVersionNumber(nextVersion.ToString())).Returns(nextID);
 
-    _jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(It.IsAny<string>())).Returns(Array.Empty<JiraToBeMovedIssue>());
+    _jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(It.IsAny<string>())).Returns(new List<JiraToBeMovedIssue>());
     var jiraSubStep = new ReleaseVersionAndMoveIssuesSubStep(
         _console,
         _inputReaderMock.Object,

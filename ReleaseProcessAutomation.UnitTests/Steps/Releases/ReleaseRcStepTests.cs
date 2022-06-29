@@ -90,7 +90,7 @@ internal class ReleaseRcStepTests
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "develop"),
         Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _inputReaderMock.Verify();
   }
 
@@ -121,7 +121,7 @@ internal class ReleaseRcStepTests
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "release/v1.3.5"),
         Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _inputReaderMock.Verify();
   }
 
@@ -152,7 +152,7 @@ internal class ReleaseRcStepTests
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _inputReaderMock.Verify();
   }
 
@@ -184,7 +184,7 @@ internal class ReleaseRcStepTests
         () => rcStep.Execute(nextVersion, "", true, false, "hotfix/v1.3.5"),
         Throws.Nothing);
 
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _continueAlphaBetaMock.Verify(_ => _.Execute(nextVersion, It.IsAny<string>(), It.IsAny<string>(), false), Times.Never);
   }
 
@@ -215,7 +215,7 @@ internal class ReleaseRcStepTests
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _continueAlphaBetaMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<string>(), It.IsAny<string>(), false));
   }
 
@@ -245,7 +245,7 @@ internal class ReleaseRcStepTests
     Assert.That(
         () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion));
   }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 using ReleaseProcessAutomation.ReadInput;
@@ -11,7 +13,7 @@ namespace ReleaseProcessAutomation.Steps.SubSteps;
 
 public interface IReleaseVersionAndMoveIssuesSubStep
 {
-  void Execute (SemanticVersion currentVersion, SemanticVersion nextVersion, bool squashUnreleased = false);
+  void Execute (SemanticVersion currentVersion, SemanticVersion nextVersion, bool squashUnreleased = false, bool movePreReleaseIssues = false);
 }
 
 public class ReleaseVersionAndMoveIssuesSubStep
@@ -38,7 +40,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
     _jiraVersionReleaser = jiraVersionReleaser;
   }
 
-  public void Execute (SemanticVersion currentVersion, SemanticVersion nextVersion, bool squashUnreleased = false)
+  public void Execute (SemanticVersion currentVersion, SemanticVersion nextVersion, bool squashUnreleased = false, bool movePreReleaseIssues = false)
   {
     var currentVersionID = CreateVersion(currentVersion);
     var nextVersionID = CreateVersion(nextVersion);
@@ -59,6 +61,60 @@ public class ReleaseVersionAndMoveIssuesSubStep
       _jiraVersionReleaser.ReleaseVersionAndSquashUnreleased(currentVersionID, nextVersionID);
     else
       _jiraVersionReleaser.ReleaseVersion(currentVersionID, false);
+
+    if (movePreReleaseIssues)
+      MoveClosedIssuesFromPreviousVersion(currentVersion);
+  }
+
+  private void MoveClosedIssuesFromPreviousVersion (SemanticVersion currentVersion)
+  {
+    var currentFullVersion = currentVersion.GetCurrentFullVersion().ToString();
+    try
+    {
+      var currentVersions = _jiraVersionCreator.FindAllVersionsStartingWithVersionNumber(currentFullVersion);
+
+      if (currentVersions.Count == 0)
+        throw new InvalidOperationException($"Could not find version '{currentFullVersion}'.");
+
+      var allVersionsWithFullVersion = _jiraVersionCreator.FindVersionWithVersionNumber(currentFullVersion)
+                                       ?? throw new InvalidOperationException(
+                                           $"Could not find any version with version number '{currentFullVersion}'.");
+
+      var jiraClosedIssuesWithFixVersion =
+          _jiraIssueService.FindIssuesWithOnlyExactFixVersion(currentVersions, allVersionsWithFullVersion);
+
+      if (jiraClosedIssuesWithFixVersion.Count == 0)
+        throw new InvalidOperationException($"Could not find any issues with exact fixVersion '{currentFullVersion}'.");
+
+      foreach (var issue in jiraClosedIssuesWithFixVersion.Take(5))
+        _console.WriteLine($"{issue.Key} - {issue.Fields.Summary}");
+      _console.WriteLine(
+          $"Do you want to move the closed versions with Jira fixVersion '{currentFullVersion}' to the newly released version '{currentVersion}'?");
+      if (!_inputReader.ReadConfirmation())
+        return;
+
+      MoveClosedIssuesToNewVersion(currentFullVersion, currentVersion.ToString(), jiraClosedIssuesWithFixVersion);
+    }
+    catch (Exception e)
+    {
+      _console.WriteLine(e.Message);
+      _console.WriteLine($"Could not move closed jira issues from version '{currentFullVersion}' to '{currentVersion}'. \nDo you wish to continue?");
+      if (!_inputReader.ReadConfirmation())
+        throw new UserDoesNotWantToContinueException("User does not want to continue due to inability to move jira issues.");
+    }
+  }
+
+  private void MoveClosedIssuesToNewVersion (
+      string currentVersion,
+      string nextVersion,
+      IEnumerable<JiraToBeMovedIssue> closedIssuesToMove)
+  {
+    var currentJiraVersion = _jiraVersionCreator.FindVersionWithVersionNumber(currentVersion);
+    var nextJiraVersion = _jiraVersionCreator.FindVersionWithVersionNumber(nextVersion);
+    if (currentJiraVersion == null || nextJiraVersion == null)
+      throw new InvalidOperationException($"Could not find current jira version '{currentVersion}' or next jira version '{nextVersion}'");
+
+    _jiraIssueService.MoveIssuesToVersion(closedIssuesToMove, currentJiraVersion.id, nextJiraVersion.id);
   }
 
   private string CreateVersion (SemanticVersion version)
@@ -66,7 +122,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
     return _jiraVersionCreator.CreateNewVersionWithVersionNumber(version.ToString());
   }
 
-  private bool ShouldMoveIssuesToNextVersion (string versionID, string nextVersionID, out JiraToBeMovedIssue[] issuesToMove)
+  private bool ShouldMoveIssuesToNextVersion (string versionID, string nextVersionID, out IReadOnlyList<JiraToBeMovedIssue> issuesToMove)
   {
     if (versionID == nextVersionID)
     {
@@ -74,8 +130,8 @@ public class ReleaseVersionAndMoveIssuesSubStep
       return false;
     }
 
-    issuesToMove = _jiraIssueService.FindAllNonClosedIssues(versionID).ToArray();
-    if (issuesToMove.Length == 0)
+    issuesToMove = _jiraIssueService.FindAllNonClosedIssues(versionID);
+    if (issuesToMove.Count == 0)
       return false;
 
     _console.WriteLine("These are some of the issues that will be moved by releasing the version on jira:");

@@ -18,6 +18,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using ReleaseProcessAutomation.ReadInput;
 using Serilog;
 using Spectre.Console;
 
@@ -38,6 +39,11 @@ public static class Program
     try
     {
       app.Run(args);
+    }
+    catch (UserDoesNotWantToContinueException u)
+    {
+      Console.WriteLine(u.Message);
+      return -1;
     }
     catch (Exception e)
     {

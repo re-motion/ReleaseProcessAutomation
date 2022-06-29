@@ -16,6 +16,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
@@ -45,8 +46,7 @@ public class JiraVersionCreator
 
     var jiraProjectVersionRepairer = new JiraProjectVersionRepairer(_jiraProjectVersionService, _projectVersionFinder);
 
-    var versions = _projectVersionFinder.FindVersions(jiraProject, "(?s).*").ToList();
-    var jiraProjectVersion = versions.Where(x => x.name == versionNumber).DefaultIfEmpty().First();
+    var jiraProjectVersion = FindVersionWithVersionNumber(versionNumber);
 
     string createdVersionID;
 
@@ -69,5 +69,17 @@ public class JiraVersionCreator
     }
 
     return createdVersionID;
+  }
+
+  public JiraProjectVersion? FindVersionWithVersionNumber (string versionNumber)
+  {
+    var versions = _projectVersionFinder.FindVersions(_config.Jira.JiraProjectKey).ToList();
+     return versions.FirstOrDefault(x => x.name == versionNumber);
+  }
+  
+  public IReadOnlyList<JiraProjectVersion> FindAllVersionsStartingWithVersionNumber (string versionNumber)
+  {
+    var versions = _projectVersionFinder.FindVersions(_config.Jira.JiraProjectKey).ToList();
+    return versions.Where(x => x.name.StartsWith(versionNumber)).ToList();
   }
 }

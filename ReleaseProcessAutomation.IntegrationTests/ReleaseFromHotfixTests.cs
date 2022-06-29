@@ -43,6 +43,11 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.1.1-alpha.2");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.1.2");
+    //Move the issues from 1.0.0 to 1.0.0-alpha.1
+    TestConsole.Input.PushTextWithEnter("y");
+    TestConsole.Input.PushTextWithEnter("y");
+    TestConsole.Input.PushTextWithEnter("y");
+    TestConsole.Input.PushTextWithEnter("y");
 
     var act = RunProgram(new[] { "Release-Version" });
 
@@ -70,6 +75,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.1.1-beta.1");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.1.1-beta.2");
+    //Move the issues from 1.0.0 to 1.0.0-alpha.1
+    TestConsole.Input.PushTextWithEnter("y");
 
     var act1 = RunProgram(new[] { "Release-Version", "-p" });
     ExecuteGitCommand("commit -m \"Commit on prerelease branch\" --allow-empty");

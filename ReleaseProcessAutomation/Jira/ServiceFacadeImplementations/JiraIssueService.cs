@@ -62,7 +62,7 @@ public class JiraIssueService
     }
   }
 
-  public IEnumerable<JiraToBeMovedIssue> FindAllNonClosedIssues (string versionId)
+  public IReadOnlyList<JiraToBeMovedIssue> FindAllNonClosedIssues (string versionId)
   {
     var jql = $"fixVersion={versionId} and resolution = \"unresolved\"";
     var resource = $"search?jql={jql}&fields=id,fixVersions,summary";
@@ -72,13 +72,28 @@ public class JiraIssueService
     return response.Data.Issues ?? throw new InvalidOperationException($"Could not get non closed issue data from jira with request '{resource}'");
   }
 
-  public IEnumerable<JiraToBeMovedIssue> FindAllClosedIssues (string versionId)
+  public IReadOnlyList<JiraToBeMovedIssue> FindAllClosedIssues (string versionId)
   {
     var jql = $"fixVersion={versionId} and resolution != \"unresolved\"";
-    var resource = $"search?jql={jql}&fields=id,fixVersions";
+    var resource = $"search?jql={jql}&fields=id,fixVersions,summary";
     var request = _jiraRestClientProvider.GetJiraRestClient().CreateRestRequest(resource, Method.GET);
 
     var response = _jiraRestClientProvider.GetJiraRestClient().DoRequest<JiraNonClosedIssues>(request, HttpStatusCode.OK);
     return response.Data.Issues ?? throw new InvalidOperationException($"Could not get closed issue data from jira with request '{resource}'");
+  }
+
+  public IReadOnlyList<JiraToBeMovedIssue> FindIssuesWithOnlyExactFixVersion (
+      IEnumerable<JiraProjectVersion> allVersions,
+      JiraProjectVersion exactFixVersion)
+  {
+    var allVersionLookup = allVersions.Select(v => v.id).ToHashSet();
+    allVersionLookup.Remove(exactFixVersion.id);
+
+    var allClosedIssues = FindAllClosedIssues(exactFixVersion.id);
+    var filteredIssues = allClosedIssues.Where(
+        i => i.Fields.FixVersions.TrueForAll(
+            v => !allVersionLookup.Contains(v.ID)));
+
+    return filteredIssues.ToList();
   }
 }

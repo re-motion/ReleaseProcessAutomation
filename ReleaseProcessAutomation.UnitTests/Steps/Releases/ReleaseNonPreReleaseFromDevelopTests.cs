@@ -144,7 +144,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
 
     step.Execute(nextVersion, "commitHash", false, false, false);
 
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()));
   }
 
@@ -180,7 +180,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
 
     step.Execute(nextVersion, "commitHash", true, false, false);
 
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Never);
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Never);
     _pushNewReleaseBranchMock.Verify(_ => _.Execute($"release/v{nextVersion}", "develop"));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
   }
@@ -207,7 +207,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     var step = new ReleaseOnMasterStep(
         gitClientStub.Object,
         readInputStub.Object,
-        _continueReleaseOnMasterMock.Object,
+        _continueReleaseOnMasterMock.Object, 
         _pushNewReleaseBranchMock.Object,
         _config,
         _msBuildInvokerMock.Object,
@@ -215,7 +215,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _releaseVersionAndMoveIssuesMock.Object);
 
     step.Execute(nextVersion, "commitHash", false, true, false);
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
 
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
   }

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
 using ReleaseProcessAutomation.Jira.Utility;
 using RestSharp;
@@ -35,9 +36,13 @@ public class JiraProjectVersionFinder : IJiraProjectVersionFinder
     _jiraRestClientProvider = jiraRestClientProvider;
   }
 
-  public IEnumerable<JiraProjectVersion> FindVersions (string projectKey, string versionPattern)
+  public IEnumerable<JiraProjectVersion> FindVersions (string projectKey, string? versionPattern = null)
   {
     var versions = GetVersions(projectKey);
+
+    if (string.IsNullOrEmpty(versionPattern))
+      return versions;
+
     return versions.Where(
         v =>
         {

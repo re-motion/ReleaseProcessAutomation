@@ -33,9 +33,10 @@ public interface IJiraProjectVersionFinder
   /// <summary>
   /// Returns all versions of the project.
   /// Filters by Regex.IsMatch(name, versionPattern) if versionPattern is not null.
+  /// If no version pattern is given, returns all versions
   /// </summary
   /// <returns>List of project versions or empty sequence</returns>
-  IEnumerable<JiraProjectVersion> FindVersions (string projectKey, [CanBeNull] string versionPattern);
+  IEnumerable<JiraProjectVersion> FindVersions (string projectKey, string? versionPattern = null);
 
   /// <summary>
   /// Returns all unreleased versions of the project.

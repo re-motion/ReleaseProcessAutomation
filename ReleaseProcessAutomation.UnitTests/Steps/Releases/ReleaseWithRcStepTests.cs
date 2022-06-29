@@ -149,7 +149,7 @@ internal class ReleaseWithRcStepTests
     Assert.That(
         () => withRcStep.Execute(false, false, "develop"),
         Throws.Nothing);
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion));
   }
 
@@ -180,7 +180,7 @@ internal class ReleaseWithRcStepTests
         () => withRcStep.Execute(false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
 
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _continueReleasePatchMock.Verify(_ => _.Execute(nextVersion, false, false));
   }
 
@@ -211,7 +211,7 @@ internal class ReleaseWithRcStepTests
         () => withRcStep.Execute(false, false, "develop"),
         Throws.Nothing);
 
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, false));
   }
 
@@ -242,7 +242,7 @@ internal class ReleaseWithRcStepTests
         () => withRcStep.Execute(true, false, "develop"),
         Throws.Nothing);
 
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(It.IsAny<MSBuildMode>(), nextVersion));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
     _continueReleasePatchMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>(), false), Times.Never);

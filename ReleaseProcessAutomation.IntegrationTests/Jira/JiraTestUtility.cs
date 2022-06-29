@@ -62,6 +62,7 @@ public static class JiraTestUtility
     var versionToDelete = versions.SingleOrDefault(v => v.name == versionName);
     if (versionToDelete == null)
       return;
+
     var resource = $"version/{versionToDelete.id}";
 
     var request = restClient.CreateRestRequest(resource, Method.DELETE);
@@ -71,9 +72,7 @@ public static class JiraTestUtility
   public static void DeleteVersionsIfExistent (string projectName, JiraRestClient jiraRestClient, params string[] versionNames)
   {
     foreach (var versionName in versionNames)
-    {
       DeleteVersionIfExistent(projectName, versionName, jiraRestClient);
-    }
   }
 
   public static JiraIssue AddTestIssueToVersion (
@@ -83,6 +82,16 @@ public static class JiraTestUtility
       JiraRestClient restClient,
       params JiraProjectVersion[] toRelease)
   {
+    return AddTestIssueToVersion(summaryOfIssue, closed, jiraProjectKey, restClient, toRelease.Select(v => v.id).ToArray());
+  }
+
+  public static JiraIssue AddTestIssueToVersion (
+      string summaryOfIssue,
+      bool closed,
+      string jiraProjectKey,
+      JiraRestClient restClient,
+      params string[] toReleaseID)
+  {
     // Create new issue
     var resource = "issue";
     var request = restClient.CreateRestRequest(resource, Method.POST);
@@ -91,8 +100,11 @@ public static class JiraTestUtility
                {
                    fields = new
                             {
-                                project = new { key = jiraProjectKey }, issuetype = new { name = "Task" }, summary = summaryOfIssue,
-                                description = "testDescription", fixVersions = toRelease.Select(v => new { v.id }),
+                                project = new { key = jiraProjectKey },
+                                issuetype = new { name = "Task" },
+                                summary = summaryOfIssue,
+                                description = "testDescription",
+                                fixVersions = toReleaseID.Select(s => new JiraProjectVersion { id = s }),
                                 components = new[] { new { name = "APMTestComponent" } }
                             }
                };
@@ -126,9 +138,7 @@ public static class JiraTestUtility
   public static void DeleteIssues (JiraRestClient jiraRestClient, params string[] issueIds)
   {
     foreach (var issueId in issueIds)
-    {
       DeleteIssue(jiraRestClient, issueId);
-    }
   }
 
   public static bool IsPartOfJiraVersions (string projectKey, string versionName, JiraRestClient restClient, out JiraProjectVersion foundVersion)

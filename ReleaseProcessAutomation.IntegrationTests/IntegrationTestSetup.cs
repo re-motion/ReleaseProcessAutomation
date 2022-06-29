@@ -23,6 +23,7 @@ using Moq;
 using NUnit.Framework;
 using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.Jira.Utility;
+using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.SubSteps;
 using Spectre.Console.Testing;
 
@@ -85,6 +86,8 @@ public abstract class IntegrationTestSetup : GitBackedTests
   {
     var services = new ApplicationServiceCollectionFactory().CreateServiceCollection();
     var releaseVersionAndMoveIssuesMock = new Mock<IReleaseVersionAndMoveIssuesSubStep>();
+    releaseVersionAndMoveIssuesMock
+        .Setup(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<SemanticVersion>(), It.IsAny<bool>(), It.IsAny<bool>()));
     var releaseVersionAndMoveIssuesDescriptor = new ServiceDescriptor(
         typeof(IReleaseVersionAndMoveIssuesSubStep),
         x => releaseVersionAndMoveIssuesMock.Object,

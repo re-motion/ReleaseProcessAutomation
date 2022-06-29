@@ -45,7 +45,7 @@ public class JiraProjectVersionRepairer
     if (string.IsNullOrEmpty(jiraProjectVersion.name))
       throw new InvalidOperationException("Name was null while trying to repair version");
     var versions = _jiraProjectVersionFinder
-        .FindVersions(jiraProjectVersion.projectId, "(?s).*")
+        .FindVersions(jiraProjectVersion.projectId)
         .ToList();
 
     if (IsSemanticVersion(jiraProjectVersion.name, ParseSemanticVersionOrNull))

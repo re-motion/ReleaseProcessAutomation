@@ -231,7 +231,7 @@ public class JiraProjectVersionServiceTest
     var toBeRepairedVersionId = _service.CreateVersion(c_jiraProjectKey, secondVersion, null);
     _repairer.RepairVersionPosition(toBeRepairedVersionId);
 
-    var versions = _versionFinder.FindVersions(c_jiraProjectKey, "(?s).*").ToList();
+    var versions = _versionFinder.FindVersions(c_jiraProjectKey).ToList();
 
     var positionFirstVersion = versions.IndexOf(versions.Single(x => x.name == firstVersion));
     var positionSecondVersion = versions.IndexOf(versions.Single(x => x.name == secondVersion));
@@ -255,7 +255,7 @@ public class JiraProjectVersionServiceTest
     var toBeRepairedVersionId = _service.CreateVersion(c_jiraProjectKey, secondVersion, null);
     _repairer.RepairVersionPosition(toBeRepairedVersionId);
 
-    var versions = _versionFinder.FindVersions(c_jiraProjectKey, "(?s).*").ToList();
+    var versions = _versionFinder.FindVersions(c_jiraProjectKey).ToList();
 
     var positionFirstVersion = versions.IndexOf(versions.Single(x => x.name == firstVersion));
     var positionSecondVersion = versions.IndexOf(versions.Single(x => x.name == secondVersion));
@@ -281,7 +281,7 @@ public class JiraProjectVersionServiceTest
     var toBeRepairedVersionId = _service.CreateVersion(c_jiraProjectKey, betweenFirstAndSecondVersion, null);
     _repairer.RepairVersionPosition(toBeRepairedVersionId);
 
-    var versions = _versionFinder.FindVersions(c_jiraProjectKey, "(?s).*").ToList();
+    var versions = _versionFinder.FindVersions(c_jiraProjectKey).ToList();
 
     var positionFirstVersion = versions.IndexOf(versions.Single(x => x.name == firstVersion));
     var positionbetweenFirstAndSecondVersion = versions.IndexOf(versions.Single(x => x.name == betweenFirstAndSecondVersion));

@@ -25,7 +25,7 @@ public class JiraProjectVersionRepairerTest
 
     var jiraProjectVersionFinderStub = new Mock<IJiraProjectVersionFinder>();
     jiraProjectVersionFinderStub.Setup(_ => _.GetVersionById(versionId)).Returns(createdVersion);
-    jiraProjectVersionFinderStub.Setup(_ => _.FindVersions(projectId, "(?s).*")).Returns(jiraProjectVersions);
+    jiraProjectVersionFinderStub.Setup(_ => _.FindVersions(projectId, It.IsAny<string?>())).Returns(jiraProjectVersions);
 
     var jiraProjectVersionRepairer = new JiraProjectVersionRepairer(jiraProjectVersionServiceStub.Object, jiraProjectVersionFinderStub.Object);
 
@@ -49,7 +49,7 @@ public class JiraProjectVersionRepairerTest
     var jiraProjectVersionFinderStub = new Mock<IJiraProjectVersionFinder>();
 
     jiraProjectVersionFinderStub.Setup(_ => _.GetVersionById(versionId)).Returns(createdVersion);
-    jiraProjectVersionFinderStub.Setup(_ => _.FindVersions(projectId, "(?s).*")).Returns(jiraProjectVersions);
+    jiraProjectVersionFinderStub.Setup(_ => _.FindVersions(projectId, It.IsAny<string?>())).Returns(jiraProjectVersions);
 
     var jiraProjectVersionRepairer = new JiraProjectVersionRepairer(jiraProjectVersionServiceStub.Object, jiraProjectVersionFinderStub.Object);
 
@@ -75,7 +75,7 @@ public class JiraProjectVersionRepairerTest
     var jiraProjectVersionFinderStub = new Mock<IJiraProjectVersionFinder>();
 
     jiraProjectVersionFinderStub.Setup(x => x.GetVersionById(versionId)).Returns(createdVersion);
-    jiraProjectVersionFinderStub.Setup(x => x.FindVersions(projectId, "(?s).*")).Returns(jiraProjectVersions);
+    jiraProjectVersionFinderStub.Setup(x => x.FindVersions(projectId, It.IsAny<string?>())).Returns(jiraProjectVersions);
 
     var jiraProjectVersionRepairer = new JiraProjectVersionRepairer(jiraProjectVersionServiceStub.Object, jiraProjectVersionFinderStub.Object);
 
@@ -102,7 +102,7 @@ public class JiraProjectVersionRepairerTest
     var jiraProjectVersionFinderStub = new Mock<IJiraProjectVersionFinder>();
 
     jiraProjectVersionFinderStub.Setup(x => x.GetVersionById(versionId)).Returns(createdVersion);
-    jiraProjectVersionFinderStub.Setup(x => x.FindVersions(projectId, "(?s).*")).Returns(jiraProjectVersions);
+    jiraProjectVersionFinderStub.Setup(x => x.FindVersions(projectId, It.IsAny<string?>())).Returns(jiraProjectVersions);
 
     var jiraProjectVersionRepairer = new JiraProjectVersionRepairer(jiraProjectVersionServiceStub.Object, jiraProjectVersionFinderStub.Object);
 
