@@ -115,12 +115,13 @@ namespace ReleaseProcessAutomation.Tests.MSBuild
                               Patch = 1,
                       };
 
-        _config.MSBuildSettings.MSBuildPath = "DefinitelyNotAFolder/DefinitelyNotAnMSBuildPath.definitelyNotAnExe";
+        _config.MSBuildSettings.MSBuildPath = "D:\\DefinitelyNotAFolder\\DefinitelyNotAnMSBuildPath.definitelyNotAnExe";
         var gitClientStub = new Mock<IGitClient>();
         var msBuildMock = new Mock<IMSBuild>();
         msBuildMock.Setup(_ => _.CallMSBuild("", It.IsAny<string>())).Verifiable();
 
         var testConsole = new TestConsole();
+        testConsole.Profile.Width = Int32.MaxValue;
 
         var msBuildInvoker = new MSBuildCallAndCommit(gitClientStub.Object, _config, msBuildMock.Object,
                 testConsole);
@@ -128,7 +129,8 @@ namespace ReleaseProcessAutomation.Tests.MSBuild
         var act = msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version);
 
         Assert.That(act, Is.EqualTo(-1));
-        Assert.That(testConsole.Output.ReplaceLineEndings(""), Does.Contain($"The configured MSBuildPath '{_config.MSBuildSettings.MSBuildPath}' does not exist"));
+        Assert.That(testConsole.Output, Does.Contain($"The configured MSBuildPath '{_config.MSBuildSettings.MSBuildPath}' does not exist"));
+        Assert.That(testConsole.Output, Does.Contain($"Current directory: '{Environment.CurrentDirectory}'"));
         msBuildMock.Verify(n => n.CallMSBuild("", It.IsAny<string>()),Times.Never);
     }
 
