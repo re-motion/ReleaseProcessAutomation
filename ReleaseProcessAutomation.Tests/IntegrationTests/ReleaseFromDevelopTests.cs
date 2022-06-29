@@ -16,6 +16,7 @@
 //
 
 using System;
+using System.IO;
 using NUnit.Framework;
 using Spectre.Console;
 using Spectre.Console.Testing;
@@ -422,5 +423,92 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     Assert.That(TestConsole.Output, Does.Not.Contain("Called UpdateAssemblyInfosForDevelopment!"));
     Assert.That(act1, Is.EqualTo(0));
     AssertValidLogs(correctLogs);
+  }
+  
+  [Test]
+  public void FixesMergeConflicts ()
+  {
+    var correctLogs =
+        @"*    (tag: v2.0.0, origin/master, master)Merge branch 'release/v2.0.0'
+          |\  
+          | *  (origin/release/v2.0.0, release/v2.0.0)Update metadata to version '2.0.0'.
+          | * added files to second release
+          * |    (tag: v1.0.0)Merge branch 'release/v1.0.0'
+          |\ \  
+          | * |  (origin/release/v1.0.0, release/v1.0.0)Update metadata to version '1.0.0'.
+          | * | added files to first release
+          |/ /  
+          | | *  (HEAD -> develop, origin/develop)Update metadata to version '3.0.0'.
+          | |/  
+          | * Update metadata to version '2.0.0'.
+          |/  
+          * ConfigAndBuildProject
+          * Initial CommitAll
+          ";
+
+    ExecuteGitCommand("checkout -b develop");
+    ExecuteGitCommand("commit -m Commit on develop --allow-empty");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("1.0.0");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("2.0.0");
+
+    var act1 = Program.Main(new[] { "New-Release-Branch" });
+    
+    CreateAndAddFilesWithText("something added");
+    ExecuteGitCommand("commit -a -m \"added files to first release\"");
+    
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("1.0.0");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("2.0.0");
+    //Do not create a new support branch
+    TestConsole.Input.PushTextWithEnter("n");
+    
+    var act2 = Program.Main(new[] { "Release-Version" });
+
+    ExecuteGitCommand("checkout develop");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("2.0.0");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("3.0.0");
+    
+    var act3 = Program.Main(new[] { "New-Release-Branch" });
+  
+    CreateAndAddFilesWithText("anotherText");
+    ExecuteGitCommand("commit -a -m \"added files to second release\"");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("2.0.0");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("3.0.0");
+    //Do not create a new support branch
+    TestConsole.Input.PushTextWithEnter("n");
+    
+    var act4 = Program.Main(new[] { "Release-Version" });
+
+    AssertValidLogs(correctLogs);   
+    Assert.That(act1, Is.EqualTo(0));
+    Assert.That(act2, Is.EqualTo(0));
+    Assert.That(act3, Is.EqualTo(0));
+    Assert.That(act4, Is.EqualTo(0));
+  }
+
+  private void CreateAndAddFilesWithText (string text)
+  {
+    var firstFilePath = Path.Combine(Environment.CurrentDirectory, "file1.txt");
+    var firstFile = File.CreateText(firstFilePath);
+    firstFile.WriteLine(text);
+    firstFile.Close();
+
+    var secondFilePath = Path.Combine(Environment.CurrentDirectory, "file2.txt");
+    var secondFile = File.CreateText(secondFilePath);
+    secondFile.WriteLine(text);
+    secondFile.Close();
+    
+    ExecuteGitCommand("add file1.txt");
+    ExecuteGitCommand("add file2.txt");
   }
 }

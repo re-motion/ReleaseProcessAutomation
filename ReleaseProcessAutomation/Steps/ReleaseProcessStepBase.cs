@@ -48,10 +48,10 @@ public abstract class ReleaseProcessStepBase
     Console = console;
   }
 
-  protected void MergeBranchWithReset (string currentBranchName, string mergeBranchName, IgnoreListType ignoreListType)
+  protected void MergeBranchAndSkipIgnoredFiles (string currentBranchName, string mergeBranchName, IgnoreListType ignoreListType)
   {
     GitClient.Checkout(currentBranchName);
-    GitClient.MergeBranch(mergeBranchName, true);
+    GitClient.MergeBranchWithoutCommit(mergeBranchName);
     ResetItemsOfIgnoreList(ignoreListType);
     GitClient.CommitAll($" Merge branch '{mergeBranchName}' into {currentBranchName}");
     GitClient.ResolveMergeConflicts();

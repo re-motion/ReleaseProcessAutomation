@@ -415,10 +415,10 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void MergeBranch_WithoutErrors_MergesBranch ()
+  public void MergeBranch_WithoutErrorsAndManualCommitAfterwards_MergesBranch ()
   {
     var correctLogs =
-        @"*    (HEAD -> master)Merge branch 'newBranch'
+        @"*    (HEAD -> master)MergeCommit
           |\
           | *  (newBranch)Empty commit on new Branch
           |/
@@ -431,12 +431,146 @@ internal class CommandLineGitClientTests : GitBackedTests
     ExecuteGitCommand("commit -m \"Empty commit on new Branch\" --allow-empty");
     ExecuteGitCommand("checkout master");
 
-    client.MergeBranch("newBranch");
+    client.MergeBranchWithoutCommit("newBranch");
 
-    var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
-    correctLogs = correctLogs.Replace(" ", "").Replace("\r", "");
-    logs = logs.Replace(" ", "");
-    Assert.That(logs, Is.EqualTo(correctLogs));
+    ExecuteGitCommand("commit -am MergeCommit --allow-empty");
+    AssertValidLogs(correctLogs);
+  }
+
+  [Test]
+  public void MergeBranch_WithConflictsAndNoAutomaticResolution_ShouldThrow ()
+  {
+    ExecuteGitCommand("checkout -b a");
+    var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
+    var fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("Branch a changes");
+    fileWriter.Close();
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m FileAdded");
+
+    ExecuteGitCommand("checkout master");
+    ExecuteGitCommand("checkout -b b");
+
+    fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("Branch b changes");
+    fileWriter.Close();
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m FileAdded");
+
+    var client = new CommandLineGitClient();
+
+    Assert.That(() => client.MergeBranchWithoutCommit("a"), Throws.InstanceOf<Exception>().With.Message.StartsWith("Could not merge branch"));
+  }
+
+  [Test]
+  public void MergeBranchOnlyUseChangesOfBaseBranch_WithConflictsAndAutomaticResolution_FileContainsContentsFromOtherBranch ()
+  {
+    var correctLogs =
+        @"*    (HEAD -> b)Merge branch 'a' into b
+          |\  
+          | *  (a)FileAdded
+          * | FileAdded
+          |/  
+          *  (origin/master, master)Initial CommitAll
+          ";
+
+    ExecuteGitCommand("checkout -b a");
+    var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
+    var fileWriter = File.CreateText(filePath);
+    var originalContent = "Branch a changes";
+    fileWriter.WriteLine(originalContent);
+    fileWriter.Close();
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m FileAdded");
+
+    ExecuteGitCommand("checkout master");
+    ExecuteGitCommand("checkout -b b");
+
+    fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("Branch b changes");
+    fileWriter.Close();
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m FileAdded");
+
+    var client = new CommandLineGitClient();
+    client.MergeBranchToOnlyContainChangesFromMergedBranch("a");
+
+    var fileContents = File.ReadAllText(filePath).ReplaceLineEndings("");
+
+    Assert.That(fileContents, Is.EqualTo(originalContent));
+    AssertValidLogs(correctLogs);
+  }
+
+  [Test]
+  public void MergeBranchOnlyUseChangesOfBaseBranch_WithFileAddedInTargetBranch_RemovesFile ()
+  {
+    var correctLogs =
+        @"*    (HEAD -> b)Merge branch 'a' into b
+          |\  
+          * | AddedFile
+          |/  
+          *  (origin/master, master, a)Initial CommitAll
+          ";
+
+    ExecuteGitCommand("checkout -b a");
+
+    ExecuteGitCommand("checkout master");
+    ExecuteGitCommand("checkout -b b");
+
+    var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
+    var fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("Branch b added File");
+    fileWriter.Close();
+
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m AddedFile");
+
+    var client = new CommandLineGitClient();
+    client.MergeBranchToOnlyContainChangesFromMergedBranch("a");
+
+    Assert.That(() => File.Exists(filePath), Is.False);
+    AssertValidLogs(correctLogs);
+  }
+
+  [Test]
+  public void MergeBranchOnlyUseChangesOfBaseBranch_FileRemovedInTargetBranch_RestoresFile ()
+  {
+    var correctLogs =
+        @"*    (HEAD -> b)Merge branch 'a' into b
+          |\  
+          | *  (a)FileChanged
+          * | Deleted File
+          |/  
+          *  (master)FileAdded
+          *  (origin/master)Initial CommitAll
+          ";
+
+    var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
+    var fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("File added on master");
+    fileWriter.Close();
+
+    ExecuteGitCommand("add file.txt");
+    ExecuteGitCommand("commit -a -m FileAdded");
+
+    ExecuteGitCommand("checkout -b a");
+
+    fileWriter = File.CreateText(filePath);
+    fileWriter.WriteLine("Added some stuff on a branch");
+    fileWriter.Close();
+    ExecuteGitCommand("commit -a -m FileChanged");
+
+    ExecuteGitCommand("checkout master");
+    ExecuteGitCommand("checkout -b b");
+
+    File.Delete(filePath);
+    ExecuteGitCommand("commit -a -m \"Deleted File\"");
+
+    var client = new CommandLineGitClient();
+    client.MergeBranchToOnlyContainChangesFromMergedBranch("a");
+
+    Assert.That(() => File.Exists(filePath), Is.True);
+    AssertValidLogs(correctLogs);
   }
 
   [Test]
@@ -457,7 +591,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void AddAll_WithoutErrors_AddsAllNewChanges()
+  public void AddAll_WithoutErrors_AddsAllNewChanges ()
   {
     AddRandomFile(RepositoryPath);
     AddRandomFile(RepositoryPath);
@@ -550,16 +684,16 @@ internal class CommandLineGitClientTests : GitBackedTests
     AddCommit();
     ExecuteGitCommand("checkout master");
     ExecuteGitCommand($"push -u {RemoteName} master");
-    
+
     var notBehind = ExecuteGitCommandWithOutput("show HEAD --pretty=%d");
 
     ExecuteGitCommand($"branch --unset-upstream");
     ExecuteGitCommand($"branch -d -r {RemoteName}/master");
 
     client.Fetch($"{RemoteName}");
-    
+
     var fetched = ExecuteGitCommandWithOutput("show HEAD --pretty=%d");
-    
+
     Assert.That(fetched, Is.EqualTo(notBehind));
     Assert.That(fetched, Is.EqualTo(" (HEAD -> master, origin/master)\n"));
   }
@@ -573,7 +707,8 @@ internal class CommandLineGitClientTests : GitBackedTests
     Assert.That(
         () => gitClient.PushToRepos(remoteNames, "", "tag"),
         Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("Tag with name 'tag' does not exist, must not have been created before calling pushToRepos, check previous steps."));
+            .With.Message.EqualTo(
+                "Tag with name 'tag' does not exist, must not have been created before calling pushToRepos, check previous steps."));
   }
 
   [Test]
