@@ -96,7 +96,7 @@ public class BranchFromReleaseForContinueVersionStepTests
     
     var ancestor = "notAnAncestor";
     Assert.That(() => branch.Execute(nextVersion, ancestor, false), Throws.InstanceOf<InvalidOperationException>()
-        .With.Message.EqualTo($"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was {ancestor}"));
+        .With.Message.EqualTo($"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was '{ancestor}'."));
 
   }
 }

@@ -42,7 +42,7 @@ internal class CloseVersionCommand : Command<CloseVersionSettings>
 
   public override int Execute ([NotNull] CommandContext context, [NotNull] CloseVersionSettings settings)
   {
-    var message = $"Closing version from ancestor '{settings.Ancestor}'";
+    var message = $"Closing version from ancestor '{settings.Ancestor}'.";
     _log.Information(message);
     _console.WriteLine(message);
 

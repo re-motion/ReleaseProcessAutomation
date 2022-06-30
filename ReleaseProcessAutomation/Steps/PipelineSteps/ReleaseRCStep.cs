@@ -71,15 +71,15 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
 
     if (!GitClient.IsOnBranch("release/"))
     {
-      const string message = "Cannot call ReleaseRcStep when not on a release branch";
+      const string message = "Cannot call ReleaseRcStep when not on a release branch.";
       throw new InvalidOperationException(message);
     }
 
     if (string.IsNullOrEmpty(ancestor))
       ancestor = _ancestorFinder.GetAncestor("develop", "hotfix/v");
-
-    _log.Debug("Found/given ancestor is '{ancestor}'", ancestor);
-
+    
+    _log.Debug("Found/given ancestor is '{ancestor}'.", ancestor);
+    
     var currentBranchName = GitClient.GetCurrentBranchName();
     if (string.IsNullOrEmpty(currentBranchName))
     {
@@ -91,17 +91,17 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
 
     if (ancestor.Equals("develop") || ancestor.StartsWith("release/"))
     {
-      _log.Debug("Getting next possible jira versions for develop from '{NextVersion}'", nextVersion);
+      _log.Debug("Getting next possible jira versions for develop from '{NextVersion}'.", nextVersion);
       nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
     }
     else if (ancestor.StartsWith("hotfix/"))
-    {
-      _log.Debug("Getting next possible jira versions for hotfix from '{NextVersion}'", nextVersion);
+    {      
+      _log.Debug("Getting next possible jira versions for hotfix from '{NextVersion}'.", nextVersion);
       nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     }
     else
     {
-      var message = $"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was '{ancestor}'";
+      var message = $"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was '{ancestor}'.";
       throw new InvalidOperationException(message);
     }
 
@@ -109,7 +109,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
     _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
 
     var preReleaseBranchName = $"prerelease/v{nextVersion}";
-    _log.Debug("Will try to create pre release branch with name '{PrereleaseBranchName}'", preReleaseBranchName);
+    _log.Debug("Will try to create pre release branch with name '{PrereleaseBranchName}'.", preReleaseBranchName);
     if (GitClient.DoesBranchExist(preReleaseBranchName))
     {
       var message = $"The branch {preReleaseBranchName} already exists while trying to create a branch with that name.";

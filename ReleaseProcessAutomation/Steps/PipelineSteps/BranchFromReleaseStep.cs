@@ -55,19 +55,19 @@ public class BranchFromReleaseStep
   public void Execute (string? commitHash, bool pauseForCommit, bool noPush)
   {
     var currentVersion = new SemanticVersionParser().ParseVersionFromBranchName(_gitClient.GetCurrentBranchName()!);
-    _log.Debug("The current found version is '{CurrentVersion}'", currentVersion);
+    _log.Debug("The current found version is '{CurrentVersion}'.", currentVersion);
     var rcVersion = FindNextRc(currentVersion);
 
     var choice = _inputReader.ReadVersionChoice("Which version do you wish to release?", new[] { currentVersion, rcVersion });
 
     if (choice.Equals(rcVersion))
     {
-      _log.Debug("The choice was the rcVersion '{RCVersion}', calling release rc", rcVersion);
+      _log.Debug("The choice was the rc version '{RCVersion}', calling release rc.", rcVersion);
       _releaseRcStep.Execute(rcVersion, commitHash, pauseForCommit, noPush, "");
     }
     else
     {
-      _log.Debug("The choice was the RTM version '{CurrentVersion}', calling release with rc", currentVersion);
+      _log.Debug("The choice was the release-to-master version '{CurrentVersion}', calling release with rc.", currentVersion);
       _releaseWithRcStep.Execute(pauseForCommit, noPush, "");
     }
   }

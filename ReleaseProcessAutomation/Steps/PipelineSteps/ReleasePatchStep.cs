@@ -92,24 +92,24 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
       }
     }
 
-    var versionToBeReleasedMessage = $"The version to be released: {nextVersion}";
+    var versionToBeReleasedMessage = $"The version to be released: '{nextVersion}'";
     _log.Debug(versionToBeReleasedMessage);
     Console.WriteLine(versionToBeReleasedMessage);
 
-    _log.Debug("Getting next possible jira versions for hotfix from version '{NextVersion}'", nextVersion);
+    _log.Debug("Getting next possible jira versions for hotfix from version '{NextVersion}'.", nextVersion);
     var nextPossibleJiraVersions = nextVersion.GetNextPossibleVersionsHotfix();
     var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there): ", nextPossibleJiraVersions);
 
     var releaseBranchName = $"release/v{nextVersion}";
-    _log.Debug("Will try to create release branch name '{ReleaseBranchName}'", releaseBranchName);
+    _log.Debug("Will try to create release branch name '{ReleaseBranchName}'.", releaseBranchName);
     if (GitClient.DoesBranchExist(releaseBranchName))
     {
-      var message = $"Cannot create release branch '{releaseBranchName}' because it already exists";
+      var message = $"Cannot create release branch '{releaseBranchName}' because it already exists.";
       throw new InvalidOperationException(message);
     }
 
     var tagName = $"v{nextVersion}";
-    _log.Debug("Will try to create tag with name '{TagName}'", tagName);
+    _log.Debug("Will try to create tag with name '{TagName}'.", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
       var message = $"Cannot create tag'{tagName}' because that tag already exists.";

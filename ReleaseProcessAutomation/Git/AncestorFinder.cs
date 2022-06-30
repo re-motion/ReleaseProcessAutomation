@@ -45,7 +45,7 @@ public class AncestorFinder
 
   public string GetAncestor (params string[] expectedAncestors)
   {
-    _log.Debug("Trying to get ancestor from '{ExpectedAncestors}'", expectedAncestors);
+    _log.Debug("Trying to get ancestor from '{ExpectedAncestors}'.", expectedAncestors);
     var foundAncestors = _gitClient.GetAncestors(expectedAncestors);
 
     if (foundAncestors.Count == 1)
@@ -53,19 +53,19 @@ public class AncestorFinder
 
     if (foundAncestors.Count == 0)
     {
-      _log.Warning("Ancestors were expected but not found");
+      _log.Warning("Ancestors were expected but not found.");
       _console.WriteLine("We expected some of the following ancestors but found none:");
       foreach (var ancestor in foundAncestors)
         _console.WriteLine(ancestor);
 
       var userInput = _inputReader.ReadString("Please enter the name of the ancestor branch:");
-      _log.Debug("User input for the name of the ancestor branch was read: {UserInput}", userInput);
+      _log.Debug("User input for the name of the ancestor branch was read: '{UserInput}'", userInput);
       return userInput;
     }
 
-    _log.Warning("Multiple matching ancestors were found: {FoundAncestors}", foundAncestors);
+    _log.Warning("Multiple matching ancestors were found: '{FoundAncestors}'", foundAncestors);
     var input = _inputReader.ReadStringChoice("Please enter the name of the ancestor branch:", foundAncestors);
-    _log.Debug("User input for the name of the ancestor branch was read: {UserInput}", input);
+    _log.Debug("User input for the name of the ancestor branch was read: '{UserInput}'", input);
     return input;
   }
 }

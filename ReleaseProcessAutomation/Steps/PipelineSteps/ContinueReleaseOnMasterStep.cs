@@ -79,7 +79,7 @@ public class ContinueReleaseOnMasterStep
   {
     var currentBranchName = GitClient.GetCurrentBranchName();
 
-    _log.Debug("The current branch name is '{CurrentBranchName}'", currentBranchName);
+    _log.Debug("The current branch name is '{CurrentBranchName}'.",currentBranchName);
 
     if (currentBranchName == null)
     {
@@ -88,14 +88,14 @@ public class ContinueReleaseOnMasterStep
     }
 
     var currentVersion = new SemanticVersionParser().ParseVersionFromBranchName(currentBranchName);
-    _log.Debug("The current version is '{CurrentVersion}'", currentVersion);
+    _log.Debug("The current version is '{CurrentVersion}'.",currentVersion);
 
     EnsureBranchUpToDate(currentBranchName);
     EnsureBranchUpToDate("master");
     EnsureBranchUpToDate("develop");
 
     var tagName = $"v{currentVersion}";
-    _log.Debug("Will try to create tag with name '{TagName}'", tagName);
+    _log.Debug("Will try to create tag with name '{TagName}'.", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
       var message = $"There is already a commit tagged with '{tagName}'.";

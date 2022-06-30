@@ -69,39 +69,39 @@ public class StartReleaseStep
   {
     if (commitHash != null && !_gitClient.IsCommitHash(commitHash))
     {
-      const string message = "The given commit hash was not found in the repository";
+      const string message = "The given commit hash was not found in the repository.";
       throw new ArgumentException(message);
     }
 
     if (_gitClient.IsOnBranch("release/"))
     {
-      _log.Debug("On branch 'release', calling branch from release");
+      _log.Debug("On branch 'release', calling branch from release.");
       _branchFromReleaseStep.Execute(commitHash, pauseForCommit, noPush);
     }
     else
     {
-      if (!startReleasePhase)
+      if(!startReleasePhase)
         _console.WriteLine(
-            "As you are not on a release branch, you won't be able to release a release candidate version.\nTo create a release branch, use the command [green]'New-Release-Branch'[/]");
-
+            "As you are not on a release branch, you won't be able to release a release candidate version.\nTo create a release branch, use the command [green]'New-Release-Branch'[/].");
+      
       if (_gitClient.IsOnBranch("hotfix/"))
       {
-        _log.Debug("On branch 'hotfix', calling branch from hotfix");
+        _log.Debug("On branch 'hotfix', calling branch from hotfix.");
         _branchFromHotfixStep.Execute(commitHash, startReleasePhase, pauseForCommit, noPush);
       }
       else if (_gitClient.IsOnBranch("develop"))
-      {
-        _log.Debug("On branch 'develop', calling branch from develop");
+      {      
+        _log.Debug("On branch 'develop', calling branch from develop.");
         _branchFromDevelopStep.Execute(commitHash, pauseForCommit, noPush, startReleasePhase);
       }
       else if (_gitClient.IsOnBranch("master"))
       {
-        _log.Debug("On branch 'master', calling branch from master");
+        _log.Debug("On branch 'master', calling branch from master.");
         _branchFromMasterStep.Execute(commitHash, startReleasePhase, pauseForCommit, noPush);
       }
       else
       {
-        const string message = "You have to be on either a 'hotfix/*' or 'release/*' or 'develop' or 'master' branch to release a version";
+        const string message = "You have to be on either a 'hotfix/*' or 'release/*' or 'develop' or 'master' branch to release a version.";
         throw new InvalidOperationException(message);
       }
     }

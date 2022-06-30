@@ -77,7 +77,7 @@ public class ReleaseWithRcStep : ReleaseProcessStepBase, IReleaseWithRcStep
     if (!GitClient.IsOnBranch("release/"))
     {
       var currentBranch = GitClient.GetCurrentBranchName();
-      var message = $"Cannot call ReleaseWithRc while not on a releaseBranch. Current branch: '{currentBranch}'";
+      var message = $"Cannot call ReleaseWithRc while not on a releaseBranch. Current branch: '{currentBranch}'.";
       throw new InvalidOperationException(message);
     }
 
@@ -91,11 +91,11 @@ public class ReleaseWithRcStep : ReleaseProcessStepBase, IReleaseWithRcStep
     _log.Debug("Will try to create tag with name '{TagName}'", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
-      var message = $"There is already a commit tagged with {tagName} while trying to create a tag";
+      var message = $"There is already a commit tagged with {tagName} while trying to create a tag.";
       throw new InvalidOperationException(message);
     }
 
-    var releaseInformationMessage = $"You are releasing version {nextVersion}";
+    var releaseInformationMessage = $"You are releasing version '{nextVersion}'.";
     _log.Information(releaseInformationMessage);
     Console.WriteLine(releaseInformationMessage);
 
@@ -103,18 +103,17 @@ public class ReleaseWithRcStep : ReleaseProcessStepBase, IReleaseWithRcStep
 
     if (ancestor.Equals("develop"))
     {
-      _log.Debug("Getting next possible jira versions for develop from '{nextVersion}'", nextVersion);
+      _log.Debug("Getting next possible jira versions for develop from '{nextVersion}'.", nextVersion);
       nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
     }
     else if (ancestor.StartsWith("hotfix/"))
     {
-      _log.Debug("Getting next possible jira versions for hotfix from '{nextVersion}'", nextVersion);
+      _log.Debug("Getting next possible jira versions for hotfix from '{nextVersion}'.", nextVersion);
       nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     }
     else
     {
-      var message =
-          $"Could not get next possible Jira Versions from the next version '{nextVersion}', current branch is '{currentBranchName}' and ancestor is '{ancestor}'";
+      var message = $"Could not get next possible Jira Versions from the next version '{nextVersion}', current branch is '{currentBranchName}' and ancestor is '{ancestor}'.";
       throw new InvalidOperationException(message);
     }
 
@@ -129,20 +128,20 @@ public class ReleaseWithRcStep : ReleaseProcessStepBase, IReleaseWithRcStep
 
     if (ancestor.Equals("develop"))
     {
-      _log.Debug("Ancestor is 'develop', calling continue release on master");
+      _log.Debug("Ancestor is 'develop', calling continue release on master.");
       _continueReleaseOnMasterStep.Execute(nextVersion, noPush);
     }
 
     else if (ancestor.StartsWith("hotfix/"))
     {
-      _log.Debug("Ancestor is 'hotfix/', calling continue release patch step not on master");
+      _log.Debug("Ancestor is 'hotfix/', calling continue release patch step not on master.");
       _continueReleasePatchStep.Execute(nextVersion, noPush, false);
     }
     //RPS in psm1 has master branching here, but has no version of how to get to it.
     //There are no tests for it since it cant happen anyways
     else if (ancestor.StartsWith("master"))
     {
-      _log.Debug("Ancestro is 'master', calling continue release patch step on master");
+      _log.Debug("Ancestor is 'master', calling continue release patch step on master.");
       _continueReleasePatchStep.Execute(nextVersion, noPush, true);
     }
   }

@@ -46,8 +46,7 @@ public static class ConfigExtensions
     if (msBuildMode == MSBuildMode.DevelopmentForNextRelease)
       return config.DevelopmentForNextReleaseMSBuildSteps;
 
-    const string message =
-        "Invalid Parameter in InvokeMSBuildAndCommit. No MSBuildStepsCompleted. Please check if msBuildMode parameter is equivalent with the value in releaseProcessScript.config";
+    const string message = "Invalid parameter in InvokeMSBuildAndCommit. No MSBuild steps were completed. Please check if MSBuildMode parameter is equivalent with the value in the config.";
     throw new ArgumentException(message);
   }
 }

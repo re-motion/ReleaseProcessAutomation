@@ -31,6 +31,6 @@ internal class ReleaseFromSupportTests : IntegrationTestSetup
 
     Assert.That(() => RunProgram(new[] { "Release-Version" }), 
         Throws.InstanceOf<InvalidOperationException>().
-            With.Message.EqualTo("You have to be on either a 'hotfix/*' or 'release/*' or 'develop' or 'master' branch to release a version"));
+            With.Message.EqualTo("You have to be on either a 'hotfix/*' or 'release/*' or 'develop' or 'master' branch to release a version."));
   }
 }

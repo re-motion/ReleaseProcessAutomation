@@ -56,23 +56,23 @@ public class ContinueReleaseStep
     var currentBranchName = _gitClient.GetCurrentBranchName();
     if (string.IsNullOrEmpty(currentBranchName))
     {
-      const string message = "Could not continue the release because there was no current branch found";
+      const string message = "Could not continue the release because there was no current branch found.";
       throw new InvalidOperationException(message);
     }
 
     //should already be on the releaseBranch, therefore this version is the next version
     var nextVersion = new SemanticVersionParser().ParseVersionFromBranchName(currentBranchName);
-    _log.Debug("Next version to be released is '{NextVersion}'", nextVersion);
+    _log.Debug("Next version to be released is '{NextVersion}'.", nextVersion);
 
     if (_gitClient.IsOnBranch("prerelease/"))
     {
-      _log.Debug("On branch '{BranchName}', calling branch from pre release for continue version", currentBranchName);
+      _log.Debug("On branch '{BranchName}', calling branch from pre release for continue version.", currentBranchName);
       _branchFromPreReleaseForContinueVersionStep.Execute(nextVersion, ancestor, noPush);
     }
 
     else if (_gitClient.IsOnBranch("release/"))
     {
-      _log.Debug("On branch '{BranchName}', calling branch from release for continue version", currentBranchName);
+      _log.Debug("On branch '{BranchName}', calling branch from release for continue version.", currentBranchName);
       _branchFromReleaseForContinueVersionStep.Execute(nextVersion, ancestor, noPush);
     }
     else

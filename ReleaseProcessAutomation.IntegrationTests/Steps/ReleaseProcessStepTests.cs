@@ -84,7 +84,7 @@ internal class ReleaseProcessStepTests : GitBackedTests
     Assert.That(
         () => rps.EnsureBranchUpToDate(""),
         Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("There were no remotes specified in the config. Stopping execution"));
+            .With.Message.EqualTo("There were no remotes specified in the config. Stopping execution."));
   }
 
   [Test]
@@ -143,7 +143,7 @@ internal class ReleaseProcessStepTests : GitBackedTests
     Assert.That(
         () => rps.EnsureBranchUpToDate("branch"),
         Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("Need to pull, local 'branch' branch is behind on repository 'origin'"));
+            .With.Message.EqualTo("Need to pull, local 'branch' branch is behind on repository 'origin'."));
   }
 
   [Test]
@@ -165,7 +165,7 @@ internal class ReleaseProcessStepTests : GitBackedTests
     Assert.That(
         () => rps.EnsureBranchUpToDate("branch"),
         Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("'branch' diverged, need to rebase at repository 'origin'"));
+            .With.Message.EqualTo("'branch' diverged, need to rebase at repository 'origin'."));
   }
 
   [Test]
@@ -206,7 +206,7 @@ internal class ReleaseProcessStepTests : GitBackedTests
     Assert.That(
         () => rps.EnsureWorkingDirectoryClean(),
         Throws.InstanceOf<Exception>()
-            .With.Message.EqualTo("Working directory not clean, user does not want to continue. Release process stopped"));
+            .With.Message.EqualTo("Working directory not clean, user does not want to continue. Release process stopped."));
   }
 
   [Test]

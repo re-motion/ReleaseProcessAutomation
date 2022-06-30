@@ -27,11 +27,11 @@ internal class PushRemoteSettings : CommandSettings
 {
   [UsedImplicitly]
   [CommandArgument(0, "<BRANCHNAME>")]
-  [Description("Mandatory string Parameter. Defines which branch to push")]
+  [Description("Mandatory string parameter. Defines which branch to push.")]
   public string BranchName { get; set; } = null!;
 
   [UsedImplicitly]
   [CommandOption("-t|--tagName")]
-  [Description("Optional string Parameter. Pushes the given tag")]
+  [Description("Optional string parameter. Pushes the given tag.")]
   public string? TagName { get; set; }
 }

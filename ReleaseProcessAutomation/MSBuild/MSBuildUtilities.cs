@@ -30,11 +30,11 @@ public static class MSBuildUtilities
 
   public static string? GetMSBuildCallString (Step step, SemanticVersion version, IAnsiConsole console)
   {
-    s_log.Debug("Building MS build call string from step '{Step}'", step);
+    s_log.Debug("Building MS build call string from step '{Step}'.", step);
 
     if (step.MSBuildCallArguments.Arguments.Length == 0)
     {
-      s_log.Warning("Did not find any MSBuildCallArguments");
+      s_log.Warning("Did not find any MSBuildCallArguments.");
       return null;
     }
 

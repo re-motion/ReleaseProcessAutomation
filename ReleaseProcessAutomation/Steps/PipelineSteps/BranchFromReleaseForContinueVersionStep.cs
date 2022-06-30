@@ -63,21 +63,21 @@ public class BranchFromReleaseForContinueVersionStep
     if (string.IsNullOrEmpty(ancestor))
       ancestor = _ancestorFinder.GetAncestor("develop", "hotfix/v");
 
-    _log.Debug("The given/found ancestor is '{Ancestor}'", ancestor);
+    _log.Debug("The given/found ancestor is '{Ancestor}'.", ancestor);
 
     if (ancestor.Equals("develop"))
     {
-      _log.Debug("The ancestor is develop, therefore calling continue release on master");
+      _log.Debug("The ancestor is develop, therefore calling continue release on master.");
       _continueReleaseOnMasterStep.Execute(nextVersion, noPush);
     }
     else if (ancestor.StartsWith("hotfix/"))
     {
-      _log.Debug("The ancestor is hotfix/, therefore calling continue release patch");
+      _log.Debug("The ancestor is hotfix/, therefore calling continue release patch.");
       _continueReleasePatchStep.Execute(nextVersion, noPush, false);
     }
     else
     {
-      var message = $"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was {ancestor}";
+      var message = $"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was '{ancestor}'.";
       throw new InvalidOperationException(message);
     }
   }

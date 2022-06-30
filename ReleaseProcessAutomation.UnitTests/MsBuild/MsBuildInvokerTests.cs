@@ -37,6 +37,7 @@ internal class MSBuildInvokerTests
 
   private Mock<IAnsiConsole> _consoleStub;
   private Configuration.Data.Config _config;
+  private TestConsole testConsole;
 
   [SetUp]
   public void Setup ()
@@ -44,6 +45,8 @@ internal class MSBuildInvokerTests
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
     _consoleStub = new Mock<IAnsiConsole>();
+    testConsole = new TestConsole();
+    testConsole.Width(int.MaxValue);
   }
 
   [Test]
@@ -60,8 +63,7 @@ internal class MSBuildInvokerTests
     var gitClientStub = new Mock<IGitClient>();
     var msBuildMock = new Mock<IMSBuild>();
     msBuildMock.Setup(_ => _.CallMSBuild("", It.IsAny<string>())).Verifiable();
-    var testConsole = new TestConsole();
-
+    
     var msBuildInvoker = new MSBuildCallAndCommit(
         gitClientStub.Object,
         _config,
@@ -71,7 +73,7 @@ internal class MSBuildInvokerTests
     var act = msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version);
 
     Assert.That(act, Is.EqualTo(-1));
-    Assert.That(testConsole.Output, Does.Contain("There was no MSBuildPath specified in the config"));
+    Assert.That(testConsole.Output, Does.Contain("There was no MSBuild path specified in the config, will continue without invoking MSBuild."));
     msBuildMock.Verify(n => n.CallMSBuild("", It.IsAny<string>()), Times.Never);
   }
 
@@ -124,9 +126,6 @@ internal class MSBuildInvokerTests
     var msBuildMock = new Mock<IMSBuild>();
     msBuildMock.Setup(_ => _.CallMSBuild("", It.IsAny<string>())).Verifiable();
 
-    var testConsole = new TestConsole();
-    testConsole.Profile.Width = Int32.MaxValue;
-
     var msBuildInvoker = new MSBuildCallAndCommit(
         gitClientStub.Object,
         _config,
@@ -136,7 +135,7 @@ internal class MSBuildInvokerTests
     var act = msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version);
 
     Assert.That(act, Is.EqualTo(-1));
-    Assert.That(testConsole.Output, Does.Contain($"The configured MSBuildPath '{_config.MSBuildSettings.MSBuildPath}' does not exist"));
+    Assert.That(testConsole.Output, Does.Contain($"The configured MSBuild path '{_config.MSBuildSettings.MSBuildPath}' does not exist.\nPlease configure a proper MSBuild path in the config.\nWill continue without invoking MSBuild.\n"));
     msBuildMock.Verify(n => n.CallMSBuild("", It.IsAny<string>()), Times.Never);
   }
 
@@ -161,11 +160,9 @@ internal class MSBuildInvokerTests
         msBuildStub.Object,
         _consoleStub.Object);
 
-    Assert.That(
-        () => msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version),
-        Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo(
-                "Working directory not clean after call to msbuild.exe without commit message. Check your targets in the config and make sure they do not create new files."));
+    Assert.That(() => msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version),
+            Throws.InstanceOf<InvalidOperationException>()
+                    .With.Message.EqualTo("Working directory not clean after call to MSBuild.exe without commit message. Check your targets in the config and make sure they do not create new files."));
   }
 
   [Test]
@@ -191,6 +188,6 @@ internal class MSBuildInvokerTests
     Assert.That(
         () => msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version),
         Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("Working directory not clean before a call to msBuild.exe with a commit message defined in config"));
+            .With.Message.EqualTo("Working directory not clean before a call to MSBuild.exe with a commit message defined in config."));
   }
 }

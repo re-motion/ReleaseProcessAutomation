@@ -56,15 +56,15 @@ public class MSBuildCallAndCommit
 
     if (string.IsNullOrEmpty(msBuildPath))
     {
-      _log.Warning("No MSBuild Path specified in config, will continue without MSBuild.");
-      _console.WriteLine("There was no MSBuildPath specified in the config.\nWill continue without invoking MSBuild.");
+      _log.Warning("No MSBuild path specified in config, will continue without MSBuild.");
+      _console.WriteLine("There was no MSBuild path specified in the config, will continue without invoking MSBuild.");
       return -1;
     }
 
     if (!File.Exists(msBuildPath))
     {
-      _log.Warning("The configured MSBuildpath '{1}' does not exist.", msBuildPath);
-      _console.WriteLine($"The configured MSBuildPath '{msBuildPath}' does not exist.\nPlease configure a proper MSBuildPath in the config.\nWill continue without invoking MSBuild.");
+      _log.Warning("The configured MSBuild path '{1}' does not exist.", msBuildPath);
+      _console.WriteLine($"The configured MSBuild path '{msBuildPath}' does not exist.\nPlease configure a proper MSBuild path in the config.\nWill continue without invoking MSBuild.");
       return -1;
     }
 
@@ -75,7 +75,7 @@ public class MSBuildCallAndCommit
       var commitMessage = step.CommitMessage;
       if (!string.IsNullOrEmpty(commitMessage) && !_gitClient.IsWorkingDirectoryClean())
       {
-        const string message = "Working directory not clean before a call to msBuild.exe with a commit message defined in config";
+        const string message = "Working directory not clean before a call to MSBuild.exe with a commit message defined in config.";
         throw new InvalidOperationException(message);
       }
 
@@ -83,7 +83,7 @@ public class MSBuildCallAndCommit
 
       if (msBuildCallArguments == null)
       {
-        _log.Information("No MSBuild arguments available, skipping MSBuild execution");
+        _log.Information("No MSBuild arguments available, skipping MSBuild execution.");
         continue;
       }
 
@@ -93,14 +93,13 @@ public class MSBuildCallAndCommit
       {
         if (!_gitClient.IsWorkingDirectoryClean())
         {
-          const string message =
-              "Working directory not clean after call to msbuild.exe without commit message. Check your targets in the config and make sure they do not create new files.";
+          const string message = "Working directory not clean after call to MSBuild.exe without commit message. Check your targets in the config and make sure they do not create new files.";
           throw new InvalidOperationException(message);
         }
       }
       else
       {
-        _log.Information("Committing MSBuild changes with message '{CommitMessage}'", commitMessage);
+        _log.Information("Committing MSBuild changes with message '{CommitMessage}'.", commitMessage);
         var versionString = version.ToString();
         var versionedCommitMessage = commitMessage.Replace("{version}", versionString).Replace("{Version}", versionString);
         _gitClient.AddAll();

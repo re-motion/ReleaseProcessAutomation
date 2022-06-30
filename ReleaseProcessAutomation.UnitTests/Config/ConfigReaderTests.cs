@@ -38,7 +38,7 @@ internal class ConfigReaderTests
             guid.ToString()),
         Throws.InstanceOf<FileNotFoundException>()
             .With.Message.EqualTo(
-                $"Could not get Config path from '.BuildProject' because the file '{guid}\\.BuildProject' does not exist"));
+                $"Could not get config path from '.BuildProject' because the file '{guid}\\.BuildProject' does not exist."));
   }
 
   [Test]
@@ -49,7 +49,7 @@ internal class ConfigReaderTests
     Assert.That(
         () => reader.LoadConfig(""),
         Throws.InstanceOf<FileNotFoundException>()
-            .With.Message.EqualTo("Could not Load Config from '' because the file does not exist"));
+            .With.Message.EqualTo("Could not load config from '' because the file does not exist."));
   }
 
   [Test]

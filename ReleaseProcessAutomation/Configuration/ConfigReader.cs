@@ -41,11 +41,11 @@ public class ConfigReader
   /// <exception cref="InvalidOperationException">The file is not in the correct format.</exception>
   public Config LoadConfig (string configPath)
   {
-    _log.Debug("Loading Config from '{ConfigPath}'", configPath);
+    _log.Debug("Loading Config from '{ConfigPath}'.", configPath);
 
     if (!File.Exists(configPath))
     {
-      var message = $"Could not Load Config from '{configPath}' because the file does not exist";
+      var message = $"Could not load config from '{configPath}' because the file does not exist.";
       throw new FileNotFoundException(message);
     }
 
@@ -55,7 +55,7 @@ public class ConfigReader
     var config = (Config?) serializer.Deserialize(reader);
     if (config == null)
     {
-      const string message = "Could not deserialize config, please check your config settings format";
+      const string message = "Could not deserialize config, please check your config settings format.";
       throw new InvalidOperationException(message);
     }
 
@@ -68,12 +68,12 @@ public class ConfigReader
   /// <exception cref="InvalidOperationException">The file is not in the correct format.</exception>
   public string GetConfigPathFromBuildProject (string solutionRoot)
   {
-    _log.Debug("Getting Config Path from '" + c_buildProjectFileName + "' file in the solution root '{SolutionRoot}'", solutionRoot);
+    _log.Debug("Getting config path from '{c_buildProjectFileName}' file in the solution root '{solutionRoot}'.", c_buildProjectFileName, solutionRoot);
     var path = Path.Combine(solutionRoot, c_buildProjectFileName);
 
     if (!File.Exists(path))
     {
-      var message = $"Could not get Config path from '{c_buildProjectFileName}' because the file '{path}' does not exist";
+      var message = $"Could not get config path from '{c_buildProjectFileName}' because the file '{path}' does not exist.";
       throw new FileNotFoundException(message);
     }
 
@@ -83,7 +83,7 @@ public class ConfigReader
     var s = ((ConfigFile?) serializer.Deserialize(reader))?.Path;
     if (s == null)
     {
-      const string message = "Could not deserialize the '" + c_buildProjectFileName + "' file, please check the format of the file";
+      const string message = $"Could not deserialize the '{c_buildProjectFileName}' file, please check the format of the file.";
       throw new InvalidOperationException(message);
     }
 

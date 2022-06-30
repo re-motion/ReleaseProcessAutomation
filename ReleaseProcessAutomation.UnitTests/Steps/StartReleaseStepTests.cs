@@ -61,7 +61,7 @@ internal class StartReleaseStepTests
     Assert.That(
         () => startReleaseStep.Execute(commitHash, false, false),
         Throws.InstanceOf<ArgumentException>()
-            .With.Message.EqualTo("The given commit hash was not found in the repository"));
+            .With.Message.EqualTo("The given commit hash was not found in the repository."));
   }
 
   [Test]
@@ -84,7 +84,7 @@ internal class StartReleaseStepTests
     Assert.That(
         _console.Output.ReplaceLineEndings(""),
         Is.EqualTo(
-            "As you are not on a release branch, you won't be able to release a release candidate version.To create a release branch, use the command [green]'New-Release-Branch'[/]"));
+            "As you are not on a release branch, you won't be able to release a release candidate version.To create a release branch, use the command [green]'New-Release-Branch'[/]."));
   }
 
   [Test]

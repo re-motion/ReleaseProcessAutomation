@@ -42,7 +42,7 @@ internal class MSBuild
 
   public void CallMSBuild (string msBuildPath, string arguments)
   {
-    _log.Debug("Starting to call MSBuild from '{MSBuildPath}' with arguments '{Arguments}'", msBuildPath, arguments);
+    _log.Debug("Starting to call MSBuild from '{MSBuildPath}' with arguments '{Arguments}'.", msBuildPath, arguments);
 
     var msBuildStartInfo = new ProcessStartInfo(msBuildPath, arguments);
     msBuildStartInfo.UseShellExecute = false;
@@ -56,7 +56,7 @@ internal class MSBuild
     if (msBuildProcess.ExitCode != 0)
     {
       var errorMessage = msBuildProcess.StandardError.ReadToEnd();
-      var message = $"MSBuild '{arguments}' failed with Error: '{errorMessage}'";
+      var message = $"MSBuild '{arguments}' failed with Error: '{errorMessage}'.";
       throw new Exception(message);
     }
 

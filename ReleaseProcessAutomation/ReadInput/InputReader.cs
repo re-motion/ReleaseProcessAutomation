@@ -60,7 +60,7 @@ public class InputReader
     var parser = new SemanticVersionParser();
     var input = _console.Prompt(
         new TextPrompt<string>(prompt)
-            .ValidationErrorMessage("[red]That's not a valid age[/]")
+            .ValidationErrorMessage("[red]That's not a valid version.[/]")
             .Validate(version => parser.TryParseVersion(version, out _) ? ValidationResult.Success() : ValidationResult.Error()));
     return parser.ParseVersion(input);
   }

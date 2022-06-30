@@ -60,14 +60,16 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
     EnsureWorkingDirectoryClean();
 
     var preReleaseBranchName = GitClient.GetCurrentBranchName();
-    _log.Debug("The current found branch name is '{PrereleaseBranchName}'", preReleaseBranchName);
-
+    _log.Debug("The current found branch name is '{PrereleaseBranchName}'.", preReleaseBranchName);
+    
     if (preReleaseBranchName == null)
+    {
       throw new InvalidOperationException("Could not find current branch.");
+    }
 
     if (!preReleaseBranchName.StartsWith("prerelease/"))
     {
-      const string message = "Cannot call ContinuePreReleaseFromDevelop when not on prerelease branch";
+      const string message = "Cannot call ContinuePreReleaseFromDevelop when not on prerelease branch.";
       throw new InvalidOperationException(message);
     }
 
@@ -83,7 +85,7 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
     GitClient.Checkout(preReleaseBranchName);
 
     var tagName = $"v{nextVersion}";
-    _log.Debug("Will try to create tag with name '{TagName}'", tagName);
+    _log.Debug("Will try to create tag with name '{TagName}'.", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
       var message = $"Could not create tag {tagName} because it already exists";

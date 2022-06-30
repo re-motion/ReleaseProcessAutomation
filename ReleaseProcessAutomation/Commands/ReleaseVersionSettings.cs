@@ -27,17 +27,17 @@ public class ReleaseVersionSettings : CommandSettings
 {
   [UsedImplicitly]
   [CommandOption("-c|--commit")]
-  [Description("Optional parameter to define the CommitHash on which the ReleaseBranch will start")]
+  [Description("Optional parameter to define the commit hash on which the release branch will start.")]
   public string? CommitHash { get; set; }
 
   [UsedImplicitly]
   [CommandOption("-p|--pause")]
   [Description(
-      "Optional <switch> Parameter. Stops the script after commiting and before merging or tagging the release branch. Can be continued by using \"continue-version\"")]
+      "Optional <switch> parameter. Stops the script after commiting and before merging or tagging the release branch. Can be continued by using \"continue-version\".")]
   public bool PauseForCommit { get; set; }
 
   [UsedImplicitly]
   [CommandOption("-n|--noPush")]
-  [Description("Optional <switch> Parameter. Stops the script before pushing the changes to the remote repositories")]
+  [Description("Optional <switch> parameter. Stops the script before pushing the changes to the remote repositories.")]
   public bool DoNotPush { get; set; }
 }

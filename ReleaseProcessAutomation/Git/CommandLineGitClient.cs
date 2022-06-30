@@ -280,7 +280,7 @@ public class CommandLineGitClient : IGitClient
     if (!commit.Success)
     {
       var status = ExecuteGitCommandWithOutput("status");
-      var errorMessage = $"Could not Commit on branch.\nGit status:\n{status.Output}\n\nGit error:\n{commit.Output}";
+      var errorMessage = $"Could not commit on branch.\nGit status:\n{status.Output}\n\nGit error:\n{commit.Output}";
       throw new Exception(errorMessage);
     }
   }
@@ -375,7 +375,7 @@ public class CommandLineGitClient : IGitClient
     foreach (var remoteName in remoteNames)
       if (!string.IsNullOrEmpty(remoteName))
       {
-        _log.Debug("Pushing branch '{BranchName}' and tag '{TagName}' to remote '{RemoteName}'", branchName, tagName, remoteName);
+        _log.Debug("Pushing branch '{BranchName}' and tag '{TagName}' to remote '{RemoteName}'.", branchName, tagName, remoteName);
 
         var upstream = "";
 
@@ -410,7 +410,7 @@ public class CommandLineGitClient : IGitClient
     if (string.IsNullOrEmpty(branchName))
     {
       var currentCommit = ExecuteGitCommandWithOutput("rev-parse HEAD");
-      var message = $"Did not find current branch when trying to find first ancestor. Current commit hash: '{currentCommit}'";
+      var message = $"Did not find current branch when trying to find first ancestor. Current commit hash: '{currentCommit}'.";
       throw new InvalidOperationException(message);
     }
 
@@ -439,7 +439,7 @@ public class CommandLineGitClient : IGitClient
 
   private CommandLineResult ExecuteGitCommandWithOutput (string arguments)
   {
-    _log.Debug("Executing git command with output: git '{Arguments}'", arguments);
+    _log.Debug("Executing git command with output: git '{Arguments}'.", arguments);
 
     var psi = new ProcessStartInfo("git", arguments)
               {
@@ -462,7 +462,7 @@ public class CommandLineGitClient : IGitClient
 
   private void ExecuteGitCommand (string arguments)
   {
-    _log.Debug("Executing git command: git '{Arguments}'", arguments);
+    _log.Debug("Executing git command: git '{Arguments}'.", arguments);
 
     using var command = Process.Start("git", arguments);
     command.WaitForExit(c_gitProcessWaitTimeout);

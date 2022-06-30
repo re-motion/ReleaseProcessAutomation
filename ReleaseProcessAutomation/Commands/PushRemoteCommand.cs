@@ -45,7 +45,7 @@ internal class PushRemoteCommand : Command<PushRemoteSettings>
 
   public override int Execute ([NotNull] CommandContext context, [NotNull] PushRemoteSettings settings)
   {
-    var message = $"Pushing branch '{settings.BranchName}' and tag '{settings.TagName}'";
+    var message = $"Pushing branch '{settings.BranchName}' and tag '{settings.TagName}'.";
     _log.Information(message);
     _console.WriteLine(message);
 

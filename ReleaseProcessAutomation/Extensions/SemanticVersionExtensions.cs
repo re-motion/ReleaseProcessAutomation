@@ -30,7 +30,7 @@ public static class SemanticVersionExtensions
       this SemanticVersion semanticVersion,
       bool withoutPreRelease = false)
   {
-    s_log.Debug("Getting next possible develop version of '{SemanticVersion}'", semanticVersion);
+    s_log.Debug("Getting next possible develop version of '{SemanticVersion}'.", semanticVersion);
 
     if (semanticVersion.Pre != null)
     {
@@ -87,7 +87,7 @@ public static class SemanticVersionExtensions
 
   public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsHotfix (this SemanticVersion semanticVersion)
   {
-    s_log.Debug("Getting next possible hotfix version of '{SemanticVersion}'", semanticVersion);
+    s_log.Debug("Getting next possible hotfix version of '{SemanticVersion}'.", semanticVersion);
 
     var patchVersion = GetNextPatchVersion(semanticVersion);
 
@@ -115,7 +115,7 @@ public static class SemanticVersionExtensions
                    GetNextPatchVersion(semanticVersion)
                };
 
-      const string message = "Could not get next possible next versions for hotfix";
+      const string message = "Could not get next possible next versions for hotfix.";
       throw new InvalidOperationException(message);
     }
 
@@ -129,7 +129,7 @@ public static class SemanticVersionExtensions
 
   public static IReadOnlyCollection<SemanticVersion> GetCurrentPossibleVersionsHotfix (this SemanticVersion semanticVersion)
   {
-    s_log.Debug("Getting current possible develop version of '{SemanticVersion}'", semanticVersion);
+    s_log.Debug("Getting current possible develop version of '{SemanticVersion}'.", semanticVersion);
 
     if (semanticVersion.Pre == PreReleaseStage.alpha)
       return new[]

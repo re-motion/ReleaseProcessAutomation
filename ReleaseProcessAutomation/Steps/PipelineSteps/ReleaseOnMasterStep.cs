@@ -71,7 +71,7 @@ public class ReleaseOnMasterStep
 
     if (string.IsNullOrEmpty(GitClient.GetCurrentBranchName()))
     {
-      var message = $"Could not find a branch in '{Environment.CurrentDirectory}'";
+      var message = $"Could not find a branch in '{Environment.CurrentDirectory}'.";
       _log.Warning(message);
       Console.WriteLine(message);
     }
@@ -79,7 +79,7 @@ public class ReleaseOnMasterStep
     if (!GitClient.IsOnBranch("develop"))
     {
       var currentBranch = GitClient.GetCurrentBranchName();
-      var message = $"Cannot call ReleaseOnMasterStep when not on develop branch. Current branch: '{currentBranch}'";
+      var message = $"Cannot call ReleaseOnMasterStep when not on develop branch. Current branch: '{currentBranch}'.";
       throw new InvalidOperationException(message);
     }
 
@@ -90,7 +90,7 @@ public class ReleaseOnMasterStep
       throw new Exception(message);
     }
 
-    _log.Debug("Getting next possible jira versions for develop from version '{NextVersion}'", nextVersion);
+    _log.Debug("Getting next possible jira versions for develop from version '{NextVersion}'.", nextVersion);
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
     var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version(open JIRA issues get moved there):", nextPossibleVersions);
 

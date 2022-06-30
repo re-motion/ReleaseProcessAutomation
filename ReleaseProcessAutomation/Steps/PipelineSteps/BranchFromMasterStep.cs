@@ -64,11 +64,11 @@ public class BranchFromMasterStep
   public void Execute (string? commitHash, bool startReleasePhase, bool pauseForCommit, bool noPush)
   {
     _semanticVersionedGitRepository.TryGetCurrentVersion(out var currentVersion, "master");
-    _log.Debug("The current found version is '{CurrentVersion}'", currentVersion);
-
+    _log.Debug("The current found version is '{CurrentVersion}'.", currentVersion);
+    
     var nextVersion = FindNextPatch(currentVersion ?? throw new InvalidOperationException("No current version exists."));
-    _log.Debug("The next version to be released is '{NextVersion}'", nextVersion);
-
+    _log.Debug("The next version to be released is '{NextVersion}'.", nextVersion);
+    
     _releasePatchStep.Execute(nextVersion, commitHash, startReleasePhase, pauseForCommit, noPush, true);
   }
 }
