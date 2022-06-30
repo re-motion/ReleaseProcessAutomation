@@ -130,7 +130,6 @@ namespace ReleaseProcessAutomation.Tests.MSBuild
 
         Assert.That(act, Is.EqualTo(-1));
         Assert.That(testConsole.Output, Does.Contain($"The configured MSBuildPath '{_config.MSBuildSettings.MSBuildPath}' does not exist"));
-        Assert.That(testConsole.Output, Does.Contain($"Current directory: '{Environment.CurrentDirectory}'"));
         msBuildMock.Verify(n => n.CallMSBuild("", It.IsAny<string>()),Times.Never);
     }
 
