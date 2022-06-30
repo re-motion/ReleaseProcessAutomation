@@ -28,7 +28,7 @@ namespace ReleaseProcessAutomation.Steps.PipelineSteps;
 /// </summary>
 public interface IPushPatchReleaseStep
 {
-  void Execute (string mergeTargetBranchName, string tagName, string releaseBranchName);
+  void Execute (string mergeTargetBranchName, string tagName, string releaseBranchName, string hotfixBranchName);
 }
 
 /// <inheritdoc cref="IPushPatchReleaseStep" />
@@ -44,10 +44,11 @@ internal class PushPatchReleaseStep
     _config = config;
   }
 
-  public void Execute (string mergeTargetBranchName, string tagName, string releaseBranchName)
+  public void Execute (string mergeTargetBranchName, string tagName, string releaseBranchName, string hotfixBranchName)
   {
     var remoteNames = _config.RemoteRepositories.RemoteNames;
     _gitClient.PushToRepos(remoteNames, mergeTargetBranchName, tagName);
     _gitClient.PushToRepos(remoteNames, releaseBranchName);
+    _gitClient.PushToRepos(remoteNames, hotfixBranchName);
   }
 }
