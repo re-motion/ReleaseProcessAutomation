@@ -464,8 +464,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   public void ReleaseNewBranch_FromDevelop ()
   {
     var correctLogs =
-        @"*  (develop)Update metadata to version '1.3.0'.
-          *  (HEAD -> release/v1.2.0, master)ConfigAndBuildProject
+        @"*  (origin/develop, develop)Update metadata to version '1.3.0'.
+          *  (HEAD -> release/v1.2.0, origin/release/v1.2.0, master)ConfigAndBuildProject
           *  (origin/master)Initial CommitAll
           ";
 

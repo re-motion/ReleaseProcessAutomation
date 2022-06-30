@@ -158,7 +158,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   public void ReleaseNewBranch_FromHotfix ()
   {
     var correctLogs =
-        @"*  (HEAD -> release/v1.2.1, master, hotfix/v1.2.1)ConfigAndBuildProject
+        @"*  (HEAD -> release/v1.2.1, origin/release/v1.2.1, origin/hotfix/v1.2.1, master, hotfix/v1.2.1)ConfigAndBuildProject
           *  (origin/master)Initial CommitAll
           ";
 
@@ -178,12 +178,12 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   public void ReleaseNewBranchWithGivenCommit_FromHotfix_ReleaseBranchOnGivenCommit ()
   {
     var correctLogs =
-        @"*  (HEAD -> release/v1.2.1) Commit afterwards
-          | *  (hotfix/v1.2.1) Commit on hotfix
-          |/
-          *  Commit for release
-          *  (master) ConfigAndBuildProject
-          *  (origin/master) Initial CommitAll
+        @"*  (HEAD -> release/v1.2.1)Commit afterwards
+          | *  (origin/hotfix/v1.2.1, hotfix/v1.2.1)Commit on hotfix
+          |/  
+          *  (origin/release/v1.2.1)Commit for release
+          *  (master)ConfigAndBuildProject
+          *  (origin/master)Initial CommitAll
           ";
 
     ExecuteGitCommand("checkout -b hotfix/v1.2.1");

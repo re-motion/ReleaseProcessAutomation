@@ -43,6 +43,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
 {
   private readonly IContinueReleasePatchStep _continueReleasePatchStep;
   private readonly IJiraFunctionality _ijIraFunctionality;
+  private readonly IPushNewReleaseBranchStep _pushNewReleaseBranchStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ReleasePatchStep>();
 
@@ -52,6 +53,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
       IInputReader inputReader,
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IContinueReleasePatchStep continueReleasePatchStep,
+      IPushNewReleaseBranchStep pushNewReleaseBranchStep,
       IAnsiConsole console,
       IJiraFunctionality ijIraFunctionality)
       : base(gitClient, config, inputReader, console)
@@ -59,13 +61,15 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _continueReleasePatchStep = continueReleasePatchStep;
     _ijIraFunctionality = ijIraFunctionality;
+    _pushNewReleaseBranchStep = pushNewReleaseBranchStep;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool startReleasePhase, bool pauseForCommit, bool noPush, bool onMaster)
   {
     EnsureWorkingDirectoryClean();
 
-    if (GitClient.GetCurrentBranchName() == null)
+    var currentBranchName = GitClient.GetCurrentBranchName();
+    if (currentBranchName == null)
     {
       const string message = "Could not get the name of the current branch.";
       throw new InvalidOperationException(message);
@@ -73,7 +77,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
 
     if (onMaster)
     {
-      if (!GitClient.IsOnBranch("master"))
+      if (currentBranchName != "master")
       {
         const string message = "Cannot release a patch for master when not on master branch.";
         throw new InvalidOperationException(message);
@@ -81,7 +85,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     }
     else
     {
-      if (!GitClient.IsOnBranch("hotfix/"))
+      if (!currentBranchName.StartsWith("hotfix/"))
       {
         const string message = "Cannot release a patch for hotfix when not on hotfix branch";
         throw new InvalidOperationException(message);
@@ -115,7 +119,10 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     GitClient.CheckoutCommitWithNewBranch(commitHash, releaseBranchName);
 
     if (startReleasePhase)
+    {
+      _pushNewReleaseBranchStep.Execute(releaseBranchName, currentBranchName);
       return;
+    }
 
     _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
 

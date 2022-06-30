@@ -43,6 +43,7 @@ public class ReleaseOnMasterStep
     : ReleaseProcessStepBase, IReleaseOnMasterStep
 {
   private readonly IContinueReleaseOnMasterStep _continueReleaseOnMasterStep;
+  private readonly IPushNewReleaseBranchStep _pushNewReleaseBranchStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly IJiraFunctionality _ijIraFunctionality;
   private readonly ILogger _log = Log.ForContext<ReleaseOnMasterStep>();
@@ -51,6 +52,7 @@ public class ReleaseOnMasterStep
       IGitClient gitClient,
       IInputReader inputReader,
       IContinueReleaseOnMasterStep continueReleaseOnMasterStep,
+      IPushNewReleaseBranchStep pushNewReleaseBranchStep,
       Config config,
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IAnsiConsole console,
@@ -58,6 +60,7 @@ public class ReleaseOnMasterStep
       : base(gitClient, config, inputReader, console)
   {
     _continueReleaseOnMasterStep = continueReleaseOnMasterStep;
+    _pushNewReleaseBranchStep = pushNewReleaseBranchStep;
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _ijIraFunctionality = ijIraFunctionality;
   }
@@ -100,8 +103,10 @@ public class ReleaseOnMasterStep
     GitClient.Checkout(releaseBranchName);
 
     if (startReleasePhase)
+    {
+      _pushNewReleaseBranchStep.Execute(releaseBranchName, "develop");
       return;
-
+    }
     _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);

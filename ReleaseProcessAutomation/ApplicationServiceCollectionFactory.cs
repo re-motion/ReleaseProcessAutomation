@@ -72,6 +72,8 @@ public class ApplicationServiceCollectionFactory
         .AddTransient<IPushMasterReleaseStep, PushMasterReleaseStep>()
         .AddTransient<IPushPreReleaseStep, PushPreReleaseStep>()
         .AddTransient<IPushPatchReleaseStep, PushPatchReleaseStep>()
+        .AddTransient<IPushNewReleaseBranchStep, PushNewReleaseBranchStep>()
+        
         .AddSingleton(
             _ =>
             {

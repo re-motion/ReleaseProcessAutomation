@@ -41,6 +41,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   private Mock<IMSBuildCallAndCommit> _msBuildInvokerMock;
   private Mock<IContinueReleaseOnMasterStep> _continueReleaseOnMasterMock;
   private Mock<IJiraFunctionality> _jiraFunctionalityMock;
+  private Mock<IPushNewReleaseBranchStep> _pushNewReleaseBranchMock;
 
   [SetUp]
   public void Setup ()
@@ -51,6 +52,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     _continueReleaseOnMasterMock = new Mock<IContinueReleaseOnMasterStep>();
     _consoleMock = new Mock<IAnsiConsole>();
     _jiraFunctionalityMock = new Mock<IJiraFunctionality>();
+    _pushNewReleaseBranchMock = new Mock<IPushNewReleaseBranchStep>(MockBehavior.Strict);
   }
 
   [Test]
@@ -67,6 +69,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         gitClientMock.Object,
         readInputMock.Object,
         _continueReleaseOnMasterMock.Object,
+        _pushNewReleaseBranchMock.Object,
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
@@ -98,6 +101,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         gitClientStub.Object,
         readInputStub.Object,
         _continueReleaseOnMasterMock.Object,
+        _pushNewReleaseBranchMock.Object,
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
@@ -131,6 +135,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         gitClientStub.Object,
         readInputStub.Object,
         _continueReleaseOnMasterMock.Object,
+        _pushNewReleaseBranchMock.Object,
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
@@ -143,7 +148,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   }
 
   [Test]
-  public void Execute_NothingThrowsButStartReleasePhase_ShouldNotCallNextStep ()
+  public void Execute_NothingThrowsButStartReleasePhase_ShouldNotCallNextStepButPushReleaseBranchStep ()
   {
     var nextVersion = new SemanticVersion
                       {
@@ -157,6 +162,8 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
     gitClientStub.Setup(_ => _.DoesBranchExist($"release/v{nextVersion}")).Returns(false);
 
+    _pushNewReleaseBranchMock.Setup(_ => _.Execute($"release/v{nextVersion}", "develop"));
+    
     var readInputStub = new Mock<IInputReader>();
     readInputStub.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), It.IsAny<IReadOnlyCollection<SemanticVersion>>())).Returns(nextJiraVersion);
 
@@ -164,6 +171,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         gitClientStub.Object,
         readInputStub.Object,
         _continueReleaseOnMasterMock.Object,
+        _pushNewReleaseBranchMock.Object,
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
@@ -172,7 +180,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     step.Execute(nextVersion, "commitHash", true, false, false);
 
     _jiraFunctionalityMock.Verify(_ => _.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion, false), Times.Never);
-
+    _pushNewReleaseBranchMock.Verify(_ => _.Execute($"release/v{nextVersion}", "develop"));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
   }
 
@@ -199,6 +207,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         gitClientStub.Object,
         readInputStub.Object,
         _continueReleaseOnMasterMock.Object,
+        _pushNewReleaseBranchMock.Object,
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
