@@ -65,7 +65,7 @@ namespace ReleaseProcessAutomation.Tests.Steps.Continues
     public void Execute_FromHotfixWithNewBranch_CreatesNewSupportBranch ()
     {
       _gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
-      _pushReleasePatchMock.Setup(_ => _.Execute("support/v0.0", "v0.0.0", "release/v0.0.0")).Verifiable();
+      _pushReleasePatchMock.Setup(_ => _.Execute("support/v0.0", "v0.0.0", "release/v0.0.0", "hotfix/v0.0.1")).Verifiable();
       _inputReaderStub.Setup(_ => _.ReadConfirmation(It.IsAny<bool>())).Returns(true);
       
       var releasePatchStep = new ContinueReleasePatchStep(
@@ -89,7 +89,7 @@ namespace ReleaseProcessAutomation.Tests.Steps.Continues
     public void Execute_OnMasterWithoutErrors_CallsNextStep ()
     {
       _gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
-      _pushReleasePatchMock.Setup(_ => _.Execute("master", "v0.0.0", "release/v0.0.0")).Verifiable();
+      _pushReleasePatchMock.Setup(_ => _.Execute("master", "v0.0.0", "release/v0.0.0", "hotfix/v0.0.1")).Verifiable();
 
       var releasePatchStep = new ContinueReleasePatchStep(
           _gitClientStub.Object,
@@ -109,7 +109,7 @@ namespace ReleaseProcessAutomation.Tests.Steps.Continues
     public void Execute_NotOnMasterWithoutErrors_CallsNextStep()
     {
       _gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
-      _pushReleasePatchMock.Setup(_ => _.Execute("support/v0.0", "v0.0.0", "release/v0.0.0")).Verifiable();
+      _pushReleasePatchMock.Setup(_ => _.Execute("support/v0.0", "v0.0.0", "release/v0.0.0", "hotfix/v0.0.1")).Verifiable();
 
       var releasePatchStep = new ContinueReleasePatchStep(
           _gitClientStub.Object,
@@ -147,7 +147,7 @@ namespace ReleaseProcessAutomation.Tests.Steps.Continues
           () => releasePatchStep.Execute(new SemanticVersion(), true, false),
           Throws.Nothing);
       _msBuildExecutorMock.Verify();
-      _pushReleasePatchMock.Verify(_=>_.Execute(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()),Times.Never);
+      _pushReleasePatchMock.Verify(_=>_.Execute(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>(), It.IsAny<string>()),Times.Never);
     }
 
     [Test]
@@ -170,7 +170,7 @@ namespace ReleaseProcessAutomation.Tests.Steps.Continues
           () => releasePatchStep.Execute(new SemanticVersion(), true, true),
           Throws.Nothing);
       _msBuildExecutorMock.Verify();
-      _pushReleasePatchMock.Verify(_ => _.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+      _pushReleasePatchMock.Verify(_ => _.Execute(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
   }
 }
