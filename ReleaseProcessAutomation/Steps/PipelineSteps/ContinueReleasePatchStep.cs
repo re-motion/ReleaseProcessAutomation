@@ -86,7 +86,8 @@ public class ContinueReleasePatchStep
     CreateTagWithMessage(tagName);
 
     var nextPatchVersion = nextVersion.GetNextPatchVersion();
-    GitClient.CheckoutNewBranch($"hotfix/v{nextPatchVersion}");
+    var hotfixBranch = $"hotfix/v{nextPatchVersion}";
+    GitClient.CheckoutNewBranch(hotfixBranch);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, nextPatchVersion);
 
@@ -99,6 +100,6 @@ public class ContinueReleasePatchStep
     if (noPush)
       return;
 
-    _pushPatchReleaseStep.Execute(mergeTargetBranchName, tagName, toMergeBranchName);
+    _pushPatchReleaseStep.Execute(mergeTargetBranchName, tagName, toMergeBranchName, hotfixBranch);
   }
 }

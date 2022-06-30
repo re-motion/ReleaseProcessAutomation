@@ -29,7 +29,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
   public void ReleaseWithRC_FromSupportHotfixRelease_CreatesHotfixBranch ()
   {
     var correctLogs =
-        @"*  (hotfix/v1.3.6)Update metadata to version '1.3.6'.
+        @"*  (origin/hotfix/v1.3.6, hotfix/v1.3.6)Update metadata to version '1.3.6'.
           *    (HEAD -> support/v1.3, tag: v1.3.5, origin/support/v1.3)Merge branch 'release/v1.3.5' into support/v1.3
           |\  
           | *  (origin/release/v1.3.5, release/v1.3.5)Update metadata to version '1.3.5'.
@@ -70,7 +70,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
   {
     var correctLogs1 =
         @"*  (hotfix/v1.4.0)Update metadata to version '1.4.0'.
-          | *  (hotfix/v1.3.6)Update metadata to version '1.3.6'.
+          | *  (origin/hotfix/v1.3.6, hotfix/v1.3.6)Update metadata to version '1.3.6'.
           |/  
           *    (HEAD -> support/v1.3, tag: v1.3.5, origin/support/v1.3, support/v1.4) Merge branch 'release/v1.3.5' into support/v1.3
           |\  
@@ -85,7 +85,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
           ";
     
     var correctLogs2 =
-        @"*  (hotfix/v1.3.6)Update metadata to version '1.3.6'.
+        @"*  (origin/hotfix/v1.3.6, hotfix/v1.3.6)Update metadata to version '1.3.6'.
           | *  (hotfix/v1.4.0)Update metadata to version '1.4.0'.
           |/  
           *    (HEAD -> support/v1.3, tag: v1.3.5, origin/support/v1.3, support/v1.4) Merge branch 'release/v1.3.5' into support/v1.3
