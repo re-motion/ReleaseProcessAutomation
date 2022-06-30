@@ -27,7 +27,7 @@ internal class ReleaseFromMasterTests : IntegrationTestSetup
   public void ReleasePatch_FromMaster_ReleaseNewPatch ()
   {
     var correctLogs =
-        @"*  (hotfix/v1.0.2)Update metadata to version '1.0.2'.
+        @"*  (origin/hotfix/v1.0.2, hotfix/v1.0.2)Update metadata to version '1.0.2'.
           *    (HEAD -> master, tag: v1.0.1, origin/master)Merge branch 'release/v1.0.1' into master
           |\  
           | *  (origin/release/v1.0.1, release/v1.0.1)Update metadata to version '1.0.1'.

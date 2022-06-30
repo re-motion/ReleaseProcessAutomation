@@ -84,7 +84,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   public void ReleaseNewPatch_FromHotfix_ToSupportWithFollowingHotfix ()
   {
     var correctLogs =
-        @"*  (hotfix/v1.1.2)Update metadata to version '1.1.2'.
+        @"*  (origin/hotfix/v1.1.2, hotfix/v1.1.2)Update metadata to version '1.1.2'.
           *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1) Merge branch 'release/v1.1.1' into support/v1.1
           |\  
           | *  (origin/release/v1.1.1, release/v1.1.1)Update metadata to version '1.1.1'.
@@ -115,7 +115,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   public void ReleaseNewPatch_FromHotfixWithUserRequestingNewSupportBranch_CreatesNewSupportBranchAndHotfixBranch ()
   {
     var correctLogs1 =
-        @"*  (hotfix/v1.1.2)Update metadata to version '1.1.2'.
+        @"*  (origin/hotfix/v1.1.2, hotfix/v1.1.2)Update metadata to version '1.1.2'.
           | *  (hotfix/v1.2.0)Update metadata to version '1.2.0'.
           |/  
           *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1, support/v1.2) Merge branch 'release/v1.1.1' into support/v1.1
@@ -128,7 +128,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
 
     var correctLogs2 =
         @"*  (hotfix/v1.2.0)Update metadata to version '1.2.0'.
-          | *  (hotfix/v1.1.2)Update metadata to version '1.1.2'.
+          | *  (origin/hotfix/v1.1.2, hotfix/v1.1.2)Update metadata to version '1.1.2'.
           |/  
           *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1, support/v1.2) Merge branch 'release/v1.1.1' into support/v1.1
           |\  
@@ -210,7 +210,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   public void ReleaseToSupport_WithPauseAndCommitAndCloseVersion_FinishesSuccessfully ()
   {
     var correctLogs = 
-        @"*  (hotfix/v1.2.2)Update metadata to version '1.2.2'.
+        @"*  (origin/hotfix/v1.2.2, hotfix/v1.2.2)Update metadata to version '1.2.2'.
           *    (HEAD -> support/v1.2, tag: v1.2.1, origin/support/v1.2) Merge branch 'release/v1.2.1' into support/v1.2
           |\  
           | *  (origin/release/v1.2.1, release/v1.2.1)Update metadata to version '1.2.1'.
