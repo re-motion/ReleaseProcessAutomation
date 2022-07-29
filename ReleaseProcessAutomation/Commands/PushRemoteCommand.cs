@@ -48,7 +48,7 @@ internal class PushRemoteCommand : Command<PushRemoteSettings>
     var message = $"Pushing branch '{settings.BranchName}' and tag '{settings.TagName}'";
     _log.Information(message);
     _console.WriteLine(message);
-    
+
     var remoteRepos = _config.RemoteRepositories.RemoteNames;
     _gitClient.PushToRepos(remoteRepos, settings.BranchName, settings.TagName);
 

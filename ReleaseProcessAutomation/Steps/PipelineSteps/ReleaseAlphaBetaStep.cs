@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Git;
+using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
@@ -43,6 +44,7 @@ public class ReleaseAlphaBetaStep
     : ReleaseProcessStepBase, IReleaseAlphaBetaStep
 {
   private readonly IContinueAlphaBetaStep _continueAlphaBetaStep;
+  private readonly IJiraFunctionality _ijIraFunctionality;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ReleaseAlphaBetaStep>();
 
@@ -52,11 +54,13 @@ public class ReleaseAlphaBetaStep
       IInputReader inputReader,
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IContinueAlphaBetaStep continueAlphaBetaStep,
-      IAnsiConsole console)
+      IAnsiConsole console,
+      IJiraFunctionality ijIraFunctionality)
       : base(gitClient, config, inputReader, console)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _continueAlphaBetaStep = continueAlphaBetaStep;
+    _ijIraFunctionality = ijIraFunctionality;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool pauseForCommit, bool noPush)
@@ -64,7 +68,7 @@ public class ReleaseAlphaBetaStep
     EnsureWorkingDirectoryClean();
 
     var currentBranchName = GitClient.GetCurrentBranchName();
-    
+
     IReadOnlyCollection<SemanticVersion> nextPossibleJiraVersions;
     if (GitClient.IsOnBranch("develop"))
     {
@@ -84,15 +88,13 @@ public class ReleaseAlphaBetaStep
 
     var branchName = $"prerelease/v{nextVersion}";
     if (GitClient.DoesBranchExist(branchName))
-    {
       throw new InvalidOperationException($"The branch '{branchName}' already exists.");
-    }
 
     GitClient.CheckoutCommitWithNewBranch(commitHash, branchName);
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there):", nextPossibleJiraVersions);
 
-    //Release Jira Stuff
+    _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

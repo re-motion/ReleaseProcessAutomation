@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 
@@ -30,6 +29,7 @@ public class SemanticVersionedGitRepository
 {
   private readonly IGitClient _gitClient;
   private readonly ILogger _log = Log.ForContext<SemanticVersionedGitRepository>();
+
   public SemanticVersionedGitRepository (IGitClient gitClient)
   {
     _gitClient = gitClient;

@@ -18,7 +18,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ReleaseProcessAutomation.Configuration;
 using ReleaseProcessAutomation.Configuration.Data;
 using Serilog;
 
@@ -27,15 +26,17 @@ namespace ReleaseProcessAutomation.Extensions;
 public static class ConfigExtensions
 {
   private static readonly ILogger s_log = Log.ForContext(typeof(ConfigExtensions));
-  
-  public static IReadOnlyCollection<string> GetIgnoredFiles (this Config config, IgnoreListType ignoreListType) =>
-      ignoreListType switch
-      {
-          IgnoreListType.DevelopStableMergeIgnoreList => config.DevelopStableMergeIgnoreList.FileName.Where(n => n is { Length: >0 }).ToArray(),
-          IgnoreListType.TagStableMergeIgnoreList => config.TagStableMergeIgnoreList.FileName.Where(n => n is { Length: >0 }).ToArray(),
-          IgnoreListType.PreReleaseMergeIgnoreList => config.PreReleaseMergeIgnoreList.FileName.Where(n => n is { Length: >0 }).ToArray(),
-          _ => Array.Empty<string>()
-      };
+
+  public static IReadOnlyCollection<string> GetIgnoredFiles (this Config config, IgnoreListType ignoreListType)
+  {
+    return ignoreListType switch
+    {
+        IgnoreListType.DevelopStableMergeIgnoreList => config.DevelopStableMergeIgnoreList.FileName.Where(n => n is { Length: > 0 }).ToArray(),
+        IgnoreListType.TagStableMergeIgnoreList => config.TagStableMergeIgnoreList.FileName.Where(n => n is { Length: > 0 }).ToArray(),
+        IgnoreListType.PreReleaseMergeIgnoreList => config.PreReleaseMergeIgnoreList.FileName.Where(n => n is { Length: > 0 }).ToArray(),
+        _ => Array.Empty<string>()
+    };
+  }
 
   public static MSBuildSteps GetMSBuildSteps (this Config config, MSBuildMode msBuildMode)
   {
@@ -45,7 +46,8 @@ public static class ConfigExtensions
     if (msBuildMode == MSBuildMode.DevelopmentForNextRelease)
       return config.DevelopmentForNextReleaseMSBuildSteps;
 
-    const string message = "Invalid Parameter in InvokeMSBuildAndCommit. No MSBuildStepsCompleted. Please check if msBuildMode parameter is equivalent with the value in releaseProcessScript.config";
+    const string message =
+        "Invalid Parameter in InvokeMSBuildAndCommit. No MSBuildStepsCompleted. Please check if msBuildMode parameter is equivalent with the value in releaseProcessScript.config";
     throw new ArgumentException(message);
   }
 }

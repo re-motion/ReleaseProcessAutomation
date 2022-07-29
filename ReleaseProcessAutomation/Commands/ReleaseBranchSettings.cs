@@ -29,5 +29,4 @@ internal class ReleaseBranchSettings : CommandSettings
   [CommandOption("-c|--commit")]
   [Description("Optional Argument. Defines on which commit hash you want the release branch to start.")]
   public string? CommitHash { get; set; }
-
 }

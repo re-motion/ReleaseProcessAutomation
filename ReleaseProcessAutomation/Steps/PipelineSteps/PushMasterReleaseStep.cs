@@ -66,7 +66,7 @@ public class PushMasterReleaseStep
 
     EnsureBranchUpToDate("master");
     EnsureBranchUpToDate("develop");
-    
+
     GitClient.PushToRepos(remoteNames, "master", tagName);
     GitClient.PushToRepos(remoteNames, "develop");
   }

@@ -61,11 +61,9 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
 
     var preReleaseBranchName = GitClient.GetCurrentBranchName();
     _log.Debug("The current found branch name is '{PrereleaseBranchName}'", preReleaseBranchName);
-    
+
     if (preReleaseBranchName == null)
-    {
       throw new InvalidOperationException("Could not find current branch.");
-    }
 
     if (!preReleaseBranchName.StartsWith("prerelease/"))
     {

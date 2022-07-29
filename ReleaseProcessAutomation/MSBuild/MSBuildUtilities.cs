@@ -17,7 +17,6 @@
 
 using System;
 using System.Text;
-using ReleaseProcessAutomation.Configuration;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;

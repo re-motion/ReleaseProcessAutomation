@@ -32,4 +32,6 @@ public interface IInputReader
   string ReadString (string prompt);
 
   string ReadStringChoice (string prompt, IReadOnlyCollection<string> foundAncestors);
+
+  string ReadHiddenString (string prompt);
 }

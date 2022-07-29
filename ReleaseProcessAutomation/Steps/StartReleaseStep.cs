@@ -90,7 +90,7 @@ public class StartReleaseStep
         _branchFromHotfixStep.Execute(commitHash, startReleasePhase, pauseForCommit, noPush);
       }
       else if (_gitClient.IsOnBranch("develop"))
-      {      
+      {
         _log.Debug("On branch 'develop', calling branch from develop");
         _branchFromDevelopStep.Execute(commitHash, pauseForCommit, noPush, startReleasePhase);
       }

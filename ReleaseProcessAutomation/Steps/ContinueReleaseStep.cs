@@ -63,7 +63,7 @@ public class ContinueReleaseStep
     //should already be on the releaseBranch, therefore this version is the next version
     var nextVersion = new SemanticVersionParser().ParseVersionFromBranchName(currentBranchName);
     _log.Debug("Next version to be released is '{NextVersion}'", nextVersion);
-    
+
     if (_gitClient.IsOnBranch("prerelease/"))
     {
       _log.Debug("On branch '{BranchName}', calling branch from pre release for continue version", currentBranchName);

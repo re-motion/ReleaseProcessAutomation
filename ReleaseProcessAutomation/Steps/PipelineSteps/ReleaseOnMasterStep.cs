@@ -19,6 +19,7 @@ using System;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Git;
+using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
@@ -43,6 +44,7 @@ public class ReleaseOnMasterStep
 {
   private readonly IContinueReleaseOnMasterStep _continueReleaseOnMasterStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
+  private readonly IJiraFunctionality _ijIraFunctionality;
   private readonly ILogger _log = Log.ForContext<ReleaseOnMasterStep>();
 
   public ReleaseOnMasterStep (
@@ -51,11 +53,13 @@ public class ReleaseOnMasterStep
       IContinueReleaseOnMasterStep continueReleaseOnMasterStep,
       Config config,
       IMSBuildCallAndCommit msBuildCallAndCommit,
-      IAnsiConsole console)
+      IAnsiConsole console,
+      IJiraFunctionality ijIraFunctionality)
       : base(gitClient, config, inputReader, console)
   {
     _continueReleaseOnMasterStep = continueReleaseOnMasterStep;
     _msBuildCallAndCommit = msBuildCallAndCommit;
+    _ijIraFunctionality = ijIraFunctionality;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool startReleasePhase, bool pauseForCommit, bool noPush)
@@ -98,7 +102,7 @@ public class ReleaseOnMasterStep
     if (startReleasePhase)
       return;
 
-    //Create and Release JiraConfig Version
+    _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

@@ -64,7 +64,7 @@ public class BranchFromReleaseForContinueVersionStep
       ancestor = _ancestorFinder.GetAncestor("develop", "hotfix/v");
 
     _log.Debug("The given/found ancestor is '{Ancestor}'", ancestor);
-    
+
     if (ancestor.Equals("develop"))
     {
       _log.Debug("The ancestor is develop, therefore calling continue release on master");

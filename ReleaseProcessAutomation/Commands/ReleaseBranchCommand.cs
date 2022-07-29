@@ -46,7 +46,7 @@ internal class ReleaseBranchCommand : Command<ReleaseBranchSettings>
     _log.Information(message);
     _console.WriteLine(message);
 
-    _startReleaseStep.Execute(settings.CommitHash, startReleasePhase: true, noPush: false, pauseForCommit:false);
+    _startReleaseStep.Execute(settings.CommitHash, startReleasePhase: true, noPush: false, pauseForCommit: false);
 
     return 0;
   }

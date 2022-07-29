@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Git;
+using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
@@ -43,9 +44,10 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
 {
   private readonly IAncestorFinder _ancestorFinder;
   private readonly IContinueAlphaBetaStep _continueAlphaBetaStep;
+  private readonly IJiraFunctionality _ijIraFunctionality;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ReleaseRCStep>();
-  
+
   public ReleaseRCStep (
       IGitClient gitClient,
       Config config,
@@ -53,12 +55,14 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
       IAncestorFinder ancestorFinder,
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IContinueAlphaBetaStep continueAlphaBetaStep,
-      IAnsiConsole console)
+      IAnsiConsole console,
+      IJiraFunctionality ijIraFunctionality)
       : base(gitClient, config, inputReader, console)
   {
     _ancestorFinder = ancestorFinder;
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _continueAlphaBetaStep = continueAlphaBetaStep;
+    _ijIraFunctionality = ijIraFunctionality;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool pauseForCommit, bool noPush, string ancestor = "")
@@ -73,9 +77,9 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
 
     if (string.IsNullOrEmpty(ancestor))
       ancestor = _ancestorFinder.GetAncestor("develop", "hotfix/v");
-    
+
     _log.Debug("Found/given ancestor is '{ancestor}'", ancestor);
-    
+
     var currentBranchName = GitClient.GetCurrentBranchName();
     if (string.IsNullOrEmpty(currentBranchName))
     {
@@ -91,7 +95,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
       nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
     }
     else if (ancestor.StartsWith("hotfix/"))
-    {      
+    {
       _log.Debug("Getting next possible jira versions for hotfix from '{NextVersion}'", nextVersion);
       nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     }
@@ -102,8 +106,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
     }
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there): ", nextPossibleVersions);
-
-    //Create and release jira versions
+    _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
 
     var preReleaseBranchName = $"prerelease/v{nextVersion}";
     _log.Debug("Will try to create pre release branch with name '{PrereleaseBranchName}'", preReleaseBranchName);

@@ -43,7 +43,6 @@ public class BranchFromDevelopStep
   private readonly IReleaseAlphaBetaStep _releaseAlphaBetaStep;
   private readonly IReleaseOnMasterStep _releaseOnMasterStep;
   private readonly ISemanticVersionedGitRepository _semanticVersionedGitRepository;
-
   private readonly ILogger _log = Log.ForContext<BranchFromDevelopStep>();
 
   public BranchFromDevelopStep (
@@ -73,7 +72,7 @@ public class BranchFromDevelopStep
 
     else if (preVersion == PreReleaseStage.alpha || preVersion == PreReleaseStage.beta)
     {
-      _log.Debug("Prerelease version was '{PreVersion}', calling release alpha beta step",preVersion);
+      _log.Debug("Prerelease version was '{PreVersion}', calling release alpha beta step", preVersion);
       _releaseAlphaBetaStep.Execute(nextVersion, commitHash, pauseForCommit, noPush);
     }
   }

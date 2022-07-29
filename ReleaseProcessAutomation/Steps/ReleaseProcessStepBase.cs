@@ -17,7 +17,6 @@
 
 using System;
 using System.Linq;
-using ReleaseProcessAutomation.Configuration;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Git;
@@ -63,14 +62,13 @@ public abstract class ReleaseProcessStepBase
 
     GitClient.Checkout(branchName);
 
-    var remoteNames = Config.RemoteRepositories.RemoteNames.Where(n => n is { Length: >0 }).ToArray();
+    var remoteNames = Config.RemoteRepositories.RemoteNames.Where(n => n is { Length: > 0 }).ToArray();
 
     if (remoteNames.Length == 0)
     {
       const string message = "There were no remotes specified in the config. Stopping execution";
       throw new InvalidOperationException(message);
     }
-
 
     foreach (var remoteName in remoteNames)
     {

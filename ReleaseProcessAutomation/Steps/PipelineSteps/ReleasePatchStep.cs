@@ -19,6 +19,7 @@ using System;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Git;
+using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
@@ -41,6 +42,7 @@ public interface IReleasePatchStep
 public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
 {
   private readonly IContinueReleasePatchStep _continueReleasePatchStep;
+  private readonly IJiraFunctionality _ijIraFunctionality;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ReleasePatchStep>();
 
@@ -50,11 +52,13 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
       IInputReader inputReader,
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IContinueReleasePatchStep continueReleasePatchStep,
-      IAnsiConsole console)
+      IAnsiConsole console,
+      IJiraFunctionality ijIraFunctionality)
       : base(gitClient, config, inputReader, console)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _continueReleasePatchStep = continueReleasePatchStep;
+    _ijIraFunctionality = ijIraFunctionality;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool startReleasePhase, bool pauseForCommit, bool noPush, bool onMaster)
@@ -90,7 +94,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
 
     _log.Debug("Getting next possible jira versions for hotfix from version '{NextVersion}'", nextVersion);
     var nextPossibleJiraVersions = nextVersion.GetNextPossibleVersionsHotfix();
-    var nextJiraVersion = InputReader.ReadVersionChoice( "Please choose next version (open JIRA issues get moved there): ", nextPossibleJiraVersions);
+    var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there): ", nextPossibleJiraVersions);
 
     var releaseBranchName = $"release/v{nextVersion}";
     _log.Debug("Will try to create release branch name '{ReleaseBranchName}'", releaseBranchName);
@@ -113,7 +117,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     if (startReleasePhase)
       return;
 
-    //Create and Release Jira Versions
+    _ijIraFunctionality.CreateAndReleaseJiraVersion(nextVersion, nextJiraVersion);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

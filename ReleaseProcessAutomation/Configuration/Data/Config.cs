@@ -51,7 +51,6 @@ public class Config
 
   [XmlElement("resourceStrings")]
   public ResourceStrings ResourceStrings { get; set; }
-  
 }
 
 #pragma warning restore CS8618

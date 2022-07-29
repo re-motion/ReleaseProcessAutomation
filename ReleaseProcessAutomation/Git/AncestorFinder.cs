@@ -49,9 +49,7 @@ public class AncestorFinder
     var foundAncestors = _gitClient.GetAncestors(expectedAncestors);
 
     if (foundAncestors.Count == 1)
-    {
       return foundAncestors.First();
-    }
 
     if (foundAncestors.Count == 0)
     {

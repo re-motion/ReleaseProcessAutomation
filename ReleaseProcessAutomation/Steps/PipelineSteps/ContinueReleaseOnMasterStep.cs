@@ -79,7 +79,7 @@ public class ContinueReleaseOnMasterStep
   {
     var currentBranchName = GitClient.GetCurrentBranchName();
 
-    _log.Debug("The current branch name is '{CurrentBranchName}'",currentBranchName);
+    _log.Debug("The current branch name is '{CurrentBranchName}'", currentBranchName);
 
     if (currentBranchName == null)
     {
@@ -88,7 +88,7 @@ public class ContinueReleaseOnMasterStep
     }
 
     var currentVersion = new SemanticVersionParser().ParseVersionFromBranchName(currentBranchName);
-    _log.Debug("The current version is '{CurrentVersion}'",currentVersion);
+    _log.Debug("The current version is '{CurrentVersion}'", currentVersion);
 
     EnsureBranchUpToDate(currentBranchName);
     EnsureBranchUpToDate("master");

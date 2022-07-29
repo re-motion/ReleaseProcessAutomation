@@ -45,7 +45,7 @@ internal class CloseVersionCommand : Command<CloseVersionSettings>
     var message = $"Closing version from ancestor '{settings.Ancestor}'";
     _log.Information(message);
     _console.WriteLine(message);
-    
+
     _continueRelease.Execute(settings.Ancestor, settings.DoNotPush);
 
     return 0;

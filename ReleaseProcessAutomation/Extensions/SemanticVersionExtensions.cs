@@ -26,7 +26,9 @@ public static class SemanticVersionExtensions
 {
   private static readonly ILogger s_log = Log.ForContext(typeof(SemanticVersionExtensions));
 
-  public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsDevelop (this SemanticVersion semanticVersion, bool withoutPreRelease = false)
+  public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsDevelop (
+      this SemanticVersion semanticVersion,
+      bool withoutPreRelease = false)
   {
     s_log.Debug("Getting next possible develop version of '{SemanticVersion}'", semanticVersion);
 

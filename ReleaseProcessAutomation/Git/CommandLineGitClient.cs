@@ -186,7 +186,8 @@ public class CommandLineGitClient : IGitClient
     {
       var currentBranchName = GetCurrentBranchName();
       var currentCommit = ExecuteGitCommandWithOutput("rev-parse HEAD");
-      var message = $"Could not find tags from '{from}' to '{to}' while on branch '{currentBranchName}' from commit '{currentCommit}'. \nGit error: \n{allVersionsOutput.Output}";
+      var message =
+          $"Could not find tags from '{from}' to '{to}' while on branch '{currentBranchName}' from commit '{currentCommit}'. \nGit error: \n{allVersionsOutput.Output}";
       throw new InvalidOperationException(message);
     }
 
@@ -355,7 +356,6 @@ public class CommandLineGitClient : IGitClient
 
   public void PushToRepos (IReadOnlyCollection<string> remoteNames, string branchName, string? tagName = null)
   {
-    
     var beforeBranchName = GetCurrentBranchName();
     if (string.IsNullOrEmpty(beforeBranchName))
     {
