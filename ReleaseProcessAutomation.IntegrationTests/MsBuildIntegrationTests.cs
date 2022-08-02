@@ -33,6 +33,7 @@ internal class MSBuildIntegrationTests : IntegrationTestSetup
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.3.0");
     TestConsole.Input.PushTextWithEnter("3");
+    TestConsole.Input.PushTextWithEnter("n");
 
     RunProgram(new[] { "Release-Version" });
 

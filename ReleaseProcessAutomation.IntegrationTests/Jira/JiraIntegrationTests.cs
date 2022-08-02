@@ -64,6 +64,7 @@ public class JiraIntegrationTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter(_jiraPassword);
     
     TestConsole.Input.PushTextWithEnter("n");
+    TestConsole.Input.PushTextWithEnter("n");
     
 
     var act = JiraTestUtility.RunProgramWithoutWindowsCredentials(new[] { "Release-Version" });
@@ -132,7 +133,7 @@ public class JiraIntegrationTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter(_jiraPassword);
     
     TestConsole.Input.PushTextWithEnter("n");
-    
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act = JiraTestUtility.RunProgramWithoutWindowsCredentials(new[] { "Release-Version" });
 
@@ -192,7 +193,7 @@ public class JiraIntegrationTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter(_jiraPassword);
     
     TestConsole.Input.PushTextWithEnter("n");
-    
+    TestConsole.Input.PushTextWithEnter("n");
 
     var act = JiraTestUtility.RunProgramWithoutWindowsCredentials(new[] { "Release-Version" });
 

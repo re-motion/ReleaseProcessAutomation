@@ -453,7 +453,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("2.0.0");
 
-    var act1 = Program.Main(new[] { "New-Release-Branch" });
+    var act1 = RunProgram(new[] { "New-Release-Branch" });
     
     CreateAndAddFilesWithText("something added");
     ExecuteGitCommand("commit -a -m \"added files to first release\"");
@@ -465,7 +465,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     //Do not create a new support branch
     TestConsole.Input.PushTextWithEnter("n");
     
-    var act2 = Program.Main(new[] { "Release-Version" });
+    var act2 = RunProgram(new[] { "Release-Version" });
 
     ExecuteGitCommand("checkout develop");
 
@@ -474,7 +474,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("3.0.0");
     
-    var act3 = Program.Main(new[] { "New-Release-Branch" });
+    var act3 = RunProgram(new[] { "New-Release-Branch" });
   
     CreateAndAddFilesWithText("anotherText");
     ExecuteGitCommand("commit -a -m \"added files to second release\"");
@@ -486,7 +486,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     //Do not create a new support branch
     TestConsole.Input.PushTextWithEnter("n");
     
-    var act4 = Program.Main(new[] { "Release-Version" });
+    var act4 = RunProgram(new[] { "Release-Version" });
 
     AssertValidLogs(correctLogs);   
     Assert.That(act1, Is.EqualTo(0));
