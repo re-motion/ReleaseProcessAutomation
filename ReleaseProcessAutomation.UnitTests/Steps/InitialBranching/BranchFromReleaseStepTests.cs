@@ -31,20 +31,20 @@ internal class BranchFromReleaseStepTests
 {
   private Mock<IGitClient> _gitClient;
   private Mock<IInputReader> _inputReader;
-  private Mock<IReleaseRCStep> _releaseRcStep;
-  private Mock<IReleaseWithRcStep> _releaseWithRcStep;
+  private Mock<IReleaseRCStep> _releaseRCStep;
+  private Mock<IReleaseWithRCStep> _releaseWithRCStep;
 
   [SetUp]
   public void Setup ()
   {
     _gitClient = new Mock<IGitClient>();
     _inputReader = new Mock<IInputReader>();
-    _releaseRcStep = new Mock<IReleaseRCStep>();
-    _releaseWithRcStep = new Mock<IReleaseWithRcStep>();
+    _releaseRCStep = new Mock<IReleaseRCStep>();
+    _releaseWithRCStep = new Mock<IReleaseWithRCStep>();
   }
 
   [Test]
-  public void FindNextRc_WithSeveralExistingTags_ReturnsProperVersionAndCallsRcStep ()
+  public void FindNextRC_WithSeveralExistingTags_ReturnsProperVersionAndCallsRCStep ()
   {
     var version = new SemanticVersion
                   {
@@ -57,20 +57,20 @@ internal class BranchFromReleaseStepTests
     _gitClient.Setup(_ => _.GetCurrentBranchName()).Returns("release/v1.3.5-rc.3");
     _gitClient.Setup(_ => _.DoesTagExist("v1.3.5-rc.4")).Returns(true);
     _gitClient.Setup(_ => _.DoesTagExist("v1.3.5-rc.5")).Returns(true);
-    _releaseRcStep.Setup(_ => _.Execute(version, "", false, false, "")).Verifiable();
+    _releaseRCStep.Setup(_ => _.Execute(version, "", false, false, "")).Verifiable();
     _inputReader.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), It.IsAny<IReadOnlyCollection<SemanticVersion>>())).Returns(version);
 
-    var branchStep = new BranchFromReleaseStep(_gitClient.Object, _inputReader.Object, _releaseRcStep.Object, _releaseWithRcStep.Object);
+    var branchStep = new BranchFromReleaseStep(_gitClient.Object, _inputReader.Object, _releaseRCStep.Object, _releaseWithRCStep.Object);
 
     Assert.That(
         () => branchStep.Execute("", false, false),
         Throws.Nothing);
 
-    _releaseRcStep.Verify();
+    _releaseRCStep.Verify();
   }
 
   [Test]
-  public void Execute_NotRcVersion_Calls_ReleaseWithRcStep ()
+  public void Execute_NotRCVersion_Calls_ReleaseWithRCStep ()
   {
     var version = new SemanticVersion
                   {
@@ -83,15 +83,15 @@ internal class BranchFromReleaseStepTests
     _gitClient.Setup(_ => _.GetCurrentBranchName()).Returns("release/v1.3.5-rc.3");
     _gitClient.Setup(_ => _.DoesTagExist("v1.3.5-rc.4")).Returns(true);
     _gitClient.Setup(_ => _.DoesTagExist("v1.3.5-rc.5")).Returns(true);
-    _releaseWithRcStep.Setup(_ => _.Execute(false, false, "")).Verifiable();
+    _releaseWithRCStep.Setup(_ => _.Execute(false, false, "")).Verifiable();
     _inputReader.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), It.IsAny<IReadOnlyCollection<SemanticVersion>>())).Returns(new SemanticVersion());
 
-    var branchStep = new BranchFromReleaseStep(_gitClient.Object, _inputReader.Object, _releaseRcStep.Object, _releaseWithRcStep.Object);
+    var branchStep = new BranchFromReleaseStep(_gitClient.Object, _inputReader.Object, _releaseRCStep.Object, _releaseWithRCStep.Object);
 
     Assert.That(
         () => branchStep.Execute("", false, false),
         Throws.Nothing);
 
-    _releaseWithRcStep.Verify();
+    _releaseWithRCStep.Verify();
   }
 }

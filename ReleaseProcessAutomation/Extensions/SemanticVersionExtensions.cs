@@ -111,7 +111,7 @@ public static class SemanticVersionExtensions
       if (semanticVersion.Pre == PreReleaseStage.rc)
         return new[]
                {
-                   GetNextRc(semanticVersion),
+                   GetNextRC(semanticVersion),
                    GetNextPatchVersion(semanticVersion)
                };
 
@@ -164,7 +164,7 @@ public static class SemanticVersionExtensions
     return nextVersion;
   }
 
-  public static SemanticVersion GetNextRc (this SemanticVersion semanticVersion)
+  public static SemanticVersion GetNextRC (this SemanticVersion semanticVersion)
   {
     var nextVersion = new SemanticVersion
                       {

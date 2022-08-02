@@ -72,7 +72,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
 
     if (!GitClient.IsOnBranch("release/"))
     {
-      const string message = "Cannot call ReleaseRcStep when not on a release branch.";
+      const string message = "Cannot call ReleaseRCStep when not on a release branch";
       throw new InvalidOperationException(message);
     }
 

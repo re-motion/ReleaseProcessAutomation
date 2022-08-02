@@ -62,7 +62,7 @@ public class ApplicationServiceCollectionFactory
         .AddTransient<IReleaseOnMasterStep, ReleaseOnMasterStep>()
         .AddTransient<IReleaseAlphaBetaStep, ReleaseAlphaBetaStep>()
         .AddTransient<IReleaseRCStep, ReleaseRCStep>()
-        .AddTransient<IReleaseWithRcStep, ReleaseWithRcStep>()
+        .AddTransient<IReleaseWithRCStep, ReleaseWithRCStep>()
 
         //Continuation of actual release behaviour
         .AddTransient<IContinueReleaseOnMasterStep, ContinueReleaseOnMasterStep>()

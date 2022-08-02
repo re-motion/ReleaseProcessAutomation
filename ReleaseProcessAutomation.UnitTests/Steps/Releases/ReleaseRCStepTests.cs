@@ -34,7 +34,7 @@ using Spectre.Console;
 namespace ReleaseProcessAutomation.UnitTests.Steps.Releases;
 
 [TestFixture]
-internal class ReleaseRcStepTests
+internal class ReleaseRCStepTests
 {
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
 
@@ -126,7 +126,7 @@ internal class ReleaseRcStepTests
   }
 
   [Test]
-  public void Execute_callsNextVersioFromHotfix_WithProperVersionCollection ()
+  public void Execute_callsNextVersionFromHotfix_WithProperVersionCollection ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();

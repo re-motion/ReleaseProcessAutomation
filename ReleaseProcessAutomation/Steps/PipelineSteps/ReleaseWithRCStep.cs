@@ -37,22 +37,22 @@ namespace ReleaseProcessAutomation.Steps.PipelineSteps;
 ///   Determines the next step based on the ancestor of the branch.
 ///   Can optionally call release on master, but is unreachable.
 /// </summary>
-public interface IReleaseWithRcStep
+public interface IReleaseWithRCStep
 {
   void Execute (bool pauseForCommit, bool noPush, string ancestor);
 }
 
-/// <inheritdoc cref="IReleaseWithRcStep" />
-public class ReleaseWithRcStep : ReleaseProcessStepBase, IReleaseWithRcStep
+/// <inheritdoc cref="IReleaseWithRCStep" />
+public class ReleaseWithRCStep : ReleaseProcessStepBase, IReleaseWithRCStep
 {
   private readonly IAncestorFinder _ancestorFinder;
   private readonly IContinueReleaseOnMasterStep _continueReleaseOnMasterStep;
   private readonly IContinueReleasePatchStep _continueReleasePatchStep;
   private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
-  private readonly ILogger _log = Log.ForContext<ReleaseWithRcStep>();
+  private readonly ILogger _log = Log.ForContext<ReleaseWithRCStep>();
 
-  public ReleaseWithRcStep (
+  public ReleaseWithRCStep (
       IGitClient gitClient,
       Config config,
       IInputReader inputReader,
@@ -78,7 +78,7 @@ public class ReleaseWithRcStep : ReleaseProcessStepBase, IReleaseWithRcStep
     if (!GitClient.IsOnBranch("release/"))
     {
       var currentBranch = GitClient.GetCurrentBranchName();
-      var message = $"Cannot call ReleaseWithRc while not on a releaseBranch. Current branch: '{currentBranch}'.";
+      var message = $"Cannot call ReleaseWithRC while not on a releaseBranch. Current branch: '{currentBranch}'.";
       throw new InvalidOperationException(message);
     }
 

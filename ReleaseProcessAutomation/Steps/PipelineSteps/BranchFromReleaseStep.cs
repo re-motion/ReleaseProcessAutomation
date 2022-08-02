@@ -40,43 +40,43 @@ public class BranchFromReleaseStep
 {
   private readonly IGitClient _gitClient;
   private readonly IInputReader _inputReader;
-  private readonly IReleaseRCStep _releaseRcStep;
-  private readonly IReleaseWithRcStep _releaseWithRcStep;
+  private readonly IReleaseRCStep _releaseRCStep;
+  private readonly IReleaseWithRCStep _releaseWithRCStep;
   private readonly ILogger _log = Log.ForContext<BranchFromReleaseStep>();
 
-  public BranchFromReleaseStep (IGitClient gitClient, IInputReader inputReader, IReleaseRCStep releaseRcStep, IReleaseWithRcStep releaseWithRcStep)
+  public BranchFromReleaseStep (IGitClient gitClient, IInputReader inputReader, IReleaseRCStep releaseRCStep, IReleaseWithRCStep releaseWithRCStep)
   {
     _gitClient = gitClient;
     _inputReader = inputReader;
-    _releaseRcStep = releaseRcStep;
-    _releaseWithRcStep = releaseWithRcStep;
+    _releaseRCStep = releaseRCStep;
+    _releaseWithRCStep = releaseWithRCStep;
   }
 
   public void Execute (string? commitHash, bool pauseForCommit, bool noPush)
   {
     var currentVersion = new SemanticVersionParser().ParseVersionFromBranchName(_gitClient.GetCurrentBranchName()!);
     _log.Debug("The current found version is '{CurrentVersion}'.", currentVersion);
-    var rcVersion = FindNextRc(currentVersion);
+    var rcVersion = FindNextRC(currentVersion);
 
     var choice = _inputReader.ReadVersionChoice("Which version do you wish to release?", new[] { currentVersion, rcVersion });
 
     if (choice.Equals(rcVersion))
     {
       _log.Debug("The choice was the rc version '{RCVersion}', calling release rc.", rcVersion);
-      _releaseRcStep.Execute(rcVersion, commitHash, pauseForCommit, noPush, "");
+      _releaseRCStep.Execute(rcVersion, commitHash, pauseForCommit, noPush, "");
     }
     else
     {
       _log.Debug("The choice was the release-to-master version '{CurrentVersion}', calling release with rc.", currentVersion);
-      _releaseWithRcStep.Execute(pauseForCommit, noPush, "");
+      _releaseWithRCStep.Execute(pauseForCommit, noPush, "");
     }
   }
 
-  private SemanticVersion FindNextRc (SemanticVersion currentVersion)
+  private SemanticVersion FindNextRC (SemanticVersion currentVersion)
   {
-    var nextVersion = currentVersion.GetNextRc();
+    var nextVersion = currentVersion.GetNextRC();
     while (_gitClient.DoesTagExist($"v{nextVersion}"))
-      nextVersion = nextVersion.GetNextRc();
+      nextVersion = nextVersion.GetNextRC();
 
     return nextVersion;
   }

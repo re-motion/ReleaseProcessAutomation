@@ -34,7 +34,7 @@ using Spectre.Console;
 namespace ReleaseProcessAutomation.UnitTests.Steps.Releases;
 
 [TestFixture]
-internal class ReleaseWithRcStepTests
+internal class ReleaseWithRCStepTests
 {
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
 
@@ -77,7 +77,7 @@ internal class ReleaseWithRcStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
 
-    var withRcStep = new ReleaseWithRcStep(
+    var withRcStep = new ReleaseWithRCStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -106,7 +106,7 @@ internal class ReleaseWithRcStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
 
-    var withRcStep = new ReleaseWithRcStep(
+    var withRcStep = new ReleaseWithRCStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -135,7 +135,7 @@ internal class ReleaseWithRcStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var withRcStep = new ReleaseWithRcStep(
+    var withRcStep = new ReleaseWithRCStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -165,7 +165,7 @@ internal class ReleaseWithRcStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var withRcStep = new ReleaseWithRcStep(
+    var withRcStep = new ReleaseWithRCStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -196,7 +196,7 @@ internal class ReleaseWithRcStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var withRcStep = new ReleaseWithRcStep(
+    var withRcStep = new ReleaseWithRCStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -227,7 +227,7 @@ internal class ReleaseWithRcStepTests
     var nextPossibleVersions = new SemanticVersion().GetNextPossibleVersionsDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var withRcStep = new ReleaseWithRcStep(
+    var withRcStep = new ReleaseWithRCStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
