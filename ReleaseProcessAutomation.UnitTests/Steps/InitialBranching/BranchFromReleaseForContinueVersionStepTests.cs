@@ -11,7 +11,7 @@ using ReleaseProcessAutomation.Steps.PipelineSteps;
 using Spectre.Console;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.Tests.Steps.InitialBranching;
+namespace ReleaseProcessAutomation.UnitTests.Steps.InitialBranching;
 
 [TestFixture]
 public class BranchFromReleaseForContinueVersionStepTests
