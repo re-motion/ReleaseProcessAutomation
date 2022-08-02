@@ -34,7 +34,7 @@ public abstract class IntegrationTestSetup : GitBackedTests
   private const string c_buildFileName = "TestBuild.build";
 
   protected TestConsole TestConsole;
-  
+
   [SetUp]
   public void SetupI ()
   {
@@ -91,12 +91,12 @@ public abstract class IntegrationTestSetup : GitBackedTests
         typeof(IJiraRestClientProvider),
         x => jiraRestClientProviderStub.Object,
         ServiceLifetime.Singleton);
-    
+
     services.Replace(jiraFunctionalityDescriptor);
     services.Replace(jiraRestClientProviderDescriptor);
 
     var app = new ApplicationCommandAppFactory().CreateConfiguredCommandApp(services);
-    
+
     return app.Run(args);
   }
 }

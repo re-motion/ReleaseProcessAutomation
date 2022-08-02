@@ -27,17 +27,16 @@ namespace ReleaseProcessAutomation.IntegrationTests.Git;
 [TestFixture]
 internal class CommandLineGitClientTests : GitBackedTests
 {
-
   private Configuration.Data.Config _config;
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
-  
+
   [SetUp]
   public void Isetup ()
   {
     var path = Path.Join(PreviousWorkingDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
   }
-  
+
   [Test]
   public void GetCurrentBranchName_WithOneBranch_ReturnsBranchName ()
   {
@@ -646,12 +645,12 @@ internal class CommandLineGitClientTests : GitBackedTests
   {
     var client = new CommandLineGitClient();
 
-    client.Tag("v1.0.0","Create tag for version v1.0.0");
+    client.Tag("v1.0.0", "Create tag for version v1.0.0");
 
     var tags = ExecuteGitCommandWithOutput("tag -n");
     Assert.That(tags, Does.Contain("Create tag for version v1.0.0"));
   }
-  
+
   [Test]
   public void Tag_TagWithoutMessage_CreatesTag ()
   {

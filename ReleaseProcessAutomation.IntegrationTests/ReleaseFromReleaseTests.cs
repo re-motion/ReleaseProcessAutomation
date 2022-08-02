@@ -56,13 +56,13 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.3.6");
     //Confirms to create new support branch
     TestConsole.Input.PushTextWithEnter("n");
-    
+
     var act = RunProgram(new[] { "Release-Version" });
 
     Assert.That(act, Is.EqualTo(0));
     AssertValidLogs(correctLogs);
   }
-  
+
   [Test]
   public void ReleaseWithRC_FromSupportHotfixReleaseWithUserRequestingNewSupportBranch_CreatesSupportAndHotfixBranch ()
   {
@@ -81,7 +81,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
           * ConfigAndBuildProject
           *  (origin/master)Initial CommitAll
           ";
-    
+
     var correctLogs2 =
         @"*  (origin/hotfix/v1.3.6, hotfix/v1.3.6)Update metadata to version '1.3.6'.
           | *  (hotfix/v1.4.0)Update metadata to version '1.4.0'.
@@ -97,7 +97,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
           * ConfigAndBuildProject
           *  (origin/master)Initial CommitAll
           ";
-    
+
     ExecuteGitCommand("commit -m feature --allow-empty");
     ExecuteGitCommand("tag v1.0.0");
     ExecuteGitCommand("checkout -b support/v1.3");
@@ -115,7 +115,7 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("1.3.6");
     //Confirms to create new support branch
     TestConsole.Input.PushTextWithEnter("y");
-    
+
     var act = RunProgram(new[] { "Release-Version" });
 
     Assert.That(act, Is.EqualTo(0));
@@ -293,7 +293,6 @@ internal class ReleaseFromReleaseTests : IntegrationTestSetup
     ExecuteGitCommand("tag -a v1.2.0-rc.1 -m v1.2.0-rc.1");
     ExecuteGitCommand("checkout release/v1.2.0");
     ExecuteGitCommand("merge prerelease/v1.2.0-rc.1 --no-ff");
-
 
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("1.2.0-rc.2");

@@ -58,6 +58,7 @@ public class ConfigReader
       const string message = "Could not deserialize config, please check your config settings format";
       throw new InvalidOperationException(message);
     }
+
     config.MSBuildSettings.MSBuildPath = Path.GetFullPath(config.MSBuildSettings.MSBuildPath);
 
     return config;

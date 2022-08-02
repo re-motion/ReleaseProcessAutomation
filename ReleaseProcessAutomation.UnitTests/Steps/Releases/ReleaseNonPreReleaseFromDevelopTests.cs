@@ -34,15 +34,15 @@ namespace ReleaseProcessAutomation.UnitTests.Steps.Releases;
 [TestFixture]
 internal class ReleaseNonPreReleaseFromDevelopTests
 {
-    private const string c_configFileName = "ReleaseProcessScript.Test.Config";
-    
-    private Mock<IAnsiConsole> _consoleMock;
-    private Configuration.Data.Config _config;
-    private Mock<IMSBuildCallAndCommit> _msBuildInvokerMock;
-    private Mock<IContinueReleaseOnMasterStep> _continueReleaseOnMasterMock;
-    private Mock<IJiraFunctionality> _jiraFunctionalityMock;
+  private const string c_configFileName = "ReleaseProcessScript.Test.Config";
 
-    [SetUp]
+  private Mock<IAnsiConsole> _consoleMock;
+  private Configuration.Data.Config _config;
+  private Mock<IMSBuildCallAndCommit> _msBuildInvokerMock;
+  private Mock<IContinueReleaseOnMasterStep> _continueReleaseOnMasterMock;
+  private Mock<IJiraFunctionality> _jiraFunctionalityMock;
+
+  [SetUp]
   public void Setup ()
   {
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);

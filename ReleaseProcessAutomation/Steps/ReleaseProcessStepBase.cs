@@ -141,7 +141,7 @@ public abstract class ReleaseProcessStepBase
   {
     GitClient.Tag(tagName, $"Create tag with version {tagName}");
   }
-  
+
   protected SemanticVersion? CreateNewSupportBranch (SemanticVersion nextVersion)
   {
     Console.WriteLine("Do you wish to create a new support branch?");
@@ -154,4 +154,3 @@ public abstract class ReleaseProcessStepBase
     return splitHotfixVersion;
   }
 }
-

@@ -24,7 +24,7 @@ public class JiraFunctionalityTests
     _jiraCreatorMock.Setup(_ => _.CreateNewVersionWithVersionNumber(It.IsAny<string>()));
     _jiraReleaserMock.Setup(_ => _.ReleaseVersion(It.IsAny<string>(), It.IsAny<string>(), false));
     _jiraReleaserMock.Setup(
-        _ => _.ReleaseVersionAndSquashUnreleased( It.IsAny<string>(), It.IsAny<string>()));
+        _ => _.ReleaseVersionAndSquashUnreleased(It.IsAny<string>(), It.IsAny<string>()));
 
     _console = new TestConsole();
     _config = new Configuration.Data.Config();
@@ -41,9 +41,8 @@ public class JiraFunctionalityTests
     var nextVersion = new SemanticVersion { Patch = 1 };
     var jiraFunctionality = new JiraFunctionality(
         _console,
-            _jiraCreatorMock.Object,
-            _jiraReleaserMock.Object);
-
+        _jiraCreatorMock.Object,
+        _jiraReleaserMock.Object);
 
     _jiraCreatorMock.Setup(_ => _.CreateNewVersionWithVersionNumber(currentVersion.ToString()))
         .Returns("current").Verifiable();
@@ -94,9 +93,8 @@ public class JiraFunctionalityTests
 
     var jiraFunctionality = new JiraFunctionality(
         _console,
-            _jiraCreatorMock.Object,
-            _jiraReleaserMock.Object);
-
+        _jiraCreatorMock.Object,
+        _jiraReleaserMock.Object);
 
     Assert.That(() => jiraFunctionality.CreateAndReleaseJiraVersion(currentVersion, nextVersion, true), Throws.Nothing);
 

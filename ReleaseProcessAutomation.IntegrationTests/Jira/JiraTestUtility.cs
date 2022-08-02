@@ -13,7 +13,6 @@ namespace ReleaseProcessAutomation.IntegrationTests.Jira;
 
 public static class JiraTestUtility
 {
-  
   private const string c_usernameEnvironmentVariableName = "JiraUsername";
   private const string c_passwordEnvironmentVariableName = "JiraPassword";
 
@@ -27,13 +26,12 @@ public static class JiraTestUtility
     services.Replace(jiraCredentialAPIDescriptor);
 
     var app = new ApplicationCommandAppFactory().CreateConfiguredCommandApp(services);
-    
+
     return app.Run(args);
   }
-  
+
   public static Credentials GetLocallySavedCredentials ()
   {
-    
     var jiraUsername = Environment.GetEnvironmentVariable(c_usernameEnvironmentVariableName);
     var jiraPassword = Environment.GetEnvironmentVariable(c_passwordEnvironmentVariableName);
 
@@ -65,12 +63,12 @@ public static class JiraTestUtility
     if (versionToDelete == null)
       return;
     var resource = $"version/{versionToDelete.id}";
-    
+
     var request = restClient.CreateRestRequest(resource, Method.DELETE);
     restClient.DoRequest(request, HttpStatusCode.NoContent);
   }
 
-  public static void DeleteVersionsIfExistent (string projectName, JiraRestClient jiraRestClient,params string[] versionNames)
+  public static void DeleteVersionsIfExistent (string projectName, JiraRestClient jiraRestClient, params string[] versionNames)
   {
     foreach (var versionName in versionNames)
     {
@@ -94,7 +92,8 @@ public static class JiraTestUtility
                    fields = new
                             {
                                 project = new { key = jiraProjectKey }, issuetype = new { name = "Task" }, summary = summaryOfIssue,
-                                description = "testDescription", fixVersions = toRelease.Select(v => new { v.id }), components = new []{ new {name = "APMTestComponent"}}
+                                description = "testDescription", fixVersions = toRelease.Select(v => new { v.id }),
+                                components = new[] { new { name = "APMTestComponent" } }
                             }
                };
     request.AddBody(body);

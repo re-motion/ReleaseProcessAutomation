@@ -33,12 +33,12 @@ namespace ReleaseProcessAutomation.UnitTests.MsBuild;
 [TestFixture]
 internal class MSBuildInvokerTests
 {
-    private const string c_configFileName = "ReleaseProcessScript.Test.Config";
-    
-    private Mock<IAnsiConsole> _consoleStub;
-    private Configuration.Data.Config _config;
+  private const string c_configFileName = "ReleaseProcessScript.Test.Config";
 
-    [SetUp]
+  private Mock<IAnsiConsole> _consoleStub;
+  private Configuration.Data.Config _config;
+
+  [SetUp]
   public void Setup ()
   {
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);

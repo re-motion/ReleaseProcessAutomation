@@ -29,10 +29,10 @@ namespace ReleaseProcessAutomation.UnitTests.Steps.InitialBranching;
 [TestFixture]
 internal class BranchFromDevelopStepTests
 {
-    private Mock<IReleaseAlphaBetaStep> _releaseAlphaBetaMock;
-    private Mock<IReleaseOnMasterStep> _releaseOnMasterMock;
+  private Mock<IReleaseAlphaBetaStep> _releaseAlphaBetaMock;
+  private Mock<IReleaseOnMasterStep> _releaseOnMasterMock;
 
-    [SetUp]
+  [SetUp]
   public void Setup ()
   {
     _releaseAlphaBetaMock = new Mock<IReleaseAlphaBetaStep>();

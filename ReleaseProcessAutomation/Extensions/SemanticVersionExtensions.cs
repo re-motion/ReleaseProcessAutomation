@@ -163,6 +163,7 @@ public static class SemanticVersionExtensions
                       };
     return nextVersion;
   }
+
   public static SemanticVersion GetNextRc (this SemanticVersion semanticVersion)
   {
     var nextVersion = new SemanticVersion

@@ -43,7 +43,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * Initial CommitAll
           ";
 
-    var correctLogs1 = 
+    var correctLogs1 =
         @"*  (HEAD -> develop, origin/develop)Update metadata to version '1.1.0'.
           | *    (tag: v1.0.0, origin/master, master)Merge branch 'release/v1.0.0'
           | |\  
@@ -59,7 +59,6 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * Initial CommitAll
           ";
 
-    
     ExecuteGitCommand("commit -m feature --allow-empty");
     ExecuteGitCommand("checkout -b develop");
 
@@ -98,7 +97,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * Initial CommitAll
           ";
 
-    var correctLogs1 = 
+    var correctLogs1 =
         @"*  (HEAD -> develop, origin/develop)Update metadata to version '2.1.0'.
           | *    (tag: v2.0.0, origin/master, master)Merge branch 'release/v2.0.0'
           | |\  
@@ -113,7 +112,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * ConfigAndBuildProject
           * Initial CommitAll
           ";
-    
+
     ExecuteGitCommand("commit -m feature --allow-empty");
     ExecuteGitCommand("tag v1.28.3");
     ExecuteGitCommand("checkout -b develop");
@@ -325,7 +324,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * Initial CommitAll
           ";
 
-    var correctLogs1 = 
+    var correctLogs1 =
         @"*  (HEAD -> develop, origin/develop)Update metadata to version '1.3.0'.
           | *  (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
           |/| 
@@ -336,7 +335,6 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * Initial CommitAll
           ";
 
-    
     ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand("commit -m Commit on develop --allow-empty");
 
@@ -486,7 +484,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     Assert.That(act1, Is.EqualTo(0));
     AssertValidLogs(correctLogs);
   }
-  
+
   [Test]
   public void FixesMergeConflicts ()
   {
@@ -517,17 +515,17 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("2.0.0");
 
     var act1 = RunProgram(new[] { "New-Release-Branch" });
-    
+
     CreateAndAddFilesWithText("something added");
     ExecuteGitCommand("commit -a -m \"added files to first release\"");
-    
+
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("1.0.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("2.0.0");
     //Do not create a new support branch
     TestConsole.Input.PushTextWithEnter("n");
-    
+
     var act2 = RunProgram(new[] { "Release-Version" });
 
     ExecuteGitCommand("checkout develop");
@@ -536,9 +534,9 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("2.0.0");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("3.0.0");
-    
+
     var act3 = RunProgram(new[] { "New-Release-Branch" });
-  
+
     CreateAndAddFilesWithText("anotherText");
     ExecuteGitCommand("commit -a -m \"added files to second release\"");
 
@@ -548,10 +546,10 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     TestConsole.Input.PushTextWithEnter("3.0.0");
     //Do not create a new support branch
     TestConsole.Input.PushTextWithEnter("n");
-    
+
     var act4 = RunProgram(new[] { "Release-Version" });
 
-    AssertValidLogs(correctLogs);   
+    AssertValidLogs(correctLogs);
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
     Assert.That(act3, Is.EqualTo(0));
@@ -569,7 +567,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     var secondFile = File.CreateText(secondFilePath);
     secondFile.WriteLine(text);
     secondFile.Close();
-    
+
     ExecuteGitCommand("add file1.txt");
     ExecuteGitCommand("add file2.txt");
   }

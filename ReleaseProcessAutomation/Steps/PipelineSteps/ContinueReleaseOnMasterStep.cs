@@ -107,7 +107,7 @@ public class ContinueReleaseOnMasterStep
     GitClient.MergeBranchToOnlyContainChangesFromMergedBranch(currentBranchName);
 
     CreateTagWithMessage(tagName);
-    
+
     CreateSupportBranchWithHotfixForRelease(currentVersion);
 
     GitClient.Checkout("develop");

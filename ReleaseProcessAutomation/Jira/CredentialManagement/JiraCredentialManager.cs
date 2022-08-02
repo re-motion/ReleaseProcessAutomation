@@ -56,7 +56,7 @@ public class JiraCredentialManager
       return AskForCredentials(target);
 
     var credentials = cred.Value;
-    
+
     try
     {
       CheckJiraCredentials(credentials);

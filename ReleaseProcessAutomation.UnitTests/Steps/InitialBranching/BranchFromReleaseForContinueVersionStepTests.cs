@@ -30,7 +30,6 @@ public class BranchFromReleaseForContinueVersionStepTests
 
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
-
   }
 
   private Mock<IAnsiConsole> _consoleStub;
@@ -42,12 +41,12 @@ public class BranchFromReleaseForContinueVersionStepTests
   private Mock<IContinueReleasePatchStep> _continueReleasePatchMock;
   private Mock<IContinueReleaseOnMasterStep> _continueReleaseOnMasterStepMock;
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
-  
+
   [Test]
   public void Execute_WithHotfixAncestor_CallsContinueReleasePatch ()
   {
     var nextVersion = new SemanticVersion();
-    
+
     var branch = new BranchFromReleaseForContinueVersionStep(
         _gitClientStub.Object,
         _config,
@@ -56,18 +55,17 @@ public class BranchFromReleaseForContinueVersionStepTests
         _continueReleaseOnMasterStepMock.Object,
         _continueReleasePatchMock.Object,
         new TestConsole());
-    
+
     branch.Execute(nextVersion, "hotfix/v1.2.0", false);
-    
-    _continueReleasePatchMock.Verify(_=>_.Execute(nextVersion, false, false), Times.Once);
-    
+
+    _continueReleasePatchMock.Verify(_ => _.Execute(nextVersion, false, false), Times.Once);
   }
-  
+
   [Test]
   public void Execute_WithDevelopAncestor_CallsContinueReleaseOnMaster ()
   {
     var nextVersion = new SemanticVersion();
-    
+
     var branch = new BranchFromReleaseForContinueVersionStep(
         _gitClientStub.Object,
         _config,
@@ -76,18 +74,17 @@ public class BranchFromReleaseForContinueVersionStepTests
         _continueReleaseOnMasterStepMock.Object,
         _continueReleasePatchMock.Object,
         new TestConsole());
-    
+
     branch.Execute(nextVersion, "develop", false);
-    
-    _continueReleaseOnMasterStepMock.Verify(_=>_.Execute(nextVersion, false), Times.Once);
-    
+
+    _continueReleaseOnMasterStepMock.Verify(_ => _.Execute(nextVersion, false), Times.Once);
   }
-  
+
   [Test]
   public void Execute_WithInvalidAncestor_ShouldThrow ()
   {
     var nextVersion = new SemanticVersion();
-    
+
     var branch = new BranchFromReleaseForContinueVersionStep(
         _gitClientStub.Object,
         _config,

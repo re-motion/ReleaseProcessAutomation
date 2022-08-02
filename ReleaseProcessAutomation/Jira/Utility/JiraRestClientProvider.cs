@@ -8,7 +8,6 @@ namespace ReleaseProcessAutomation.Jira.Utility;
 public class JiraRestClientProvider
     : IJiraRestClientProvider
 {
-  
   private readonly Config _config;
   private readonly IJiraCredentialManager _jiraCredentialManager;
 
@@ -34,8 +33,7 @@ public class JiraRestClientProvider
       var credentials = _jiraCredentialManager.GetCredential(_config.Jira.JiraURL);
       _jiraRestClient = JiraRestClient.CreateWithBasicAuthentication(_config.Jira.JiraURL, credentials);
     }
-    
+
     return _jiraRestClient;
   }
-  
 }

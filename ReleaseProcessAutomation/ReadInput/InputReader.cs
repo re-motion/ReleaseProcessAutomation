@@ -28,7 +28,7 @@ public class InputReader
     : IInputReader
 {
   private const string c_moreChoicesText = "[grey](Move up and down to choose version)[/]";
-  
+
   private readonly IAnsiConsole _console;
 
   public InputReader (IAnsiConsole console)

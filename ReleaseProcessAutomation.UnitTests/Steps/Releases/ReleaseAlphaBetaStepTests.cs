@@ -35,7 +35,7 @@ namespace ReleaseProcessAutomation.UnitTests.Steps.Releases;
 internal class ReleaseAlphaBetaStepTests
 {
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
-  
+
   private Configuration.Data.Config _config;
   private Mock<IAnsiConsole> _consoleMock;
   private Mock<IContinueAlphaBetaStep> _continueAlphaBetaMock;

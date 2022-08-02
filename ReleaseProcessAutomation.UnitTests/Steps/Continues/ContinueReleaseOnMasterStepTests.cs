@@ -33,14 +33,14 @@ namespace ReleaseProcessAutomation.UnitTests.Steps.Continues;
 [TestFixture]
 internal class ContinueReleaseOnMasterStepTests
 {
-    private const string c_configFileName = "ReleaseProcessScript.Test.Config";
-    
-    private Mock<IAnsiConsole> _consoleStub;
-    private Configuration.Data.Config _config;
-    private Mock<IPushMasterReleaseStep> _nextReleaseStepMock;
-    private Mock<IMSBuildCallAndCommit> _msBuildCallAndCommitStub;
+  private const string c_configFileName = "ReleaseProcessScript.Test.Config";
 
-    [SetUp]
+  private Mock<IAnsiConsole> _consoleStub;
+  private Configuration.Data.Config _config;
+  private Mock<IPushMasterReleaseStep> _nextReleaseStepMock;
+  private Mock<IMSBuildCallAndCommit> _msBuildCallAndCommitStub;
+
+  [SetUp]
   public void Setup ()
   {
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
@@ -128,7 +128,7 @@ internal class ContinueReleaseOnMasterStepTests
     gitClientMock.Setup(_ => _.Reset(It.IsAny<string>())).Verifiable();
     gitClientMock.Setup(_ => _.Checkout("develop")).Callback(() => developLast = true);
     gitClientMock.Setup(_ => _.Checkout("master")).Callback(() => developLast = false);
-    
+
     //checks that the current branch when calling merge branch is not develop, therefore not merging into it
     gitClientMock.Setup(_ => _.MergeBranchToOnlyContainChangesFromMergedBranch(It.IsAny<string>())).Callback(() => Assert.That(developLast, Is.False));
     
@@ -151,7 +151,7 @@ internal class ContinueReleaseOnMasterStepTests
     Assert.That(() => step.Execute(version, false), Throws.Nothing);
 
     gitClientMock.Verify(_ => _.MergeBranchToOnlyContainChangesFromMergedBranch("release/v1.0.0"), Times.Once);
-    _nextReleaseStepMock.Verify(_=>_.Execute(It.IsAny<SemanticVersion>()), Times.Once);
+    _nextReleaseStepMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>()), Times.Once);
   }
 
   [Test]

@@ -202,11 +202,11 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     Assert.That(act1, Is.EqualTo(0));
     AssertValidLogs(correctLogs);
   }
-  
+
   [Test]
   public void ReleaseToSupport_WithPauseAndCommitAndCloseVersion_FinishesSuccessfully ()
   {
-    var correctLogs = 
+    var correctLogs =
         @"*  (origin/hotfix/v1.2.2, hotfix/v1.2.2)Update metadata to version '1.2.2'.
           *    (HEAD -> support/v1.2, tag: v1.2.1, origin/support/v1.2) Merge branch 'release/v1.2.1' into support/v1.2
           |\  
@@ -221,23 +221,23 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
     ExecuteGitCommand("tag v1.2.0");
     ExecuteGitCommand("checkout -b hotfix/v1.2.1");
     ExecuteGitCommand("commit -m \"Commit on hotfix\" --allow-empty");
-    
+
     //Get release version from user
     TestConsole.Input.PushTextWithEnter("1.2.1");
     //Get next release version from user for jira
     TestConsole.Input.PushTextWithEnter("1.2.2");
     //Does not create support branch
     TestConsole.Input.PushTextWithEnter("n");
-    
-    var act1 = RunProgram(new[] { "Release-Version" , "-p"});
-    
+
+    var act1 = RunProgram(new[] { "Release-Version", "-p" });
+
     //Get ancestor version from user
     TestConsole.Input.PushTextWithEnter("hotfix/v1.2.1");
-    
+
     var act2 = RunProgram(new[] { "Close-Version" });
-    
+
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
-    AssertValidLogs(correctLogs);   
+    AssertValidLogs(correctLogs);
   }
 }

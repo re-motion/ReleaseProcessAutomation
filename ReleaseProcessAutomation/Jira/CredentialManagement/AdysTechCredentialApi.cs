@@ -13,9 +13,10 @@ public class AdysTechCredentialApi : IJiraCredentialAPI
     {
       return null;
     }
+
     return new Credentials(cred.UserName, cred.Password);
   }
-  
+
   public void SaveCredentials (Credentials tmpCredentials, string target)
   {
     var cred = new NetworkCredential(tmpCredentials.Username, tmpCredentials.Password);

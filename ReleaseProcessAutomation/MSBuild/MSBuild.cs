@@ -31,7 +31,7 @@ internal class MSBuild
     : IMSBuild
 {
   private const int c_msBuildProcessTimeout = 30_000;
-  
+
   private readonly IAnsiConsole _console;
   private readonly ILogger _log = Log.ForContext<MSBuild>();
 

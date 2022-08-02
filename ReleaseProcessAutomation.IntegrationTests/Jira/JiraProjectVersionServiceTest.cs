@@ -21,12 +21,11 @@ public class JiraProjectVersionServiceTest
   private JiraProjectVersionFinder _versionFinder;
   private JiraIssueService _issueService;
 
-  
   [SetUp]
   public void SetUp ()
   {
     var testCredentials = JiraTestUtility.GetLocallySavedCredentials();
-    
+
     _restClient = JiraRestClient.CreateWithBasicAuthentication(c_jiraUrl, testCredentials);
 
     _restClientProviderMock = new Mock<IJiraRestClientProvider>();
@@ -37,11 +36,11 @@ public class JiraProjectVersionServiceTest
     _service = new JiraProjectVersionService(_restClientProviderMock.Object, _issueService, _versionFinder);
     _repairer = new JiraProjectVersionRepairer(_service, _versionFinder);
   }
-  
+
   [Test]
   public void TestAllFunctionality ()
   {
-    JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient,"4.1.0", "4.1.1", "4.1.2", "4.2.0");
+    JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1", "4.1.2", "4.2.0");
 
     // Create versions
     _service.CreateVersion(c_jiraProjectKey, "4.1.0", DateTime.Today.AddDays(1));
@@ -67,9 +66,15 @@ public class JiraProjectVersionServiceTest
 
     // Add issues to versionToRelease
     var myTestIssue = JiraTestUtility.AddTestIssueToVersion("My Test", false, c_jiraProjectKey, _restClient, versionToRelease);
-    
+
     var myClosedIssue = JiraTestUtility.AddTestIssueToVersion("My closed Test", true, c_jiraProjectKey, _restClient, versionToRelease);
-    var myMultipleFixVersionTest = JiraTestUtility.AddTestIssueToVersion("My multiple fixVersion Test", false, c_jiraProjectKey, _restClient, versionToRelease, additionalVersion);
+    var myMultipleFixVersionTest = JiraTestUtility.AddTestIssueToVersion(
+        "My multiple fixVersion Test",
+        false,
+        c_jiraProjectKey,
+        _restClient,
+        versionToRelease,
+        additionalVersion);
 
     // Release version
     _service.ReleaseVersion(versionToRelease.id, versionToFollow.id);
@@ -91,11 +96,9 @@ public class JiraProjectVersionServiceTest
     Assert.That(additionalVersionIssues.Count(), Is.EqualTo(1));
 
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1", "4.1.2", "4.2.0");
-    
-    
+
     JiraTestUtility.DeleteIssues(_restClient, myTestIssue.ID, myClosedIssue.ID, myMultipleFixVersionTest.ID);
   }
-
 
   [Test]
   public void TestGetUnreleasedVersionsWithNonExistentPattern ()
@@ -189,7 +192,7 @@ public class JiraProjectVersionServiceTest
     Assert.That(_versionFinder.FindVersions(c_jiraProjectKey, "6.0.1-alpha.2").SingleOrDefault(x => x.name == "6.0.1-alpha.2"), Is.Not.Null);
 
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-beta.1");
-    
+
     JiraTestUtility.DeleteIssue(_restClient, issue.ID);
   }
 
@@ -248,7 +251,7 @@ public class JiraProjectVersionServiceTest
     Assert.That(_issueService.FindAllNonClosedIssues(beta1Version.id).Count(), Is.EqualTo(2));
 
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-alpha.3", "6.0.1-beta.1");
-    
+
     JiraTestUtility.DeleteIssues(_restClient, issue1.ID, issue2.ID);
   }
 

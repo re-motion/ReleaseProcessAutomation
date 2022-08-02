@@ -82,7 +82,7 @@ public class GitBackedTests
 
     Directory.Delete(target_dir, false);
   }
-  
+
   protected static void ExecuteGitCommand (string argument)
   {
     using var command = Process.Start("git", argument);
@@ -139,7 +139,7 @@ public class GitBackedTests
 
     return currentLogs.Equals(otherLogs);
   }
-  
+
   protected void AssertValidLogs (string expectedLogs)
   {
     expectedLogs = expectedLogs.Replace(" ", "").Replace("\r", "");

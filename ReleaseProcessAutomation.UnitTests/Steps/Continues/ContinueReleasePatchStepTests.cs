@@ -34,7 +34,7 @@ namespace ReleaseProcessAutomation.UnitTests.Steps.Continues;
 internal class ContinueReleasePatchStepTests
 {
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
-  
+
   private Configuration.Data.Config _config;
   private Mock<IAnsiConsole> _consoleStub;
   private Mock<IGitClient> _gitClientStub;

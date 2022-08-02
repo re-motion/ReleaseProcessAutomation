@@ -96,7 +96,7 @@ public class JiraCredentialManagerTests
     _inputReaderMock.Setup(_ => _.ReadConfirmation(It.IsAny<bool>())).Returns(true);
 
     jiraCredentialManager.GetCredential(c_target);
-    
+
     _jiraCredentialAPIMock.Verify(_ => _.SaveCredentials(It.IsAny<Credentials>(), c_target), Times.Once);
   }
 

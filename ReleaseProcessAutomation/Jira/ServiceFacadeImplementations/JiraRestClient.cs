@@ -29,7 +29,7 @@ public class JiraRestClient
 {
   private const string c_urlPostFix = "rest/api/2";
   private const string c_authPostFix = "rest/auth/latest";
-  
+
   public static JiraRestClient CreateWithNtlmAuthentication (string jiraUrl)
   {
     return new JiraRestClient(jiraUrl, new NtlmAuthenticator());
@@ -39,7 +39,7 @@ public class JiraRestClient
   {
     return new JiraRestClient(jiraUrl, new HttpBasicAuthenticator(credentials.Username, credentials.Password));
   }
-  
+
   private readonly RestClient _client;
 
   private JiraRestClient (string jiraUrl, IAuthenticator authenticator)
