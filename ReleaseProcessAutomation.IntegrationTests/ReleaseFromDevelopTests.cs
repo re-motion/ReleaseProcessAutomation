@@ -43,6 +43,23 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * Initial CommitAll
           ";
 
+    var correctLogs1 = 
+        @"*  (HEAD -> develop, origin/develop)Update metadata to version '1.1.0'.
+          | *    (tag: v1.0.0, origin/master, master)Merge branch 'release/v1.0.0'
+          | |\  
+          | | *  (origin/release/v1.0.0, release/v1.0.0)Update metadata to version '1.0.0'.
+          | |/  
+          |/|   
+          * | feature4
+          * | feature3
+          * | feature2
+          |/  
+          * feature
+          * ConfigAndBuildProject
+          * Initial CommitAll
+          ";
+
+    
     ExecuteGitCommand("commit -m feature --allow-empty");
     ExecuteGitCommand("checkout -b develop");
 
@@ -60,7 +77,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     var act = RunProgram(new[] { "Release-Version" });
 
     Assert.That(act, Is.EqualTo(0));
-    AssertValidLogs(correctLogs);
+    AssertValidLogs(correctLogs, correctLogs1);
   }
 
   [Test]
@@ -81,6 +98,22 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * Initial CommitAll
           ";
 
+    var correctLogs1 = 
+        @"*  (HEAD -> develop, origin/develop)Update metadata to version '2.1.0'.
+          | *    (tag: v2.0.0, origin/master, master)Merge branch 'release/v2.0.0'
+          | |\  
+          | | *  (origin/release/v2.0.0, release/v2.0.0)Update metadata to version '2.0.0'.
+          | |/  
+          |/|   
+          * | feature4
+          * | feature3
+          * | feature2
+          |/  
+          *  (tag: v1.28.3)feature
+          * ConfigAndBuildProject
+          * Initial CommitAll
+          ";
+    
     ExecuteGitCommand("commit -m feature --allow-empty");
     ExecuteGitCommand("tag v1.28.3");
     ExecuteGitCommand("checkout -b develop");
@@ -99,7 +132,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     var act = RunProgram(new[] { "Release-Version", "-n=false", "-p=false" });
 
     Assert.That(act, Is.EqualTo(0));
-    AssertValidLogs(correctLogs);
+    AssertValidLogs(correctLogs, correctLogs1);
   }
 
   [Test]
@@ -119,6 +152,23 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * ConfigAndBuildProject
           *  (origin/master)Initial CommitAll
           ";
+
+    var correctLogs1 =
+        @"*  (HEAD -> develop)Update metadata to version '2.1.0'.
+          | *    (tag: v2.0.0, master)Merge branch 'release/v2.0.0'
+          | |\  
+          | | *  (release/v2.0.0)Update metadata to version '2.0.0'.
+          | |/  
+          |/|   
+          * | feature4
+          * | feature3
+          * | feature2
+          |/  
+          *  (tag: v1.28.3)feature
+          * ConfigAndBuildProject
+          *  (origin/master)Initial CommitAll
+          ";
+
     correctLogs = correctLogs.Replace(" ", "").Replace("\r", "");
 
     ExecuteGitCommand("commit -m feature --allow-empty");
@@ -139,7 +189,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     var act = RunProgram(new[] { "Release-Version", "-n" });
 
     Assert.That(act, Is.EqualTo(0));
-    AssertValidLogs(correctLogs);
+    AssertValidLogs(correctLogs, correctLogs1);
   }
 
   [Test]
@@ -274,6 +324,19 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
           * ConfigAndBuildProject
           * Initial CommitAll
           ";
+
+    var correctLogs1 = 
+        @"*  (HEAD -> develop, origin/develop)Update metadata to version '1.3.0'.
+          | *  (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
+          |/| 
+          | *  (origin/release/v1.2.0, release/v1.2.0)Commit on release branch
+          | * Update metadata to version '1.2.0'.
+          |/  
+          * ConfigAndBuildProject
+          * Initial CommitAll
+          ";
+
+    
     ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand("commit -m Commit on develop --allow-empty");
 
@@ -290,7 +353,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
 
     Assert.That(act1, Is.EqualTo(0));
     Assert.That(act2, Is.EqualTo(0));
-    AssertValidLogs(correctLogs);
+    AssertValidLogs(correctLogs, correctLogs1);
   }
 
   [Test]
