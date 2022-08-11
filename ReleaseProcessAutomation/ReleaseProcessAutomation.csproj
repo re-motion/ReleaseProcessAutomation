@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <PackageId>ReleaseProcessAutomation</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>re-motion</Authors>
+        <Company>RUBICON</Company>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <PackAsTool>true</PackAsTool>
