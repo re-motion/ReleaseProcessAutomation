@@ -26,4 +26,7 @@ public class Settings
 {
   [XmlElement("msBuildPath")]
   public string MSBuildPath { get; set; }
+  
+  [XmlElement("alternativeMSBuildPaths")]
+  public string[] AlternativeMSBuildPaths { get; set; }
 }

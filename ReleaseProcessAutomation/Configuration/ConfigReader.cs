@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 using ReleaseProcessAutomation.Configuration.Data;
 using Serilog;
@@ -59,9 +60,24 @@ public class ConfigReader
       throw new InvalidOperationException(message);
     }
 
-    config.MSBuildSettings.MSBuildPath = Path.GetFullPath(config.MSBuildSettings.MSBuildPath);
+    var allPaths = new[] { config.MSBuildSettings.MSBuildPath };
+    
+    // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+    if (config.MSBuildSettings.AlternativeMSBuildPaths != null)
+      allPaths = allPaths.Concat(config.MSBuildSettings.AlternativeMSBuildPaths).ToArray();
+    
+    try
+    {
+      var fullPath = allPaths.Select(Path.GetFullPath).First(File.Exists);
+      
+      config.MSBuildSettings.MSBuildPath = fullPath;
+      return config;
+    }
+    catch
+    {
+      throw new ArgumentException("None of the configured MSBuild paths in the config exist.\nPlease configure a proper MSBuild path in the config.");
 
-    return config;
+    }
   }
 
   /// <exception cref="FileNotFoundException">The file could not be found.</exception>

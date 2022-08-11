@@ -17,6 +17,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using NUnit.Framework;
 using ReleaseProcessAutomation.Configuration;
 
@@ -74,5 +75,109 @@ internal class ConfigReaderTests
     var configPath = reader.GetConfigPathFromBuildProject(TestContext.CurrentContext.TestDirectory);
 
     Assert.That(configPath, Is.EqualTo("Build/Customizations/ReleaseProcessScript.Test.config"));
+  }
+
+  [Test]
+  public void LoadConfig_WithWrongFirstMSBuildPath_LoadsSecondMsBuildPath ()
+  {
+    var reader = new ConfigReader();
+    var alternativeConfigName = "alt.config";
+    var tempFile = Path.GetTempFileName();
+    var altConfigPath = Path.Combine(TestContext.CurrentContext.TestDirectory, alternativeConfigName);
+    File.WriteAllText(
+        altConfigPath,
+        @"<?xml version=""1.0"" encoding=""utf-8""?>
+<settings>
+  <msBuildSettings>
+    <msBuildPath>C:\DefinitelyNotAnMsBuildPath</msBuildPath>
+    <alternativeMSBuildPaths>" + tempFile + @"</alternativeMSBuildPaths>
+  </msBuildSettings>
+</settings>");
+
+    var config = reader.LoadConfig(altConfigPath);
+
+    Assert.That(config.MSBuildSettings.MSBuildPath, Is.EqualTo(tempFile));
+
+    File.Delete(altConfigPath);
+    File.Delete(tempFile);
+  }
+
+  [Test]
+  public void LoadConfig_WithoutAlternativeMsBuildPath_DoesNotThrow ()
+  {
+    var reader = new ConfigReader();
+    var alternativeConfigName = "alt.config";
+    var tempFile = Path.GetTempFileName();
+    var altConfigPath = Path.Combine(TestContext.CurrentContext.TestDirectory, alternativeConfigName);
+    File.WriteAllText(
+        altConfigPath,
+        @"<?xml version=""1.0"" encoding=""utf-8""?>
+<settings>
+  <msBuildSettings>
+    <msBuildPath>" + tempFile + @"</msBuildPath>
+  </msBuildSettings>
+</settings>");
+
+    var config = reader.LoadConfig(altConfigPath);
+
+    Assert.That(config.MSBuildSettings.MSBuildPath, Is.EqualTo(tempFile));
+
+    File.Delete(altConfigPath);
+    File.Delete(tempFile);
+  }
+
+  [Test]
+  public void LoadConfig_WithoutFullMSBuildPath_LoadsMsBuildPath ()
+  {
+    var reader = new ConfigReader();
+    var alternativeConfigName = "alt.config";
+    var tempFileFullName = Path.GetTempFileName();
+    var tempFile = tempFileFullName.Split('/').Last();
+    var alternativeTempFile = Path.GetTempFileName();
+    var altConfigPath = Path.Combine(TestContext.CurrentContext.TestDirectory, alternativeConfigName);
+    File.WriteAllText(
+        altConfigPath,
+        @"<?xml version=""1.0"" encoding=""utf-8""?>
+<settings>
+  <msBuildSettings>
+    <msBuildPath>" + tempFile + @"</msBuildPath>
+    <alternativeMSBuildPaths>" + alternativeTempFile + @"</alternativeMSBuildPaths>
+  </msBuildSettings>
+</settings>");
+
+    var config = reader.LoadConfig(altConfigPath);
+
+    Assert.That(config.MSBuildSettings.MSBuildPath, Is.EqualTo(tempFileFullName));
+
+    File.Delete(altConfigPath);
+    File.Delete(tempFileFullName);
+    File.Delete(alternativeTempFile);
+  }
+
+  [Test]
+  public void LoadConfig_WithoutProperMsBuildPaths_Throws ()
+  {
+    var reader = new ConfigReader();
+    var alternativeConfigName = "alt.config";
+    var tempFileName = "nonExistentFile.exe";
+    var tempFilePath = Path.Combine(TestContext.CurrentContext.TestDirectory, tempFileName);
+    var altConfigPath = Path.Combine(TestContext.CurrentContext.TestDirectory, alternativeConfigName);
+
+    File.Delete(tempFilePath);
+
+    File.WriteAllText(
+        altConfigPath,
+        @"<?xml version=""1.0"" encoding=""utf-8""?>
+<settings>
+  <msBuildSettings>
+    <msBuildPath>" + tempFileName + @"</msBuildPath>
+    <alternativeMSBuildPaths>" + tempFilePath + @"</alternativeMSBuildPaths>
+  </msBuildSettings>
+</settings>");
+
+    Assert.That(() => reader.LoadConfig(altConfigPath), Throws.InstanceOf<ArgumentException>());
+
+    File.Delete(altConfigPath);
+    File.Delete(tempFilePath);
   }
 }
