@@ -38,7 +38,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestGetUnreleasedVersionsWithNonExistentPattern ()
+  public void FindUnreleasedVersion_WithNonExistentPatter_ReturnsEmpty ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "a.b.c.d");
 
@@ -48,7 +48,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestCannotCreateVersionTwice ()
+  public void CreateVersion_WithAlreadyExistentVersion_ThrowsException ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "5.0.0");
 
@@ -62,7 +62,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestDeleteVersion ()
+  public void DeleteVersion_WithExistentVersion_DoesNotThrow ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.0.0");
 
@@ -71,7 +71,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestDeleteNonExistentVersion ()
+  public void DeleteVersion_WithoutExistentVersion_DoesThrow ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.0.0");
 
@@ -79,11 +79,10 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestReleaseVersionAndSquashUnreleased_ShouldThrowOnReleasedVersionsToBeSquashed ()
+  public void ReleaseVersionAndSquashUnreleased_WithOneVersionBetweenAlreadyReleased_ShouldThrow ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-beta.1");
 
-    JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1", "4.1.2", "4.2.0");
     _service = new JiraProjectVersionService(_restClientProviderMock.Object, _issueService, _versionFinder);
 
     //Create versions mangled to verify they are ordered before squashed

@@ -1,16 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <PackageId>ReleaseProcessAutomation</PackageId>
-        <Version>1.0.0</Version>
-        <Authors>re-motion</Authors>
-        <Company>RUBICON</Company>
         <OutputType>Exe</OutputType>
         <TargetFramework>net6.0</TargetFramework>
         <PackAsTool>true</PackAsTool>
-        <ToolCommandName>rpa</ToolCommandName>
+        <ToolCommandName>releasetool</ToolCommandName>
         <Nullable>enable</Nullable>
-        <RootNamespace>ReleaseProcessAutomation</RootNamespace>
+    </PropertyGroup>
+
+    <Import Project="..\Build\Customizations\Properties.props"/>
+    <Import Project="..\Build\Customizations\Version.props" Condition="'$(Version)' == ''"/>
+
+    <PropertyGroup>
+        <Product>$(ProductName)</Product>
+        <Company>$(CompanyName)</Company>
+        <Owners>$(Company)</Owners>
+        <Authors>$(Company)</Authors>
+        <Copyright>$(Copyright)</Copyright>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <AssemblyName>Remotion.ReleaseProcessAutomation</AssemblyName>
+        <RootNamespace>$(AssemblyName)</RootNamespace>
+        <PackageProjectUrl>http://www.re-motion.org/</PackageProjectUrl>
+        <Description>The re-motion Release Process Automation tool provides automation of the release process with Jira, Git and MSBuild</Description>
+        <PackageTags>re-motion ReleaseAutomation</PackageTags>
+        <DevelopmentDependency>true</DevelopmentDependency>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -37,5 +54,12 @@
         <PackageReference Include="Spectre.Console" Version="0.43.0" />
     </ItemGroup>
 
+    <PropertyGroup>
+        <_version>$(Version.Split('-')[0])</_version>
+        <AssemblyVersion>$(_version).0</AssemblyVersion>
+        <FileVersion>$(_version).24009</FileVersion>
+        <InformationalVersion>$(_version)-x.9+$(Configuration)</InformationalVersion>
+        <PackageVersion>$(_version)-x.9</PackageVersion>
+    </PropertyGroup>
 
 </Project>
