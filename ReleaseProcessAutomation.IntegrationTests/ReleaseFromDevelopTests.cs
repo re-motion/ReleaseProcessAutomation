@@ -78,6 +78,86 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
     Assert.That(act, Is.EqualTo(0));
     AssertValidLogs(correctLogs, correctLogs1);
   }
+  
+  [Test]
+  public void ReleaseOnMaster_FromDevelopAndCreateSupportBranch_CreatesProperSupportBranch ()
+  {
+    var correctLogs =
+        @"*  (hotfix/v1.0.1)Update metadata to version '1.0.1'.
+          *    (tag: v1.0.0, origin/master, support/v1.0, master)Merge branch 'release/v1.0.0'
+          |\  
+          | *  (origin/release/v1.0.0, release/v1.0.0)Update metadata to version '1.0.0'.
+          | | *  (HEAD -> develop, origin/develop)Update metadata to version '1.1.0'.
+          | |/  
+          | * feature4
+          | * feature3
+          | * feature2
+          |/  
+          * feature
+          * ConfigAndBuildProject
+          * Initial CommitAll
+          ";
+
+    ExecuteGitCommand("commit -m feature --allow-empty");
+    ExecuteGitCommand("checkout -b develop");
+
+    ExecuteGitCommand("commit -m feature2 --allow-empty");
+    ExecuteGitCommand("commit -m feature3 --allow-empty");
+    ExecuteGitCommand("commit -m feature4 --allow-empty");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("1.0.0");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("1.1.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("y");
+
+    var act = RunProgram(new[] { "Release-Version" });
+
+    Assert.That(act, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
+  }
+  
+  [Test]
+  public void ReleaseOnMaster_FromDevelopAndCreateSupportBranchWithPause_CreatesProperSupportBranch ()
+  {
+    var correctLogs =
+        @"*  (hotfix/v1.0.1)Update metadata to version '1.0.1'.
+          *    (tag: v1.0.0, origin/master, support/v1.0, master)Merge branch 'release/v1.0.0'
+          |\  
+          | *  (origin/release/v1.0.0, release/v1.0.0)Update metadata to version '1.0.0'.
+          | | *  (HEAD -> develop, origin/develop)Update metadata to version '1.1.0'.
+          | |/  
+          | * feature4
+          | * feature3
+          | * feature2
+          |/  
+          * feature
+          * ConfigAndBuildProject
+          * Initial CommitAll
+          ";
+
+    ExecuteGitCommand("commit -m feature --allow-empty");
+    ExecuteGitCommand("checkout -b develop");
+
+    ExecuteGitCommand("commit -m feature2 --allow-empty");
+    ExecuteGitCommand("commit -m feature3 --allow-empty");
+    ExecuteGitCommand("commit -m feature4 --allow-empty");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter("1.0.0");
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter("1.1.0");
+    //Do not want to create support branch
+    TestConsole.Input.PushTextWithEnter("y");
+
+    var act = RunProgram(new[] { "Release-Version", "-p" });
+    var act1 = RunProgram(new[] { "Close-Version" });
+
+    Assert.That(act, Is.EqualTo(0));
+    Assert.That(act1, Is.EqualTo(0));
+    AssertValidLogs(correctLogs);
+  }
 
   [Test]
   public void ReleaseOnMaster_FromDevelop_WithPreviousRelease ()

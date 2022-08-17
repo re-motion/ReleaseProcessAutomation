@@ -96,7 +96,7 @@ public class ContinueReleasePatchStep
 
     GitClient.Checkout(mergeTargetBranchName);
 
-    CreateSupportBranchWithHotfixForRelease(nextVersion);
+    CreateSupportBranchWithHotfixForRelease(nextVersion.GetNextMinor());
 
     GitClient.Checkout(mergeTargetBranchName);
 

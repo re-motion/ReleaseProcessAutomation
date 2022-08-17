@@ -17,6 +17,7 @@
 
 using System;
 using ReleaseProcessAutomation.Configuration.Data;
+using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
@@ -109,7 +110,7 @@ public class ContinueReleaseOnMasterStep
 
     CreateTagWithMessage(tagName);
 
-    CreateSupportBranchWithHotfixForRelease(currentVersion);
+    CreateSupportBranchWithHotfixForRelease(currentVersion.GetNextPatchVersion());
 
     GitClient.Checkout("develop");
   }
