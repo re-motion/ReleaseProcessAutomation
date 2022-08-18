@@ -62,7 +62,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
   }
 
   [Test]
-  public void TestFullJiraRun_WithIssueMoving_ShouldMoveProperIssues ()
+  public void Execute_WithExtraVersions_DoesNotMoveIssuesFromOtherVersions ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1", "4.1.2", "4.2.0");
 

@@ -44,7 +44,7 @@ internal class BranchFromReleaseStepTests
   }
 
   [Test]
-  public void FindNextRC_WithSeveralExistingTags_ReturnsProperVersionAndCallsRCStep ()
+  public void FindNextRC_WithSeveralExistingTags_ReturnsVersionWithNextRcVersionAndCallsRCStep ()
   {
     var version = new SemanticVersion
                   {
@@ -70,7 +70,7 @@ internal class BranchFromReleaseStepTests
   }
 
   [Test]
-  public void Execute_NotRCVersion_Calls_ReleaseWithRCStep ()
+  public void Execute_WithNonRCVersion_CallsReleaseWithRCStep ()
   {
     var version = new SemanticVersion
                   {

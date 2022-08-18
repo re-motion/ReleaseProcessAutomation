@@ -54,7 +54,7 @@ internal class SemanticVersionParserTests
   }
 
   [Test]
-  public void ParseVersionFromBranchName_WithCorrectBranchName_ReturnsProperVersion ()
+  public void ParseVersionFromBranchName_WithCorrectBranchName_ReturnsVersionContainedInBranchName ()
   {
     var parser = new SemanticVersionParser();
 
@@ -82,7 +82,7 @@ internal class SemanticVersionParserTests
   }
 
   [Test]
-  public void TryParseVersion_WithWrongFormat_ReturnsUnchangedVersion ()
+  public void TryParseVersion_WithWrongFormat_ReturnsFalseAndUnchangedVersion ()
   {
     var parser = new SemanticVersionParser();
     var invalidFormat = "help";

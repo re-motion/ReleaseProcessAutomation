@@ -94,7 +94,7 @@ internal class ReleaseProcessStepTests : GitBackedTests
   }
 
   [Test]
-  public void EnsureWorkingDirectoryClean_UncleanDir_DoesThrow ()
+  public void EnsureWorkingDirectoryClean_UncleanDirectoryNotIgnored_DoesThrow ()
   {
     var gitClientStub = new Mock<IGitClient>();
     gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(false);
@@ -110,7 +110,7 @@ internal class ReleaseProcessStepTests : GitBackedTests
   }
 
   [Test]
-  public void ResetItemsOfIgnoreList_DoesResetItemsOfIgnoreList_ShouldRevertChanges ()
+  public void ResetItemsOfIgnoreList_DoesRevertChanges ()
   {
     var fileName = "File.txt";
     for (var index = 0; index < _config.DevelopStableMergeIgnoreList.FileName.Length; index++)
@@ -132,7 +132,7 @@ internal class ReleaseProcessStepTests : GitBackedTests
   }
 
   [Test]
-  public void ResetItemsOfIgnoreList_DoesResetItemsOfIgnoreList_ShouldOnlyRevertIgnoreListChanges ()
+  public void ResetItemsOfIgnoreList_WithFilesNotInIgnoreList_DoesOnlyRevertIgnoreListChanges ()
   {
     var fileName = "File.txt";
     var otherFileName = "OtherFile.txt";
@@ -160,7 +160,7 @@ internal class ReleaseProcessStepTests : GitBackedTests
   }
 
   [Test]
-  public void ResetItemsOfIgnoreList_WithWrongIgnoreList_DoesNotRevertAnythingHere ()
+  public void ResetItemsOfIgnoreList_WithWrongIgnoreList_DoesNotRevertAnything ()
   {
     var fileName = "File.txt";
     var otherFileName = "OtherFile.txt";

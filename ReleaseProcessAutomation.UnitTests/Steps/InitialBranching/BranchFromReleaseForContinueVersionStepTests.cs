@@ -81,7 +81,7 @@ public class BranchFromReleaseForContinueVersionStepTests
   }
 
   [Test]
-  public void Execute_WithInvalidAncestor_ShouldThrow ()
+  public void Execute_WithInvalidAncestor_ThrowsException ()
   {
     var nextVersion = new SemanticVersion();
 

@@ -128,7 +128,7 @@ internal class ReleaseRCStepTests
   }
 
   [Test]
-  public void Execute_CallsNextVersionFromHotfix_WithProperVersionCollection ()
+  public void Execute_WithHotfixAncestor_UsesNextPossibleVersionsFromHotfix ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -192,7 +192,7 @@ internal class ReleaseRCStepTests
   }
 
   [Test]
-  public void Execute_WithoutPauseForCommit_CallsNextStep ()
+  public void Execute_CallsNextStep ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();

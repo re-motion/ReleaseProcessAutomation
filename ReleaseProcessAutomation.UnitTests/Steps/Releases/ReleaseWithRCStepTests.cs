@@ -66,7 +66,7 @@ internal class ReleaseWithRCStepTests
   }
 
   [Test]
-  public void Execute_FromHotfix_CreatesHotfixPossibleVersions ()
+  public void Execute_WithHotfixAncestor_UsesNextPossibleVersionsFromHotfix ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -95,7 +95,7 @@ internal class ReleaseWithRCStepTests
   }
 
   [Test]
-  public void Execute_FromDevelop_CreatesDevelopPossibleVersions ()
+  public void Execute_WithDevelopAncestor_UsesNextPossibleVersionsFromDevelop ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -124,7 +124,7 @@ internal class ReleaseWithRCStepTests
   }
 
   [Test]
-  public void Execute_ThrowsNothing_CallsMBuildInvokeAndCommitAndJira ()
+  public void Execute_CallsMBuildInvokeAndCommitAndJira ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -154,7 +154,7 @@ internal class ReleaseWithRCStepTests
   }
 
   [Test]
-  public void Execute_ThrowsNothingFromHotfix_CallsNextStepAndJira ()
+  public void Execute_WithHotfixAncestor_CallsNextStepAndJira ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -185,7 +185,7 @@ internal class ReleaseWithRCStepTests
   }
 
   [Test]
-  public void Execute_ThrowsNothingFromDevelop_CallsNextStepAndJira ()
+  public void Execute_WithDevelopAncestor_CallsNextStepAndJira ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -216,7 +216,7 @@ internal class ReleaseWithRCStepTests
   }
 
   [Test]
-  public void Execute_ThrowsNothingFromDevelopWithPause_DoesNotCallNextStepDoesCallMsBuildAndJira ()
+  public void Execute_WithDevelopAncestorAndPause_DoesNotCallNextStepDoesCallMsBuildAndJira ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();

@@ -40,7 +40,7 @@ internal class BranchFromMasterStepTests
   }
 
   [Test]
-  public void FindNextPatch_WithSeveralTags_ReturnsProperVersionAndCallsReleasePatchStepWithIt ()
+  public void Execute_WithSeveralTags_ReturnsFirstVersionAfterTagAndCallsReleasePatchStepForThisVersion ()
   {
     var currVersion = new SemanticVersion
                       {

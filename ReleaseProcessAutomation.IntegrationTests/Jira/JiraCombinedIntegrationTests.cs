@@ -18,7 +18,7 @@ namespace ReleaseProcessAutomation.IntegrationTests.Jira;
 
 [TestFixture]
 [Explicit]
-public class JiraIntegrationTests : IntegrationTestSetup
+public class JiraCombinedIntegrationTests : IntegrationTestSetup
 {
   private string _jiraUsername;
   private string _jiraPassword;
@@ -30,8 +30,9 @@ public class JiraIntegrationTests : IntegrationTestSetup
   private JiraProjectVersionService _service;
 
   [SetUp]
-  public void Setup ()
+  public override void Setup ()
   {
+    base.Setup();
     var testCredentials = JiraTestUtility.GetLocallySavedCredentials();
     _jiraUsername = testCredentials.Username;
     _jiraPassword = testCredentials.Password;
@@ -179,7 +180,7 @@ public class JiraIntegrationTests : IntegrationTestSetup
   }
 
   [Test]
-  public void TestJiraRunThrough_WithManyDifferentVersionsWithCloseNames_ReleasesCorrectJiraVersions ()
+  public void TestJiraRunThrough_WithDifferentVersionsWithCloseNames_ReleasesCorrectJiraVersions ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, "1.0.0", "1.1.0", "1.0.1", "1.0.2");
 
@@ -327,7 +328,7 @@ public class JiraIntegrationTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseVersionAndMoveIssues_NoIssuesToMove_DoesntThrow ()
+  public void ReleaseVersionAndMoveIssues_NoIssuesToMove_PerformsReleaseWithoutUpdatingAnyIssues ()
   {
     const string currentVersionName = "1.3.0-alpha.2";
     const string nextVersionName = "1.3.0-alpha.3";
@@ -377,7 +378,7 @@ public class JiraIntegrationTests : IntegrationTestSetup
   }
 
   [Test]
-  public void FindVersionWithVersionNumber_FindsProperVersion ()
+  public void FindVersionWithVersionNumber_WithNewlyCreatedAlphaVersion_FindsVersionWithExactVersionNumber ()
   {
     var versionName = "1.3.0-alpha.1";
 
@@ -394,7 +395,7 @@ public class JiraIntegrationTests : IntegrationTestSetup
   }
 
   [Test]
-  public void FindAllVersionsWithVersionNumber_FindsProperVersions ()
+  public void FindAllVersionsWithVersionNumber_With3MatchingVersions_Finds3MatchingVersions ()
   {
     var fullVersionName = "1.3.0";
     var alphaVersionName = "1.3.0-alpha.1";
@@ -421,7 +422,7 @@ public class JiraIntegrationTests : IntegrationTestSetup
   }
 
   [Test]
-  public void FindIssuesWithOnlyExactFixVersion_ReturnsFoundVersions ()
+  public void FindIssuesWithOnlyExactFixVersion_WithSeveralIssuesWithDifferentFixVersions_ReturnsOnlyIssueWithExactFixVersion ()
   {
     var fullVersionName = "1.3.0";
     var alphaVersionName = "1.3.0-alpha.1";

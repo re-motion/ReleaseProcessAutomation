@@ -47,7 +47,7 @@ internal class ConfigUtilitiesTests
   }
 
   [Test]
-  public void GetMSBuildCallString_SeveralArguments_ReturnsVersionedArguments ()
+  public void GetMSBuildCallString_WithSeveralArguments_ReturnsVersionedArguments ()
   {
     var parser = new SemanticVersionParser();
     var step = new Step();

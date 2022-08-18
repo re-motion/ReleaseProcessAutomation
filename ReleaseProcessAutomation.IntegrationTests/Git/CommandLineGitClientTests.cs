@@ -29,10 +29,10 @@ internal class CommandLineGitClientTests : GitBackedTests
 {
   private Configuration.Data.Config _config;
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
-
-  [SetUp]
-  public void Isetup ()
+  
+  public override void Setup () 
   {
+    base.Setup();
     var path = Path.Join(PreviousWorkingDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
   }
@@ -69,7 +69,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void CheckMinGitVersion_WithNewerVersion_ReturnTrue ()
+  public void IsMinGitVersion_WithNewerVersion_ReturnsTrue ()
   {
     var client = new CommandLineGitClient();
 
@@ -92,7 +92,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void BranchExists_WithOneBranch_ReturnsTrue ()
+  public void DoesBranchExist_WithOneBranch_ReturnsTrue ()
   {
     var client = new CommandLineGitClient();
 
@@ -112,7 +112,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void RemoteBranchExists_BranchExists_ReturnsTrue ()
+  public void DoesRemoteBranchExists_WithExistingBranch_ReturnsTrue ()
   {
     var client = new CommandLineGitClient();
     ExecuteGitCommand("checkout -b newBranch");
@@ -125,7 +125,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void RemoteBranchExists_BranchNotExists_ReturnsFalse ()
+  public void DoesRemoteBranchExists_WithoutExistingBranch_ReturnsFalse ()
   {
     var client = new CommandLineGitClient();
     ExecuteGitCommand("checkout -b newBranch");
@@ -138,17 +138,17 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void GetRemoteOfBranch_WithDifferentRemoteName_ReturnsProperName ()
+  public void GetRemoteOfBranch_WithOriginAsRemote_ReturnsOrigin ()
   {
     var client = new CommandLineGitClient();
+    ExecuteGitCommand("push -u origin master");
     var output = client.GetRemoteOfBranch("master");
-    Console.WriteLine(output);
 
-    Assert.Pass();
+    Assert.That(output, Is.EqualTo("origin"));
   }
 
   [Test]
-  public void TagExists_WithOneTag_ReturnsTrue ()
+  public void DoesTagExist_WithOneTag_ReturnsTrue ()
   {
     ReleaseVersion("v1.0.0");
     var client = new CommandLineGitClient();
@@ -159,7 +159,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void TagExists_WithoutTag_ReturnsFalse ()
+  public void DoesTagExist_WithoutTag_ReturnsFalse ()
   {
     var client = new CommandLineGitClient();
 
@@ -186,7 +186,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void GetAncestors_ReleaseBehindDevelopBranch_ReturnsOne ()
+  public void GetAncestors_WithTwoExpectedAncestors_ReturnsBothMatchingNames ()
   {
     AddCommit();
     ExecuteGitCommand("checkout -b develop");
@@ -208,7 +208,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void GetAncestors_ReleaseOnSameCommitAsDevelop_ReturnsTwo ()
+  public void GetAncestors_ReleaseOnSameCommitAsDevelop_ReturnsMatchingName ()
   {
     AddCommit();
     ExecuteGitCommand("checkout -b develop");
@@ -224,7 +224,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void GetAncestor_SeveralBranchesFromMaster_ReturnsOnlyOne ()
+  public void GetAncestors_SeveralBranchesFromMaster_ReturnsMatchingName ()
   {
     AddCommit();
     ExecuteGitCommand("checkout -b develop");
@@ -256,7 +256,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void IsCommitHash_FalseHash_ReturnsFalse ()
+  public void IsCommitHash_NonHash_ReturnsFalse ()
   {
     var commitHash = "DefinetlyNotACommitHash";
     var client = new CommandLineGitClient();
@@ -301,8 +301,6 @@ internal class CommandLineGitClientTests : GitBackedTests
     ExecuteGitCommand("tag v1.0.0-beta.1");
 
     var validVersions = client.GetTags();
-    foreach (var version in validVersions)
-      Console.WriteLine(version);
 
     Assert.That(validVersions, Does.Contain("v1.0.0"));
     Assert.That(validVersions, Does.Contain("v1.0.2"));
@@ -334,7 +332,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void CheckoutCommitWithNewBranch_WithoutCommitHash_ThrowsException ()
+  public void CheckoutCommitWithNewBranch_WithIncorrectCommitHash_ThrowsException ()
   {
     var client = new CommandLineGitClient();
 
@@ -376,7 +374,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void CheckoutBranch_WithoutCommitHash_ThrowsException ()
+  public void Checkout_WithIncorrectName_ThrowsException ()
   {
     var client = new CommandLineGitClient();
 
@@ -387,7 +385,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void Checkout_WithoutErrors_SwitchesToOtherBranch ()
+  public void Checkout_ToBranchWithoutErrors_SwitchesBranch ()
   {
     var client = new CommandLineGitClient();
 
@@ -401,7 +399,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void CheckoutNewBranch_WithoutErrors_CreatesAndSwitchesToOtherBranch ()
+  public void CheckoutNewBranch_WithoutErrors_CreatesAndSwitchesBranch ()
   {
     var client = new CommandLineGitClient();
 
@@ -414,7 +412,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void MergeBranch_WithoutErrorsAndManualCommitAfterwards_MergesBranch ()
+  public void MergeBranchWithoutCommit_WithoutErrorsAndManualCommitAfterwards_MergesBranch ()
   {
     var correctLogs =
         @"*    (HEAD -> master)MergeCommit
@@ -437,7 +435,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void MergeBranch_WithConflictsAndNoAutomaticResolution_ShouldThrow ()
+  public void MergeBranchWithoutCommit_WithConflictsAndNoAutomaticResolution_ThrowsException ()
   {
     ExecuteGitCommand("checkout -b a");
     var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
@@ -462,7 +460,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void MergeBranchOnlyUseChangesOfBaseBranch_WithConflictsAndAutomaticResolution_FileContainsContentsFromOtherBranch ()
+  public void MergeBranchToOnlyContainChangesFromMergedBranch_WithConflictsAndAutomaticResolution_FileContainsContentsFromOtherBranch ()
   {
     var correctLogs =
         @"*    (HEAD -> b)Merge branch 'a' into b
@@ -501,7 +499,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void MergeBranchOnlyUseChangesOfBaseBranch_WithFileAddedInTargetBranch_RemovesFile ()
+  public void MergeBranchToOnlyContainChangesFromMergedBranch_WithFileAddedInTargetBranch_RemovesFile ()
   {
     var correctLogs =
         @"*    (HEAD -> b)Merge branch 'a' into b
@@ -532,7 +530,7 @@ internal class CommandLineGitClientTests : GitBackedTests
   }
 
   [Test]
-  public void MergeBranchOnlyUseChangesOfBaseBranch_FileRemovedInTargetBranch_RestoresFile ()
+  public void MergeBranchToOnlyContainChangesFromMergedBranch_FileRemovedInTargetBranch_RestoresFile ()
   {
     var correctLogs =
         @"*    (HEAD -> b)Merge branch 'a' into b

@@ -37,7 +37,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void GetVersionsSorted_With3Versions_ReturnsThemInCorrectOrder ()
+  public void GetVersionsSorted_With3Versions_ReturnsVersionsInCorrectOrder ()
   {
     var parser = new SemanticVersionParser();
     var gitClientMock = new Mock<IGitClient>();
@@ -65,7 +65,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void TryGetCurrentVersion_With3Versions_ReturnsFirstAndTrue ()
+  public void TryGetCurrentVersion_With3Versions_ReturnsTrueAndOutputsVersion ()
   {
     var gitClientMock = new Mock<IGitClient>();
     gitClientMock.Setup(_ => _.GetTags("HEAD", "")).Returns(
@@ -92,7 +92,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void DoesCurrentVersionExist_WithoutVersion_ReturnsFalse ()
+  public void TryGetCurrentVersion_WithoutVersion_ReturnsFalse ()
   {
     var gitClient = new CommandLineGitClient();
     var readerMock = new Mock<IInputReader>();
@@ -104,7 +104,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void GetMostRecentHotfixVersion_PreReleaseAlpha_ReturnsAlphaVersion ()
+  public void GetMostRecentHotfixVersion_WithPreReleaseAlpha_ReturnsAlphaVersion ()
   {
     ExecuteGitCommand("checkout -b support/v2.28");
     ExecuteGitCommand("commit -m \"Commit on Support Branch\" --allow-empty");
@@ -147,7 +147,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void GetMostRecentHotfixVersion_PreReleaseBeta_ReturnsBetaVersion ()
+  public void GetMostRecentHotfixVersion_WithPreReleaseBeta_ReturnsBetaVersion ()
   {
     ExecuteGitCommand("checkout -b support/v2.28");
     ExecuteGitCommand("commit -m \"Commit on Support Branch\" --allow-empty");
@@ -180,7 +180,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void GetMostRecentHotfixVersion_NoTags_ReturnsCurrentVersion ()
+  public void GetMostRecentHotfixVersion_WithoutTags_ReturnsCurrentVersion ()
   {
     ExecuteGitCommand("checkout -b support/v2.28");
     ExecuteGitCommand("commit -m \"Commit on Support Branch\" --allow-empty");
@@ -205,7 +205,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void GetMostRecentHotfixVersion_PreReleaseAlphaWithInvalidTags_ReturnsAlphaVersion ()
+  public void GetMostRecentHotfixVersion_WithPatchAsLastVersion_ReturnsPatchVersion ()
   {
     ExecuteGitCommand("checkout -b support/v2.28");
     ExecuteGitCommand("commit -m \"Commit on Support Branch\" --allow-empty");
@@ -250,7 +250,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void GetMostRecentHotfixVersion_FallsBackToVersionBasedOnBranchName_IgnoresMinorTagFromSupportBranchFork ()
+  public void GetMostRecentHotfixVersion_WithMinorTagOnPreviousSupportBranchFork_FallsBackToVersionBasedOnBranchName ()
   {
     ExecuteGitCommand("checkout -b support/v2.28");
     ExecuteGitCommand("commit -m \"Commit on Support Branch\" --allow-empty");
@@ -278,7 +278,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void GetMostRecentHotfixVersion_FallsBackToVersionBasedOnHotfixBranchName_IgnoresMinorTagFromSupportBranch ()
+  public void GetMostRecentHotfixVersion_WithPreviousSupportBranch_FallsBackToVersionBasedOnHotfixBranchName ()
   {
     ExecuteGitCommand("checkout -b support/v2.28");
     ExecuteGitCommand("commit -m \"Commit on Support Branch\" --allow-empty");
@@ -305,7 +305,7 @@ internal class SemanticVersionedGitRepositoryTests : GitBackedTests
   }
 
   [Test]
-  public void GetMostRecentHotfixVersion_FallsBackToVersionBasedOnBranchName_IgnoresMinorTagFromSupportBranch ()
+  public void GetMostRecentHotfixVersion_WithPreviousMinorTagOnCurrentSupportBranch_FallsBackToVersionBasedOnHotfixBranchName ()
   {
     ExecuteGitCommand("checkout -b support/v2.29");
     ExecuteGitCommand("commit -m \"Commit on Support Branch\" --allow-empty");

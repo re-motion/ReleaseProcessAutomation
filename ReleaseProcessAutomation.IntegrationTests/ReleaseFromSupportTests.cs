@@ -23,7 +23,7 @@ namespace ReleaseProcessAutomation.IntegrationTests;
 internal class ReleaseFromSupportTests : IntegrationTestSetup
 {
   [Test]
-  public void TryReleaseOnSupport_ThrowsException ()
+  public void ReleaseVersion_FromSupport_ThrowsException ()
   {
     ExecuteGitCommand("checkout -b support/v1.1");
 

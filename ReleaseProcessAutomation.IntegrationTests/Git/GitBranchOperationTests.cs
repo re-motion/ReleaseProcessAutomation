@@ -26,7 +26,7 @@ public class GitBranchOperationTests : GitBackedTests
   }
 
   [Test]
-  public void EnsureBranchUpToDate_WithoutProperConfig_ThrowsException ()
+  public void EnsureBranchUpToDate_WithoutRemotesInConfig_ThrowsException ()
   {
     _config.RemoteRepositories.RemoteNames = new string[] { };
 
@@ -58,7 +58,7 @@ public class GitBranchOperationTests : GitBackedTests
   }
 
   [Test]
-  public void EnsureBranchUpToDate_WithRemoteBehindUpToDate_DoesNotThrow ()
+  public void EnsureBranchUpToDate_WithRemoteBehind_DoesNotThrow ()
   {
     _config.RemoteRepositories.RemoteNames = new[]
                                              {
@@ -76,7 +76,7 @@ public class GitBranchOperationTests : GitBackedTests
   }
 
   [Test]
-  public void EnsureBranchUpToDate_WithCurrentBehindUpToDate_DoesThrow ()
+  public void EnsureBranchUpToDate_WithCurrentBehind_ThrowsException ()
   {
     _config.RemoteRepositories.RemoteNames = new[]
                                              {

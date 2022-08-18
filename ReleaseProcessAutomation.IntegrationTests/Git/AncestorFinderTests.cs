@@ -53,7 +53,7 @@ internal class AncestorFinderTests
   }
 
   [Test]
-  public void GetAncestor_OneFound_ReturnsFirst ()
+  public void GetAncestor_WithOneAncestor_ReturnsFoundAncestor ()
   {
     var readerStub = new Mock<IInputReader>();
     var gitClientStub = new Mock<IGitClient>();

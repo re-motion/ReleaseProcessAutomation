@@ -48,7 +48,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void CreateVersion_WithAlreadyExistentVersion_ThrowsException ()
+  public void FindUnreleasedVersion_WithNoVersionMatchingThePattern_ReturnsEmpty ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "5.0.0");
 
@@ -62,7 +62,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void DeleteVersion_WithExistentVersion_DoesNotThrow ()
+  public void DeleteVersion_WithExistingVersion_DeletesVersion ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.0.0");
 
@@ -71,7 +71,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void DeleteVersion_WithoutExistentVersion_DoesThrow ()
+  public void DeleteVersion_WithoutExistingVersion_ThrowsException ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.0.0");
 
@@ -79,7 +79,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void ReleaseVersionAndSquashUnreleased_WithOneVersionBetweenAlreadyReleased_ShouldThrow ()
+  public void ReleaseVersionAndSquashUnreleased_WithOneVersionBetweenAlreadyReleased_ThrowsException ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-beta.1");
 
@@ -108,7 +108,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestReleaseVersionAndSquashUnreleased_ShouldThrowOnSquashedVersionsContainingClosedIssues ()
+  public void ReleaseVersionAndSquashUnreleased_WithClosedIssueInVersionBetween_ThrowsException ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-beta.1");
 
@@ -136,7 +136,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestReleaseVersionAndSquashUnreleased_ShouldSquashUnreleasedAndMoveIssues ()
+  public void ReleaseVersionAndSquashUnreleased_WithOpenIssueOnBetweenVersion_SquashesUnreleasedAndMoveIssues ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-beta.1");
 
@@ -163,7 +163,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestReleaseVersionAndSquashUnreleased_ShouldSquashMultipleUnreleasedAndMoveIssues ()
+  public void ReleaseVersionAndSquashUnreleased_WithWithOpenIssuesOnBetweenVersions_SquashesMultipleUnreleasedAndMoveIssues ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-alpha.3", "6.0.1-beta.1");
 
@@ -195,7 +195,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestReleaseVersionAndSquashUnreleased_ShouldNotSquashUnrelatedVersions ()
+  public void ReleaseVersionAndSquashUnreleased_WithUnrelatedVersion_DoesNotSquashUnrelatedVersions ()
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "2.2.0", "3.0.0-alpha.1", "3.0.0-alpha.2", "3.0.0");
 
@@ -217,7 +217,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestSortingNetVersion ()
+  public void RepairVersionPosition_WithAssemblyVersions_SortsVersions()
   {
     const string firstVersion = "1.16.32.0";
     const string secondVersion = "1.16.32.1";
@@ -241,7 +241,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestSortingSemanticVersion ()
+  public void RepairVersionPosition_WithSemanticVersions_SortsVersions ()
   {
     const string firstVersion = "2.1.3";
     const string secondVersion = "2.2.0-alpha.5";
@@ -265,7 +265,7 @@ public class JiraProjectVersionServiceTest
   }
 
   [Test]
-  public void TestSortingWithInvalidVersions ()
+  public void RepairVersionPosition_WithInvalidVersion_SortsVersions ()
   {
     const string firstVersion = "1.17.21.0";
     const string secondVersion = "NotValidVersion";

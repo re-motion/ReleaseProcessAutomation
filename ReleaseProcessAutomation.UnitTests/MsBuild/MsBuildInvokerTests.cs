@@ -50,7 +50,7 @@ internal class MSBuildInvokerTests
   }
 
   [Test]
-  public void InvokeMSBuildAndCommit_NoMSBuildPathSpecified_EndsEarly ()
+  public void InvokeMSBuildAndCommit_NoMSBuildPathSpecified_EndsEarlyWithErrors ()
   {
     var version = new SemanticVersion
                   {
@@ -112,7 +112,7 @@ internal class MSBuildInvokerTests
   }
 
   [Test]
-  public void InvokeMSBuildAndCommit_WrongMSBuildPathSpecified_EndsEarlyWithProperMessage ()
+  public void InvokeMSBuildAndCommit_WrongMSBuildPathSpecified_EndsEarlyWithSpecificMessage ()
   {
     var version = new SemanticVersion
                   {
@@ -140,7 +140,7 @@ internal class MSBuildInvokerTests
   }
 
   [Test]
-  public void InvokeMSBuildAndCommit_WorkingDirectoryNotCleanWithOutCommitMessage_ThrowsException ()
+  public void InvokeMSBuildAndCommit_WorkingDirectoryNotCleanAfterCallToMSBuildWithOutCommitMessage_ThrowsException ()
   {
     _config.PrepareNextVersionMSBuildSteps.Steps[0].CommitMessage = string.Empty;
     var version = new SemanticVersion
@@ -166,7 +166,7 @@ internal class MSBuildInvokerTests
   }
 
   [Test]
-  public void InvokeMSBuildAndCommit_WorkingDirectoryNotCleanWithCommitMessage_ThrowsException ()
+  public void InvokeMSBuildAndCommit_WorkingDirectoryNotCleanBeforeCallToMSBuildWithCommitMessage_ThrowsException ()
   {
     _config.PrepareNextVersionMSBuildSteps.Steps[0].CommitMessage = "CommitAll";
     var version = new SemanticVersion

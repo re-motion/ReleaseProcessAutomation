@@ -43,7 +43,7 @@ internal class InputReaderTests
   }
 
   [Test]
-  public void ReadVersionChoice_WithoutInteractiveConsole_ReturnsIndexedVersion ()
+  public void ReadVersionChoice_WithIndexedInput_ReturnsIndexedVersion ()
   {
     var nextVersions = new SemanticVersion().GetNextPossibleVersionsDevelop(true);
     var testConsole = new TestConsole();
@@ -52,12 +52,11 @@ internal class InputReaderTests
 
     var act = inputReader.ReadVersionChoice("", nextVersions);
 
-    var output = testConsole.Output;
     Assert.That(act, Is.EqualTo(new SemanticVersion { Major = 1 }));
   }
 
   [Test]
-  public void ReadVersionChoice_WithoutInteractiveConsole_ReturnsSpecifiedVersion ()
+  public void ReadVersionChoice_WithNormalInput_ReturnsSpecifiedVersion ()
   {
     var nextVersions = new SemanticVersion().GetNextPossibleVersionsDevelop(true);
     var testConsole = new TestConsole();
@@ -66,7 +65,6 @@ internal class InputReaderTests
 
     var act = inputReader.ReadVersionChoice("", nextVersions);
 
-    var output = testConsole.Output;
     Assert.That(act, Is.EqualTo(new SemanticVersion { Major = 1 }));
   }
 
@@ -88,7 +86,7 @@ internal class InputReaderTests
   }
 
   [Test]
-  public void ReadStringChoice_WithoutInteractiveConsole_ReturnsSpecifiedString ()
+  public void ReadStringChoice_WithNormalInput_ReturnsSpecifiedString ()
   {
     var strings = new[] { "foo", "bar", "faz", "foobar" };
 
@@ -102,7 +100,7 @@ internal class InputReaderTests
   }
 
   [Test]
-  public void ReadStringChoice_WithoutInteractiveConsole_ReturnsIndexedString ()
+  public void ReadStringChoice_WithIndexedInput_ReturnsIndexedString ()
   {
     var strings = new[] { "foo", "bar", "faz", "foobar" };
 
@@ -116,7 +114,7 @@ internal class InputReaderTests
   }
 
   [Test]
-  public void ReadStringChoice_WithoutWrongInput_ThrowsNoMoreInputAvailable ()
+  public void ReadStringChoice_WithoutInput_ThrowsNoMoreInputAvailable ()
   {
     var strings = new[] { "foo", "bar", "faz", "foobar" };
 

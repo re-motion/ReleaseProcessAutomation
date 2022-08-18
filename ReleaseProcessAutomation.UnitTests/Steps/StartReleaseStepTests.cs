@@ -45,7 +45,7 @@ internal class StartReleaseStepTests
   }
 
   [Test]
-  public void Execute_WithFaultyCommitHash_throwsException ()
+  public void Execute_WithFaultyCommitHash_ThrowsException ()
   {
     var gitClientStub = new Mock<IGitClient>();
     var commitHash = "1029384781827834äöäöä";

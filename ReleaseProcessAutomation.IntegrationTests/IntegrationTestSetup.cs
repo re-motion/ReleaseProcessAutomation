@@ -38,7 +38,7 @@ public abstract class IntegrationTestSetup : GitBackedTests
   protected TestConsole TestConsole;
 
   [SetUp]
-  public void SetupI ()
+  public virtual void Setup ()
   {
     TestConsole = new TestConsole();
     Program.Console = TestConsole;

@@ -26,7 +26,7 @@ namespace ReleaseProcessAutomation.IntegrationTests;
 internal class ReleaseFromDevelopTests : IntegrationTestSetup
 {
   [Test]
-  public void ReleaseOnMaster_FromDevelop_ReleasesNewMinor ()
+  public void ReleaseOnMaster_FromDevelop_ReleasesNewMajor ()
   {
     var correctLogs =
         @"*    (tag: v1.0.0, origin/master, master)Merge branch 'release/v1.0.0'
@@ -160,7 +160,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseOnMaster_FromDevelop_WithPreviousRelease ()
+  public void ReleaseOnMaster_FromDevelopWithPreviousRelease_ReleasesNewMajor ()
   {
     var correctLogs =
         @"*    (tag: v2.0.0, origin/master, master)Merge branch 'release/v2.0.0'
@@ -215,7 +215,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseOnMaster_FromDevelop_WithoutPush ()
+  public void ReleaseOnMaster_FromDevelopWithoutPush_DoesNotPushChanges ()
   {
     var correctLogs =
         @"*    (tag: v2.0.0, master)Merge branch 'release/v2.0.0'
@@ -272,7 +272,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseOnMaster_FromDevelop_CommitButNoMergeAndTag ()
+  public void ReleaseOnMaster_FromDevelop_WithPause_CommitsButDoesNotCreateTagAndMerge ()
   {
     var correctLogs1 =
         @"*  (HEAD -> release/v2.0.0)Update metadata to version '2.0.0'.
@@ -326,7 +326,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseAlphaBeta_FromDevelop_ReleasePreRelease ()
+  public void ReleaseAlphaBeta_FromDevelop_ReleasesPreRelease ()
   {
     var correctLogs =
         @"*    (HEAD -> develop, origin/develop)Merge branch 'prerelease/v1.0.0-alpha.1' into develop
@@ -362,7 +362,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleasePreRelease_FromDevelop_RoReleaseWithCommitOnPreRelease ()
+  public void ReleasePreRelease_FromDevelopWithPauseAndContinue_ReleasesPreReleaseWithCommitOnPreRelease ()
   {
     var correctLogs =
         @"*    (HEAD -> develop)Merge branch 'prerelease/v1.2.0-alpha.1' into develop
@@ -394,7 +394,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseRelease_FromDevelop_ToMasterWithCommitOnRelease ()
+  public void ReleaseToMaster_FromDevelopWithPauseAndContinue_ToMasterWithCommitOnRelease ()
   {
     var correctLogs =
         @"*    (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
@@ -439,7 +439,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseRelease_FromDevelop_ToMasterWithCommitHash ()
+  public void ReleaseToMaster_FromDevelopWithCommitHashSpecified_ReleasesFromSpecifiedCommitHash ()
   {
     var correctLogs =
         @"*  (HEAD -> develop)Commit after finishing on new branch
@@ -476,7 +476,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void CloseVersionWithAncestor_FromDevelopRelease_ToMaster ()
+  public void CloseVersion_FromDevelopReleaseDevelopSpecifiedAsAncestor_ReleasesToMaster ()
   {
     var correctLogs =
         @"*    (tag: v1.2.0, origin/master, master)Merge branch 'release/v1.2.0'
@@ -509,7 +509,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void CloseVersionWithNoPush_FromDevelopRelease_ToMasterWithCommitOnRelease ()
+  public void CloseVersion_WithNoPushFromDevelopRelease_ReleasesToMaster ()
   {
     var correctLogs =
         @"*    (tag: v1.2.0, master)Merge branch 'release/v1.2.0'
@@ -545,7 +545,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseNewBranch_FromDevelop ()
+  public void NewReleaseBranch_FromDevelop_CreatesNewReleaseBranch ()
   {
     var correctLogs =
         @"*  (origin/develop, develop)Update metadata to version '1.3.0'.
@@ -570,7 +570,7 @@ internal class ReleaseFromDevelopTests : IntegrationTestSetup
   }
 
   [Test]
-  public void FixesMergeConflicts ()
+  public void CreateReleaseBranchAndReleaseVersionTwice_CreatesGitStructure ()
   {
     var correctLogs =
         @"*    (tag: v2.0.0, origin/master, master)Merge branch 'release/v2.0.0'

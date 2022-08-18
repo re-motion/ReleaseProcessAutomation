@@ -57,7 +57,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   }
 
   [Test]
-  public void Execute_WorkingDirectoryNotCleanWithoutConfirmation_ThrowsException ()
+  public void Execute_WithWorkingDirectoryNotCleanAndNoConfirmationToContinue_ThrowsException ()
   {
     var gitClientMock = new Mock<IGitClient>();
     gitClientMock.Setup(_ => _.IsWorkingDirectoryClean()).Returns(false);
@@ -83,7 +83,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   }
 
   [Test]
-  public void Execute_NoCurrentBranchName_ThrowsException ()
+  public void Execute_WithoutCurrentBranchName_ThrowsException ()
   {
     var nextVersion = new SemanticVersion
                       {
@@ -115,7 +115,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   }
 
   [Test]
-  public void Execute_NothingThrows_ShouldCallNextStep ()
+  public void Execute_CallsNextStep ()
   {
     var nextVersion = new SemanticVersion
                       {
@@ -149,7 +149,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   }
 
   [Test]
-  public void Execute_NothingThrowsButStartReleasePhase_ShouldNotCallNextStepButPushReleaseBranchStep ()
+  public void Execute_WithStartReleasePhase_DoesNotCallNextStepButPushReleaseBranchStep ()
   {
     var nextVersion = new SemanticVersion
                       {
@@ -186,7 +186,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   }
 
   [Test]
-  public void Execute_NothingThrowsButPauseForCommit_ShouldNotCallNextStep ()
+  public void Execute_WithPauseForCommit_DoesNotCallNextStep ()
   {
     var nextVersion = new SemanticVersion
                       {

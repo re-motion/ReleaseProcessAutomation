@@ -46,7 +46,7 @@ internal class BranchFromHotfixStepTests
   }
 
   [Test]
-  public void GetCurrentHotFixVersion_WithoutBranchAndWithStartReleasePhase_ThrowsException ()
+  public void Execute_WithoutBranchAndWithStartReleasePhase_ThrowsException ()
   {
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("");
 
@@ -64,7 +64,7 @@ internal class BranchFromHotfixStepTests
   }
 
   [Test]
-  public void GetCurrentHotFixVersion_WithBranchAndWithStartReleasePhase_CallsPatchReleaseWithNextVersion ()
+  public void Execute_WithBranchAndWithStartReleasePhase_CallsPatchReleaseWithNextVersion ()
   {
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("hotfix/v1.3.5");
     var version = new SemanticVersion

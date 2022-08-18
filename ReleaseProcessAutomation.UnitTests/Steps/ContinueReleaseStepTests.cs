@@ -41,7 +41,7 @@ internal class ContinueReleaseStepTests
   }
 
   [Test]
-  public void Execute_OnBranchReleaseWithAncestorEqualToDevelop_ShouldCallNonPreRelease ()
+  public void Execute_OnReleaseBranchWithAncestorEqualToDevelop_CallsNonPreRelease ()
   {
     var gitClientMock = new Mock<IGitClient>();
     gitClientMock.Setup(_ => _.GetCurrentBranchName()).Returns("release/v1.0.0");

@@ -60,7 +60,7 @@ internal class ReleaseAlphaBetaStepTests
   }
 
   [Test]
-  public void Execute_OnMasterWithoutErrors_CallsNextStep ()
+  public void Execute_OnMaster_CallsNextStep ()
   {
     var nextVersion = new SemanticVersion
                       {
@@ -95,7 +95,7 @@ internal class ReleaseAlphaBetaStepTests
   }
 
   [Test]
-  public void Execute_OnMasterWithoutErrorsButWithPauseForCommit_CallsInvokeMBuildAndCommitButNotNextStep ()
+  public void Execute_OnMasterWithPauseForCommit_CallsInvokeMBuildAndCommitButNotNextStep ()
   {
     var nextVersion = new SemanticVersion
                       {

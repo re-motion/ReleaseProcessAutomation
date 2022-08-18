@@ -63,7 +63,7 @@ internal class ReleasePatchStepTests
   }
 
   [Test]
-  public void Execute_OnMasterWithoutErrors_CallsNextStep ()
+  public void Execute_OnMaster_CallsNextStep ()
   {
     var nextVersion = new SemanticVersion { Major = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -93,7 +93,7 @@ internal class ReleasePatchStepTests
   }
 
   [Test]
-  public void Execute_OnHotfixWithoutErrors_CallsNextStep ()
+  public void Execute_OnHotfix_CallsNextStep ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -123,7 +123,7 @@ internal class ReleasePatchStepTests
   }
 
   [Test]
-  public void Execute_OnHotfixWithoutErrorsWithStartReleasePhase_DoesNotCallNextStepAndInvokeAndCommitButPushReleaseBranchStep ()
+  public void Execute_OnHotfixWithStartReleasePhase_DoesNotCallNextStepAndInvokeAndCommitButPushReleaseBranchStep ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -157,7 +157,7 @@ internal class ReleasePatchStepTests
   }
 
   [Test]
-  public void Execute_OnHotfixWithoutErrorsWithPauseForCommit_DoesNotCallNextStepButDoesCallInvokeBuildAndCommitAndJira ()
+  public void Execute_OnHotfixWithPauseForCommit_DoesNotCallNextStepButDoesCallInvokeBuildAndCommitAndJira ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();

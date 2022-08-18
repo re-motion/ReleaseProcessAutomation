@@ -55,7 +55,7 @@ internal class ContinueReleaseOnMasterStepTests
   }
 
   [Test]
-  public void CreateTagAndMerge_WithEmptyBranchName_ThrowsException ()
+  public void Execute_WithEmptyBranchName_ThrowsException ()
   {
     var version = new SemanticVersion();
     var gitClientStub = new Mock<IGitClient>();
@@ -86,7 +86,7 @@ internal class ContinueReleaseOnMasterStepTests
   }
 
   [Test]
-  public void CreateTagAndMerge_WithAlreadySetTag_ThrowsException ()
+  public void Execute_WithReleasingAnAlreadySetTag_ThrowsException ()
   {
     var version = new SemanticVersion();
     var gitClientStub = new Mock<IGitClient>();
@@ -119,7 +119,7 @@ internal class ContinueReleaseOnMasterStepTests
   }
 
   [Test]
-  public void CreateTagAndMerge_DoesNotMergeIntoDevelop_ContinuesToNextStep ()
+  public void Execute_DoesNotMergeIntoDevelop_ContinuesToNextStep ()
   {
     var version = new SemanticVersionParser().ParseVersion("1.0.0");
     var gitClientMock = new Mock<IGitClient>();

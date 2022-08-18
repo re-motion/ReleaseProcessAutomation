@@ -58,7 +58,7 @@ internal class ContinueReleasePatchStepTests
   }
 
   [Test]
-  public void Execute_OnMasterWithoutErrors_CallsNextStep ()
+  public void Execute_OnMaster_CallsNextStep ()
   {
     _gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     _pushReleasePatchMock.Setup(_ => _.Execute("master", "v0.0.0", "release/v0.0.0", "hotfix/v0.0.1")).Verifiable();
@@ -79,7 +79,7 @@ internal class ContinueReleasePatchStepTests
   }
 
   [Test]
-  public void Execute_NotOnMasterWithoutErrors_CallsNextStep ()
+  public void Execute_NotOnMaster_CallsNextStep ()
   {
     _gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     _pushReleasePatchMock.Setup(_ => _.Execute("support/v0.0", "v0.0.0", "release/v0.0.0", "hotfix/v0.0.1")).Verifiable();
@@ -100,7 +100,7 @@ internal class ContinueReleasePatchStepTests
   }
 
   [Test]
-  public void Execute_NotOnMasterWithoutErrorsButWithNoPush_DoesNotCallNextStepButCallsMBuild ()
+  public void Execute_NotOnMasterWithNoPush_DoesNotCallNextStepButCallsMBuild ()
   {
     _gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     _msBuildExecutorMock.Setup(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, new SemanticVersion().GetNextPatchVersion()))
@@ -123,7 +123,7 @@ internal class ContinueReleasePatchStepTests
   }
 
   [Test]
-  public void Execute_OnMasterWithoutErrorsButWithNoPush_DoesNotCallNextStepButCallsMBuild ()
+  public void Execute_OnMasterWithNoPush_DoesNotCallNextStepButCallsMBuild ()
   {
     _gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     _msBuildExecutorMock.Setup(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, new SemanticVersion().GetNextPatchVersion()))

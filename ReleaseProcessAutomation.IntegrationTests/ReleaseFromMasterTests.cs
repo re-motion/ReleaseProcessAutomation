@@ -23,7 +23,7 @@ namespace ReleaseProcessAutomation.IntegrationTests;
 internal class ReleaseFromMasterTests : IntegrationTestSetup
 {
   [Test]
-  public void ReleasePatch_FromMaster_ReleaseNewPatch ()
+  public void ReleasePatch_FromMaster_ReleasesNewPatch ()
   {
     var correctLogs =
         @"*  (origin/hotfix/v1.0.2, hotfix/v1.0.2)Update metadata to version '1.0.2'.

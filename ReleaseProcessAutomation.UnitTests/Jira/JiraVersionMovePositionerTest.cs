@@ -11,7 +11,7 @@ namespace ReleaseProcessAutomation.UnitTests.Jira;
 public class JiraVersionMovePositionerTest
 {
   [Test]
-  public void JiraVersionMovePositioner_HasToBeMoved_OnEmptyList_ReturnsFalse ()
+  public void HasToBeMoved_OnEmptyList_ReturnsFalse ()
   {
     var jiraProjectVersions = new List<JiraProjectVersionComparableAdapter<SemanticVersion>>();
     var createdVersion = CreateSemanticVersion("1.0.0");
@@ -22,7 +22,7 @@ public class JiraVersionMovePositionerTest
   }
 
   [Test]
-  public void JiraVersionMovePositioner_HasToBeMoved_WhenHigherVersionIsBefore_ReturnsTrue ()
+  public void HasToBeMoved_WhenHigherVersionIsBefore_ReturnsTrue ()
   {
     var jiraProjectVersions = CreateSemanticJiraProjectVersions("1.0.1");
     var createdVersion = CreateSemanticVersion("1.0.0");
@@ -32,7 +32,7 @@ public class JiraVersionMovePositionerTest
   }
 
   [Test]
-  public void JiraVersionMovePositioner_HasToBeMoved_WhenLowerVersionIsBefore_ReturnsFalse ()
+  public void HasToBeMoved_WhenLowerVersionIsBefore_ReturnsFalse ()
   {
     var jiraProjectVersions = CreateSemanticJiraProjectVersions("1.0.0");
     var createdVersion = CreateSemanticVersion("1.0.1");
@@ -42,7 +42,7 @@ public class JiraVersionMovePositionerTest
   }
 
   [Test]
-  public void JiraVersionMovePositioner_HasToBeMoved_WithPrereleaseVersion_ReturnsTrue ()
+  public void HasToBeMoved_WithPrereleaseVersion_ReturnsTrue ()
   {
     var jiraProjectVersions = CreateSemanticJiraProjectVersions("2.1.3", "2.2.0");
 
@@ -53,7 +53,7 @@ public class JiraVersionMovePositionerTest
   }
 
   [Test]
-  public void JiraVersionMovePositioner_HasToBeMoved_WithInvalidVersionInList_ReturnsFalse ()
+  public void HasToBeMoved_WithInvalidVersionInList_ReturnsFalse ()
   {
     var jiraProjectVersions = CreateSemanticJiraProjectVersions(null, "2.1.3");
 
@@ -64,7 +64,7 @@ public class JiraVersionMovePositionerTest
   }
 
   [Test]
-  public void JiraVersionMovePositioner_HasToBeMoved_WithInvalidVersionInList_ReturnsTrue ()
+  public void HasToBeMoved_WithInvalidVersionInList_ReturnsTrue ()
   {
     var jiraProjectVersions = CreateSemanticJiraProjectVersions(null, "2.1.3");
     var createdVersion = CreateSemanticVersion("2.1.0");
@@ -74,7 +74,7 @@ public class JiraVersionMovePositionerTest
   }
 
   [Test]
-  public void JiraVersionMovePositioner_HasToBeMoved_GivenListNotInOrder_ReturnsTrue ()
+  public void HasToBeMoved_GivenListNotInOrder_ReturnsTrue ()
   {
     var jiraProjectVersions = CreateSemanticJiraProjectVersions("2.0.1", "1.9.3");
 
@@ -85,7 +85,7 @@ public class JiraVersionMovePositionerTest
   }
 
   [Test]
-  public void JiraVersionMovePositioner_GetVersionBeforeCreatedVersion_WithPrereleaseVersion_ReturnsCorrectVersion ()
+  public void GetVersionBeforeCreatedVersion_WithPrereleaseVersion_ReturnsCorrectVersion ()
   {
     var jiraProjectVersions = CreateSemanticJiraProjectVersions("2.1.3", "2.2.0");
 
@@ -98,7 +98,7 @@ public class JiraVersionMovePositionerTest
   }
 
   [Test]
-  public void JiraVersionMovePositioner_GetVersionBeforeCreatedVersion_WithOnlyMinorDifference_ReturnsCorrectVersion ()
+  public void GetVersionBeforeCreatedVersion_WithOnlyMinorDifference_ReturnsCorrectVersion ()
   {
     var jiraProjectVersions = CreateSemanticJiraProjectVersions("1.8.1", "1.8.3");
     var createdVersion = CreateSemanticVersion("1.8.2");
@@ -110,7 +110,7 @@ public class JiraVersionMovePositionerTest
   }
 
   [Test]
-  public void JiraVersionMovePositioner_GetVersionBeforeCreatedVersion_WouldBeMovedToFirstPosition_ReturnsNull ()
+  public void GetVersionBeforeCreatedVersion_WouldBeMovedToFirstPosition_ReturnsNull ()
   {
     var jiraProjectVersions = CreateSemanticJiraProjectVersions("1.0.1");
 

@@ -23,7 +23,7 @@ namespace ReleaseProcessAutomation.IntegrationTests;
 internal class MSBuildIntegrationTests : IntegrationTestSetup
 {
   [Test]
-  public void MSBuildExecutor_CallTargets_OutputsToConsole ()
+  public void ExecuteNormalReleaseVersion_CallsMsBuild ()
   {
     ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand("commit -m Commit on develop1 --allow-empty");

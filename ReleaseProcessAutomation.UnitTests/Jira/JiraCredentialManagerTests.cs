@@ -86,7 +86,7 @@ public class JiraCredentialManagerTests
   }
 
   [Test]
-  public void GetCredential_AsksUser_SavesPassword ()
+  public void GetCredential_WithUserWantingToSaveCredentials_SavesCredentials ()
   {
     var jiraCredentialManager = new JiraCredentialManager(_config, _inputReaderMock.Object, _console, _jiraAuthenticatorMock.Object, _jiraCredentialAPIMock.Object);
 
@@ -101,7 +101,7 @@ public class JiraCredentialManagerTests
   }
 
   [Test]
-  public void GetCredential_WithWrongCredentials_AsksUser ()
+  public void GetCredential_WithWrongCredentialsSavedAndUserNotWantingToContinue_ThrowsException ()
   {
     var username = "NotUserName";
     var password = "NotPassword";
@@ -138,7 +138,7 @@ public class JiraCredentialManagerTests
   }
 
   [Test]
-  public void GetCredential_WithWrongCredentials_SavesNewCredentials ()
+  public void GetCredential_WithWrongCredentialsSavedAndUserInputtingCorrectCredentials_SavesCredentials ()
   {
     _jiraCredentialAPIMock.Setup(_ => _.GetCredential(c_target)).Returns(new Credentials("DefinetlyNotAUsername", "DefinetlyNotAPassword"));
 
@@ -164,6 +164,8 @@ public class JiraCredentialManagerTests
     _jiraAuthenticatorMock.Verify(
         _ => _.CheckAuthentication(It.IsAny<Credentials>(), _config.Jira.JiraProjectKey, _config.Jira.JiraURL),
         Times.Exactly(2));
+    
+    _jiraCredentialAPIMock.Verify(_ => _.SaveCredentials(It.IsAny<Credentials>(), It.IsAny<string>()), Times.Once());
   }
 
   [Test]

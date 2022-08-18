@@ -12,7 +12,7 @@ public class JiraProjectVersionRepairerTest
   private const string projectId = "exampleProjectId";
 
   [Test]
-  public void TestAlreadySortedVersion ()
+  public void RepairVersionPosition_WithAlreadySortedVersion_DoesNotMoveVersions ()
   {
     const string versionId = "exampleId";
 
@@ -36,7 +36,7 @@ public class JiraProjectVersionRepairerTest
   }
 
   [Test]
-  public void TestMoveVersionToFirstPosition ()
+  public void RepairVersionPosition_WithFirstVersionNotInCorrectPosition_MovesVersionToFirstPosition ()
   {
     const string versionId = "exampleId";
 
@@ -59,7 +59,7 @@ public class JiraProjectVersionRepairerTest
   }
 
   [Test]
-  public void TestMoveVersionToCorrectPosition ()
+  public void RepairVersionPosition_WithVersionNotInCorrectPosition_MovesVersionToCorrectPosition ()
   {
     const string versionId = "exampleId";
     const string beforeUrl = "someBeforeUrl";
@@ -85,7 +85,7 @@ public class JiraProjectVersionRepairerTest
   }
 
   [Test]
-  public void TestMoveVersionToCorrectPositionWithReleasedVersionInBetween ()
+  public void RepairVersionPosition_WithVersionNotInCorrectPositionAndReleasedVersionInBetween_MovesVersionToCorrectPosition ()
   {
     const string versionId = "exampleId";
     const string beforeUrl = "someBeforeUrl";

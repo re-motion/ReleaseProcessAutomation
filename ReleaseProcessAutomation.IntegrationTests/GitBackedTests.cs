@@ -32,7 +32,7 @@ public class GitBackedTests
   private string _remotePath;
 
   [SetUp]
-  public void GitTestSetup ()
+  public virtual void Setup ()
   {
     PreviousWorkingDirectory = TestContext.CurrentContext.TestDirectory;
     var temp = Path.GetTempPath();

@@ -23,8 +23,9 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestSetup
   private JiraIssueService _issueService;
 
   [SetUp]
-  public void Setup ()
+  public override void Setup ()
   {
+    base.Setup();
     var testCredentials = JiraTestUtility.GetLocallySavedCredentials();
     _jiraUsername = testCredentials.Username;
     _jiraPassword = testCredentials.Password;
@@ -41,7 +42,7 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestSetup
   }
   
    [Test]
-  public void MoveClosedIssuesToNewVersion_FromReleaseAlphaBetaStep_MovesProperVersions ()
+  public void ReleaseVersion_FromReleaseAlphaBetaStepWithJiraActive_MovesClosedIssuesFromOldToNewVersion ()
   {
     var currentVersionName = "1.3.0";
     var nextVersionName = "1.3.0-alpha.1";
@@ -102,7 +103,7 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestSetup
   }
   
   [Test]
-  public void ReleaseFromDevelop_PreReleaseWithoutMoveClosedIssuesToNewVersion_DoesNotMoveVersions ()
+  public void ReleaseVersion_FromDevelopWithoutMovingClosedIssues_DoesNotMoveVersions ()
   {
     var currentVersionName = "1.3.0";
     var nextVersionName = "1.3.0-alpha.1";

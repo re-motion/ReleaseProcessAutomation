@@ -45,7 +45,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
   }
 
   [Test]
-  public void Execute_CreatesTwoVersionsCorrectly_ThrowsNothing ()
+  public void Execute_CreatesTwoVersionsCorrectlyAndDoesNotThrow ()
   {
     var currentVersion = new SemanticVersion();
     var nextVersion = new SemanticVersion { Patch = 1 };
@@ -73,7 +73,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
   }
 
   [Test]
-  public void Execute_WithoutSquashing_ReleaseWithoutSquash ()
+  public void Execute_WithoutSquashUnreleased_ReleasesWithoutSquash ()
   {
     var versionID = "curr";
     var nextID = "next";
@@ -104,7 +104,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
   }
 
   [Test]
-  public void Execute_WithoutSquashing_ReleaseWithSquash ()
+  public void Execute_WithSquashUnreleased_ReleaseWithSquash ()
   {
     var versionID = "curr";
     var nextID = "next";
@@ -135,7 +135,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
   }
 
   [Test]
-  public void MoveClosedIssuesToNewVersion_MovesTheClosedIssues ()
+  public void Execute_MovesTheClosedIssues ()
   {
     var currentVersion = new SemanticVersion { Pre = PreReleaseStage.alpha, PreReleaseCounter = 1 };
     var nextVersion = new SemanticVersion { Pre = PreReleaseStage.alpha, PreReleaseCounter = 2 };
@@ -180,7 +180,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
   }
 
   [Test]
-  public void MoveClosedIssuesToNewVersion_WithoutCurrentVersionInJira_ErrorOutput ()
+  public void Execute_WithoutCurrentVersionInJira_PrintsErrorOutput ()
   {
     JiraProjectVersion nullVersion = null;
     var currentVersion = new SemanticVersion();
@@ -220,7 +220,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
   }
 
   [Test]
-  public void MoveClosedIssuesToNewVersion_WithoutNextVersionInJira_ErrorOutput ()
+  public void Execute_WithoutNextVersionInJira_PrintsErrorOutput ()
   {
     JiraProjectVersion nullVersion = null;
     var currentVersion = new SemanticVersion { Pre = PreReleaseStage.alpha, PreReleaseCounter = 1 };

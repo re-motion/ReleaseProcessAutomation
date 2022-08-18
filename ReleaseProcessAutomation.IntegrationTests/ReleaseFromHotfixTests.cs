@@ -24,7 +24,7 @@ namespace ReleaseProcessAutomation.IntegrationTests;
 internal class ReleaseFromHotfixTests : IntegrationTestSetup
 {
   [Test]
-  public void ReleaseAlphaBeta_FromHotfix_MergeNewPreReleaseIntoHotfix ()
+  public void ReleaseAlphaBeta_FromHotfix_ReleasesAlphaBeta ()
   {
     var correctLogs =
         @"*    (HEAD -> hotfix/v1.1.1-alpha.1, origin/hotfix/v1.1.1-alpha.1)Merge branch 'prerelease/v1.1.1-alpha.2' into hotfix/v1.1.1-alpha.1
@@ -56,7 +56,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseAlphaBeta_FromHotfix_WithAdditionalCommitAndContinue ()
+  public void ReleaseAlphaBeta_FromHotfixWithPauseAndContinue_ReleasesAlphaBeta ()
   {
     var correctLogs =
         @"*    (HEAD -> hotfix/v1.1.1-alpha.1)Merge branch 'prerelease/v1.1.1-beta.1' into hotfix/v1.1.1-alpha.1
@@ -88,7 +88,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseNewPatch_FromHotfix_ToSupportWithFollowingHotfix ()
+  public void ReleasePatch_FromHotfix_ReleasesPatch ()
   {
     var correctLogs =
         @"*  (origin/hotfix/v1.1.2, hotfix/v1.1.2)Update metadata to version '1.1.2'.
@@ -118,7 +118,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseNewPatch_FromHotfixWithUserRequestingNewSupportBranch_CreatesNewSupportBranchAndHotfixBranch ()
+  public void ReleasePatch_FromHotfixWithUserRequestingNewSupportBranch_CreatesNewSupportBranchAndHotfixBranch ()
   {
     var correctLogs1 =
         @"*  (origin/hotfix/v1.1.2, hotfix/v1.1.2)Update metadata to version '1.1.2'.
@@ -162,7 +162,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseNewBranch_FromHotfix ()
+  public void NewReleaseBranch_FromHotfix_CreatesNewReleaseBranch ()
   {
     var correctLogs =
         @"*  (HEAD -> release/v1.2.1, origin/release/v1.2.1, origin/hotfix/v1.2.1, master, hotfix/v1.2.1)ConfigAndBuildProject
@@ -182,7 +182,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseNewBranchWithGivenCommit_FromHotfix_ReleaseBranchOnGivenCommit ()
+  public void NewReleaseBranch_FromHotfixWithSpecifiedCommitHash_CreatesNewReleaseBranchOnGivenCommit ()
   {
     var correctLogs =
         @"*  (HEAD -> release/v1.2.1)Commit afterwards
@@ -211,7 +211,7 @@ internal class ReleaseFromHotfixTests : IntegrationTestSetup
   }
 
   [Test]
-  public void ReleaseToSupport_WithPauseAndCommitAndCloseVersion_FinishesSuccessfully ()
+  public void ReleasePatch_FromHotfixWithPauseAndCommitAndCloseVersion_ReleasesPatch ()
   {
     var correctLogs =
         @"*  (origin/hotfix/v1.2.2, hotfix/v1.2.2)Update metadata to version '1.2.2'.
