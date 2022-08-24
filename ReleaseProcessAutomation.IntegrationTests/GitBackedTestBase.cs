@@ -23,7 +23,7 @@ using NUnit.Framework.Internal;
 
 namespace ReleaseProcessAutomation.IntegrationTests;
 
-public class GitBackedTests
+public class GitBackedTestBase
 {
   protected const string RemoteName = "origin";
 

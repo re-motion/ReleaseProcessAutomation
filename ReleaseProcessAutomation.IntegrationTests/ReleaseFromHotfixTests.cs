@@ -21,7 +21,7 @@ using NUnit.Framework;
 namespace ReleaseProcessAutomation.IntegrationTests;
 
 [TestFixture]
-internal class ReleaseFromHotfixTests : IntegrationTestSetup
+internal class ReleaseFromHotfixTests : IntegrationTestBase
 {
   [Test]
   public void ReleaseAlphaBeta_FromHotfix_ReleasesAlphaBeta ()

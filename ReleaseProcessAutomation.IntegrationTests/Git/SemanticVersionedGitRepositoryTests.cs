@@ -26,7 +26,7 @@ using ReleaseProcessAutomation.SemanticVersioning;
 namespace ReleaseProcessAutomation.IntegrationTests.Git;
 
 [TestFixture]
-internal class SemanticVersionedGitRepositoryTests : GitBackedTests
+internal class SemanticVersionedGitRepositoryTests : GitBackedTestBase
 {
   private Mock<IGitBranchOperations> _gitBranchOperationsMock;
 

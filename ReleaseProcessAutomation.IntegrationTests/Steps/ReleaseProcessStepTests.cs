@@ -30,7 +30,7 @@ using Spectre.Console.Testing;
 namespace ReleaseProcessAutomation.IntegrationTests.Steps;
 
 [TestFixture]
-internal class ReleaseProcessStepTests : GitBackedTests
+internal class ReleaseProcessStepTests : GitBackedTestBase
 {
   private Configuration.Data.Config _config;
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";

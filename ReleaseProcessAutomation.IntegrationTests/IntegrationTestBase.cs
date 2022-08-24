@@ -29,7 +29,7 @@ using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.IntegrationTests;
 
-public abstract class IntegrationTestSetup : GitBackedTests
+public abstract class IntegrationTestBase : GitBackedTestBase
 {
   protected const string c_testConfigName = "ReleaseProcessScript.Test.config";
   private const string c_buildProject = ".BuildProject";

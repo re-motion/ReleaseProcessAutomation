@@ -20,7 +20,7 @@ using NUnit.Framework;
 
 namespace ReleaseProcessAutomation.IntegrationTests;
 
-internal class ReleaseFromSupportTests : IntegrationTestSetup
+internal class ReleaseFromSupportTests : IntegrationTestBase
 {
   [Test]
   public void ReleaseVersion_FromSupport_ThrowsException ()

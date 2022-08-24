@@ -20,7 +20,7 @@ using NUnit.Framework;
 
 namespace ReleaseProcessAutomation.IntegrationTests;
 
-internal class MSBuildIntegrationTests : IntegrationTestSetup
+internal class MSBuildIntegrationTests : IntegrationTestBase
 {
   [Test]
   public void ExecuteNormalReleaseVersion_CallsMsBuild ()

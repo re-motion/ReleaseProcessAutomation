@@ -25,7 +25,7 @@ using ReleaseProcessAutomation.SemanticVersioning;
 namespace ReleaseProcessAutomation.IntegrationTests.Git;
 
 [TestFixture]
-internal class CommandLineGitClientTests : GitBackedTests
+internal class CommandLineGitClientTests : GitBackedTestBase
 {
   private Configuration.Data.Config _config;
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";

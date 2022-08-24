@@ -20,7 +20,7 @@ using NUnit.Framework;
 
 namespace ReleaseProcessAutomation.IntegrationTests;
 
-internal class ReleaseFromMasterTests : IntegrationTestSetup
+internal class ReleaseFromMasterTests : IntegrationTestBase
 {
   [Test]
   public void ReleasePatch_FromMaster_ReleasesNewPatch ()

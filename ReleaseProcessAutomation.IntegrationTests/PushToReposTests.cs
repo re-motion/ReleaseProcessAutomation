@@ -20,7 +20,7 @@ using NUnit.Framework;
 
 namespace ReleaseProcessAutomation.IntegrationTests;
 
-internal class PushToReposTests : IntegrationTestSetup
+internal class PushToReposTests : IntegrationTestBase
 {
   [Test]
   public void PushToRepos_DevelopAhead_PushesDevelop ()

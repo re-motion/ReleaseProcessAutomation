@@ -18,7 +18,7 @@ namespace ReleaseProcessAutomation.IntegrationTests.Jira;
 
 [TestFixture]
 [Explicit]
-public class JiraCombinedIntegrationTests : IntegrationTestSetup
+public class JiraCombinedIntegrationTests : IntegrationTestBase
 {
   private string _jiraUsername;
   private string _jiraPassword;

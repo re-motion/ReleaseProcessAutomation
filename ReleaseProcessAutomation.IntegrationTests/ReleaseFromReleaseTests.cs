@@ -21,7 +21,7 @@ using NUnit.Framework;
 namespace ReleaseProcessAutomation.IntegrationTests;
 
 [TestFixture]
-internal class ReleaseFromReleaseTests : IntegrationTestSetup
+internal class ReleaseFromReleaseTests : IntegrationTestBase
 {
   [Test]
   public void ReleaseWithRC_FromSupportHotfixRelease_CreatesHotfixBranch ()

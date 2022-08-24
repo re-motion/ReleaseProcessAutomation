@@ -23,7 +23,7 @@ using Spectre.Console.Testing;
 namespace ReleaseProcessAutomation.IntegrationTests;
 
 [TestFixture]
-internal class ReleaseFromDevelopTests : IntegrationTestSetup
+internal class ReleaseFromDevelopTests : IntegrationTestBase
 {
   [Test]
   public void ReleaseOnMaster_FromDevelop_ReleasesNewMajor ()

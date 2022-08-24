@@ -10,7 +10,7 @@ using Spectre.Console.Testing;
 namespace ReleaseProcessAutomation.IntegrationTests.Git;
 
 [TestFixture]
-public class GitBranchOperationTests : GitBackedTests
+public class GitBranchOperationTests : GitBackedTestBase
 {
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
 
