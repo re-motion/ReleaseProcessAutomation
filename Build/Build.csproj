@@ -34,6 +34,7 @@
     <None Include="..\.BuildProject">
       <Link>.BuildProject</Link>
     </None>
+    <None Include="app.config" />
     <None Include="Build.licenseheader" />
     <None Include="Customizations\Local\Configuration.targets" />
     <None Include="Customizations\Overrides.targets" />
