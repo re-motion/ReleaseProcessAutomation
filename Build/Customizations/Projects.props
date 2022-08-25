@@ -9,11 +9,11 @@
   </PropertyGroup>
   <ItemGroup>
     <ReleaseProjectFiles Include="$(SolutionDirectory)\BuildScript\Buildscript.csproj" />
-    <ReleaseProjectFiles Include="$(SolutionDirectory)\ReleaseProcessScript\ReleaseProcessScript.csproj" />
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\ReleaseProcsessAutomation\ReleaseProcessAutomation.csproj" />
     <UnitTestProjectFiles Include="$(SolutionDirectory)\BuildScript.UnitTests\BuildScript.UnitTests.csproj">
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
     </UnitTestProjectFiles>
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\ReleaseProcessScript.UnitTests\ReleaseProcessScript.UnitTests.csproj">
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\ReleaseProcessAutomation.UnitTests\ReleaseProcessAutomation.UnitTests.csproj">
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
     </UnitTestProjectFiles>
   </ItemGroup>

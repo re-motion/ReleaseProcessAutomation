@@ -40,6 +40,7 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
 {
   private readonly IAncestorFinder _ancestorFinder;
   private readonly IPushPreReleaseStep _pushPreReleaseStep;
+  private readonly IGitBranchOperations _gitBranchOperations;
   private readonly ILogger _log = Log.ForContext<ContinueAlphaBetaStep>();
 
   public ContinueAlphaBetaStep (
@@ -48,11 +49,13 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
       IInputReader inputReader,
       IAncestorFinder ancestorFinder,
       IPushPreReleaseStep pushPreReleaseStep,
+      IGitBranchOperations gitBranchOperations,
       IAnsiConsole console)
       : base(gitClient, config, inputReader, console)
   {
     _ancestorFinder = ancestorFinder;
     _pushPreReleaseStep = pushPreReleaseStep;
+    _gitBranchOperations = gitBranchOperations;
   }
 
   public void Execute (SemanticVersion nextVersion, string? ancestor, string? currentBranchName, bool noPush)
@@ -60,7 +63,7 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
     EnsureWorkingDirectoryClean();
 
     var preReleaseBranchName = GitClient.GetCurrentBranchName();
-    _log.Debug("The current found branch name is '{PrereleaseBranchName}'", preReleaseBranchName);
+    _log.Debug("The current found branch name is '{PrereleaseBranchName}'.", preReleaseBranchName);
     
     if (preReleaseBranchName == null)
     {
@@ -69,7 +72,7 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
 
     if (!preReleaseBranchName.StartsWith("prerelease/"))
     {
-      const string message = "Cannot call ContinuePreReleaseFromDevelop when not on prerelease branch";
+      const string message = "Cannot call ContinuePreReleaseFromDevelop when not on prerelease branch.";
       throw new InvalidOperationException(message);
     }
 
@@ -79,13 +82,13 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
         _ => _ancestorFinder.GetAncestor("release/v", "develop", "hotfix/v")
     };
 
-    EnsureBranchUpToDate(baseBranchName);
-    EnsureBranchUpToDate(preReleaseBranchName);
+    _gitBranchOperations.EnsureBranchUpToDate(baseBranchName);
+    _gitBranchOperations.EnsureBranchUpToDate(preReleaseBranchName);
 
     GitClient.Checkout(preReleaseBranchName);
 
     var tagName = $"v{nextVersion}";
-    _log.Debug("Will try to create tag with name '{TagName}'", tagName);
+    _log.Debug("Will try to create tag with name '{TagName}'.", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
       var message = $"Could not create tag {tagName} because it already exists";

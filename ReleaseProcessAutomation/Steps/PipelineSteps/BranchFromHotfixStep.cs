@@ -61,16 +61,16 @@ public class BranchFromHotfixStep
   public void Execute (string? commitHash, bool startReleasePhase, bool pauseForCommit, bool noPush)
   {
     var nextVersion = GetCurrentHotfixVersion(startReleasePhase);
-    _log.Debug("The next version to be released is '{NextVersion}'", nextVersion);
+    _log.Debug("The next version to be released is '{NextVersion}'.", nextVersion);
 
     if (nextVersion.Pre == null)
     {
-      _log.Debug("Prerelease version was null, calling release branch  step");
+      _log.Debug("Prerelease version was null, calling release branch step.");
       _releasePatchStep.Execute(nextVersion, commitHash, startReleasePhase, pauseForCommit, noPush, false);
     }
     else if (nextVersion.Pre is PreReleaseStage.alpha or PreReleaseStage.beta)
     {
-      _log.Debug("Prerelease version was '{PreVersion}', calling release alpha beta step", nextVersion.Pre);
+      _log.Debug("Prerelease version was '{PreVersion}', calling release alpha beta step.", nextVersion.Pre);
       _releaseAlphaBetaStep.Execute(nextVersion, commitHash, pauseForCommit, noPush);
     }
   }

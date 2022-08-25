@@ -20,7 +20,6 @@ using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.SemanticVersioning;
-using Serilog;
 using Spectre.Console;
 
 namespace ReleaseProcessAutomation.Steps.PipelineSteps;

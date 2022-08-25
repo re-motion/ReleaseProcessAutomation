@@ -26,9 +26,50 @@ public static class SemanticVersionExtensions
 {
   private static readonly ILogger s_log = Log.ForContext(typeof(SemanticVersionExtensions));
 
-  public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsDevelop (this SemanticVersion semanticVersion, bool withoutPreRelease = false)
+  public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsForReleaseBranchFromDevelop (this SemanticVersion semanticVersion)
   {
-    s_log.Debug("Getting next possible develop version of '{SemanticVersion}'", semanticVersion);
+    if (semanticVersion.Pre == PreReleaseStage.rc)
+    {
+      return GetReleaseRCOrCurrent(semanticVersion);
+    }
+    else
+    {
+      return new[]
+             {
+                 GetNextMinorWithAlpha(semanticVersion),
+                 GetNextMinorWithBeta(semanticVersion),
+                 GetNextMinorRelease(semanticVersion),
+                 GetNextMajorWithAlpha(semanticVersion),
+                 GetNextMajorWithBeta(semanticVersion),
+                 GetNextMajorRelease(semanticVersion),
+             };
+    }
+  }
+
+  public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsForReleaseBranchFromHotfix (this SemanticVersion semanticVersion)
+  {
+    if (semanticVersion.Pre == PreReleaseStage.rc)
+    {
+      return GetReleaseRCOrCurrent(semanticVersion);
+    }
+    else
+    {
+
+      var nextPatchVersion = GetNextPatchVersion(semanticVersion);
+      return new[]
+             {
+                 GetNextAlpha(nextPatchVersion, changeToAlpha1: true),
+                 GetNextBeta(nextPatchVersion, changeToBeta1: true),
+                 nextPatchVersion
+             };
+    }
+  }
+
+  public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsDevelop (
+      this SemanticVersion semanticVersion,
+      bool withoutPreRelease = false)
+  {
+    s_log.Debug("Getting next possible develop version of '{SemanticVersion}'.", semanticVersion);
 
     if (semanticVersion.Pre != null)
     {
@@ -59,6 +100,7 @@ public static class SemanticVersionExtensions
       if (semanticVersion.Pre == PreReleaseStage.rc)
         return new[]
                {
+                   GetNextRC(semanticVersion),
                    GetCurrentFullVersion(semanticVersion),
                    GetNextMajorWithAlpha(semanticVersion),
                    GetNextMajorWithBeta(semanticVersion),
@@ -85,7 +127,7 @@ public static class SemanticVersionExtensions
 
   public static IReadOnlyCollection<SemanticVersion> GetNextPossibleVersionsHotfix (this SemanticVersion semanticVersion)
   {
-    s_log.Debug("Getting next possible hotfix version of '{SemanticVersion}'", semanticVersion);
+    s_log.Debug("Getting next possible hotfix version of '{SemanticVersion}'.", semanticVersion);
 
     var patchVersion = GetNextPatchVersion(semanticVersion);
 
@@ -109,11 +151,11 @@ public static class SemanticVersionExtensions
       if (semanticVersion.Pre == PreReleaseStage.rc)
         return new[]
                {
-                   GetNextRc(semanticVersion),
+                   GetNextRC(semanticVersion),
                    GetNextPatchVersion(semanticVersion)
                };
 
-      const string message = "Could not get next possible next versions for hotfix";
+      const string message = "Could not get next possible next versions for hotfix.";
       throw new InvalidOperationException(message);
     }
 
@@ -127,7 +169,7 @@ public static class SemanticVersionExtensions
 
   public static IReadOnlyCollection<SemanticVersion> GetCurrentPossibleVersionsHotfix (this SemanticVersion semanticVersion)
   {
-    s_log.Debug("Getting current possible develop version of '{SemanticVersion}'", semanticVersion);
+    s_log.Debug("Getting current possible develop version of '{SemanticVersion}'.", semanticVersion);
 
     if (semanticVersion.Pre == PreReleaseStage.alpha)
       return new[]
@@ -161,7 +203,8 @@ public static class SemanticVersionExtensions
                       };
     return nextVersion;
   }
-  public static SemanticVersion GetNextRc (this SemanticVersion semanticVersion)
+
+  public static SemanticVersion GetNextRC (this SemanticVersion semanticVersion)
   {
     var nextVersion = new SemanticVersion
                       {
@@ -192,6 +235,26 @@ public static class SemanticVersionExtensions
                                Patch = semanticVersion.Patch + 1
                            };
     return nextPatchVersion;
+  }
+
+  public static SemanticVersion GetCurrentFullVersion (this SemanticVersion semanticVersion)
+  {
+    var nextPatchRelease = new SemanticVersion
+                           {
+                               Major = semanticVersion.Major,
+                               Minor = semanticVersion.Minor,
+                               Patch = semanticVersion.Patch
+                           };
+    return nextPatchRelease;
+  }
+
+  private static IReadOnlyCollection<SemanticVersion> GetReleaseRCOrCurrent (SemanticVersion semanticVersion)
+  {
+    return new[]
+           {
+               GetNextRC(semanticVersion),
+               GetCurrentFullVersion(semanticVersion)
+           };
   }
 
   private static SemanticVersion GetNextAlpha (SemanticVersion semanticVersion, bool changeToAlpha1 = false)
@@ -300,17 +363,6 @@ public static class SemanticVersionExtensions
                                PreReleaseCounter = 1
                            };
     return nextMinorRelease;
-  }
-
-  private static SemanticVersion GetCurrentFullVersion (SemanticVersion semanticVersion)
-  {
-    var nextPatchRelease = new SemanticVersion
-                           {
-                               Major = semanticVersion.Major,
-                               Minor = semanticVersion.Minor,
-                               Patch = semanticVersion.Patch
-                           };
-    return nextPatchRelease;
   }
 
   private static SemanticVersion GetNextPreReleaseVersion (SemanticVersion semanticVersion)

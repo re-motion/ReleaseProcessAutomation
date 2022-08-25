@@ -16,9 +16,7 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Serilog;
 
 namespace ReleaseProcessAutomation.SemanticVersioning;
 
@@ -30,7 +28,7 @@ public class SemanticVersion : IComparable<SemanticVersion>
   public PreReleaseStage? Pre { get; set; }
 
   public int? PreReleaseCounter { get; set; }
-  
+
   public override bool Equals (object? obj)
   {
     var other = obj as SemanticVersion;
@@ -70,7 +68,7 @@ public class SemanticVersion : IComparable<SemanticVersion>
 
     return $"{Major}.{Minor}.{Patch}-{Pre}.{PreReleaseCounter}";
   }
-  
+
   public int CompareTo (SemanticVersion? other)
   {
     if (other == null) return 1;

@@ -42,11 +42,11 @@ internal class ReleaseBranchCommand : Command<ReleaseBranchSettings>
 
   public override int Execute ([NotNull] CommandContext context, [NotNull] ReleaseBranchSettings settings)
   {
-    const string message = "Starting a new release branch";
+    const string message = "Starting a new release branch.";
     _log.Information(message);
     _console.WriteLine(message);
 
-    _startReleaseStep.Execute(settings.CommitHash, startReleasePhase: true, noPush: false, pauseForCommit:false);
+    _startReleaseStep.Execute(settings.CommitHash, startReleasePhase: true, noPush: false, pauseForCommit: false);
 
     return 0;
   }

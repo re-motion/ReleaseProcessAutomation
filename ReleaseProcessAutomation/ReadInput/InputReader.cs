@@ -28,6 +28,7 @@ public class InputReader
     : IInputReader
 {
   private const string c_moreChoicesText = "[grey](Move up and down to choose version)[/]";
+
   private readonly IAnsiConsole _console;
 
   public InputReader (IAnsiConsole console)
@@ -59,7 +60,7 @@ public class InputReader
     var parser = new SemanticVersionParser();
     var input = _console.Prompt(
         new TextPrompt<string>(prompt)
-            .ValidationErrorMessage("[red]That's not a valid age[/]")
+            .ValidationErrorMessage("[red]That's not a valid version.[/]")
             .Validate(version => parser.TryParseVersion(version, out _) ? ValidationResult.Success() : ValidationResult.Error()));
     return parser.ParseVersion(input);
   }
@@ -118,9 +119,7 @@ public class InputReader
     promptBuilder.AppendLine();
 
     foreach (var (v, oneBasedIndex) in versions.Select((v, i) => (v, i + 1)))
-    {
       promptBuilder.Append("[orangered1](").Append(oneBasedIndex).Append(") ").Append(v).AppendLine("[/]");
-    }
 
     promptBuilder.Append("Your version: ");
 

@@ -18,7 +18,6 @@
 using System;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Git;
-using Serilog;
 
 namespace ReleaseProcessAutomation.Steps.PipelineSteps;
 

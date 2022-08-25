@@ -32,6 +32,7 @@ public class Step
 
   public override string ToString ()
   {
-    return $"{{ {nameof(MSBuildCallArguments)}: {MSBuildCallArguments?.Arguments?.ToString() ?? "<null>"}, {nameof(CommitMessage)}: \"{CommitMessage}\" }}";
+    return
+        $"{{ {nameof(MSBuildCallArguments)}: {MSBuildCallArguments?.Arguments?.ToString() ?? "<null>"}, {nameof(CommitMessage)}: \"{CommitMessage}\" }}";
   }
 }

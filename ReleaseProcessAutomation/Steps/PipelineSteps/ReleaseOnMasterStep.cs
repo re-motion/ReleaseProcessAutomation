@@ -19,9 +19,11 @@ using System;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Git;
+using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
+using ReleaseProcessAutomation.Steps.SubSteps;
 using Serilog;
 using Spectre.Console;
 
@@ -42,20 +44,26 @@ public class ReleaseOnMasterStep
     : ReleaseProcessStepBase, IReleaseOnMasterStep
 {
   private readonly IContinueReleaseOnMasterStep _continueReleaseOnMasterStep;
+  private readonly IPushNewReleaseBranchStep _pushNewReleaseBranchStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
+  private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
   private readonly ILogger _log = Log.ForContext<ReleaseOnMasterStep>();
 
   public ReleaseOnMasterStep (
       IGitClient gitClient,
       IInputReader inputReader,
       IContinueReleaseOnMasterStep continueReleaseOnMasterStep,
+      IPushNewReleaseBranchStep pushNewReleaseBranchStep,
       Config config,
       IMSBuildCallAndCommit msBuildCallAndCommit,
-      IAnsiConsole console)
+      IAnsiConsole console,
+      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep)
       : base(gitClient, config, inputReader, console)
   {
     _continueReleaseOnMasterStep = continueReleaseOnMasterStep;
+    _pushNewReleaseBranchStep = pushNewReleaseBranchStep;
     _msBuildCallAndCommit = msBuildCallAndCommit;
+    _releaseVersionAndMoveIssuesSubStep = releaseVersionAndMoveIssuesSubStep;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool startReleasePhase, bool pauseForCommit, bool noPush)
@@ -64,7 +72,7 @@ public class ReleaseOnMasterStep
 
     if (string.IsNullOrEmpty(GitClient.GetCurrentBranchName()))
     {
-      var message = $"Could not find a branch in '{Environment.CurrentDirectory}'";
+      var message = $"Could not find a branch in '{Environment.CurrentDirectory}'.";
       _log.Warning(message);
       Console.WriteLine(message);
     }
@@ -72,7 +80,7 @@ public class ReleaseOnMasterStep
     if (!GitClient.IsOnBranch("develop"))
     {
       var currentBranch = GitClient.GetCurrentBranchName();
-      var message = $"Cannot call ReleaseOnMasterStep when not on develop branch. Current branch: '{currentBranch}'";
+      var message = $"Cannot call ReleaseOnMasterStep when not on develop branch. Current branch: '{currentBranch}'.";
       throw new InvalidOperationException(message);
     }
 
@@ -83,7 +91,7 @@ public class ReleaseOnMasterStep
       throw new Exception(message);
     }
 
-    _log.Debug("Getting next possible jira versions for develop from version '{NextVersion}'", nextVersion);
+    _log.Debug("Getting next possible jira versions for develop from version '{NextVersion}'.", nextVersion);
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
     var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version(open JIRA issues get moved there):", nextPossibleVersions);
 
@@ -96,9 +104,11 @@ public class ReleaseOnMasterStep
     GitClient.Checkout(releaseBranchName);
 
     if (startReleasePhase)
+    {
+      _pushNewReleaseBranchStep.Execute(releaseBranchName, "develop");
       return;
-
-    //Create and Release JiraConfig Version
+    }
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

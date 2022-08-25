@@ -43,7 +43,6 @@ public class BranchFromDevelopStep
   private readonly IReleaseAlphaBetaStep _releaseAlphaBetaStep;
   private readonly IReleaseOnMasterStep _releaseOnMasterStep;
   private readonly ISemanticVersionedGitRepository _semanticVersionedGitRepository;
-
   private readonly ILogger _log = Log.ForContext<BranchFromDevelopStep>();
 
   public BranchFromDevelopStep (
@@ -61,19 +60,19 @@ public class BranchFromDevelopStep
   public void Execute (string? commitHash, bool pauseForCommit, bool noPush, bool startReleasePhase)
   {
     var nextVersion = GetNextVersion(startReleasePhase);
-    _log.Debug("The next version to be released is '{NextVersion}'", nextVersion);
+    _log.Debug("The next version to be released is '{NextVersion}'.", nextVersion);
 
     var preVersion = nextVersion.Pre;
 
     if (preVersion == null)
     {
-      _log.Debug("Prerelease version was null, calling release on master step");
+      _log.Debug("Prerelease version was null, calling release on master step.");
       _releaseOnMasterStep.Execute(nextVersion, commitHash, startReleasePhase, pauseForCommit, noPush);
     }
 
     else if (preVersion == PreReleaseStage.alpha || preVersion == PreReleaseStage.beta)
     {
-      _log.Debug("Prerelease version was '{PreVersion}', calling release alpha beta step",preVersion);
+      _log.Debug("Prerelease version was '{PreVersion}', calling release alpha beta step.",preVersion);
       _releaseAlphaBetaStep.Execute(nextVersion, commitHash, pauseForCommit, noPush);
     }
   }
@@ -81,7 +80,7 @@ public class BranchFromDevelopStep
   private SemanticVersion GetNextVersion (bool isPreRelease)
   {
     if (!_semanticVersionedGitRepository.TryGetCurrentVersion(out _))
-      return _inputReader.ReadSemanticVersion("Enter the next version of the branch");
+      return _inputReader.ReadSemanticVersion("Enter the next version of the branch:");
 
     _semanticVersionedGitRepository.TryGetCurrentVersion(out var developVersion);
     if (_semanticVersionedGitRepository.TryGetCurrentVersion(out var masterVersion, "master"))
@@ -89,9 +88,9 @@ public class BranchFromDevelopStep
       var mostRecentVersion = new[] { developVersion, masterVersion }.Max()!;
       var possibleNextVersions = mostRecentVersion.GetNextPossibleVersionsDevelop(isPreRelease);
 
-      return _inputReader.ReadVersionChoice("Please choose the next version", possibleNextVersions);
+      return _inputReader.ReadVersionChoice("Please choose the next version:", possibleNextVersions);
     }
 
-    return _inputReader.ReadVersionChoice("Please choose the next version", developVersion!.GetNextPossibleVersionsDevelop(isPreRelease));
+    return _inputReader.ReadVersionChoice("Please choose the next version:", developVersion!.GetNextPossibleVersionsDevelop(isPreRelease));
   }
 }

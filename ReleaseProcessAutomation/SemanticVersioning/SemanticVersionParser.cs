@@ -27,13 +27,14 @@ public class SemanticVersionParser
 {
   [RegexPattern]
   private readonly string _versionPattern = @"^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)(-(?<pre>alpha|beta|rc)\.(?<preversion>\d+))?$";
+
   private readonly ILogger _log = Log.ForContext<SemanticVersionParser>();
 
   public SemanticVersion ParseVersion (string version)
   {
     if (!Regex.IsMatch(version, _versionPattern, RegexOptions.Multiline))
     {
-      throw new ArgumentException("Version has an invalid format. Expected equivalent to '1.2.3' or '1.2.3-alpha.4'");
+      throw new ArgumentException("Version has an invalid format. Expected equivalent to '1.2.3' or '1.2.3-alpha.4'.");
     }
 
     return ParseVersionInternal(version);
@@ -41,12 +42,12 @@ public class SemanticVersionParser
 
   public SemanticVersion ParseVersionFromBranchName (string branchName)
   {
-    _log.Debug("Parsing version branch '{BranchName}'", branchName);
+    _log.Debug("Parsing version branch '{BranchName}'.", branchName);
 
     var splitBranchName = branchName.Split("/v", StringSplitOptions.RemoveEmptyEntries);
     if (splitBranchName.Length != 2)
     {
-      var message = $"Could not parse version from branch name '{branchName}' because it is not in a valid format. Expected equivalent to 'release/v1.2.3'";
+      var message = $"Could not parse version from branch name '{branchName}' because it is not in a valid format. Expected equivalent to 'release/v1.2.3'.";
       throw new InvalidOperationException(message);
     }
 
@@ -55,11 +56,11 @@ public class SemanticVersionParser
 
   public bool TryParseVersion (string version, [MaybeNullWhen(false)] out SemanticVersion output)
   {
-    _log.Debug("Parsing version string '{Version}'", version);
+    _log.Debug("Parsing version string '{Version}'.", version);
 
     if (!Regex.IsMatch(version, _versionPattern, RegexOptions.Multiline))
     {
-      _log.Warning("'{Version}' is not a valid semantic version", version);
+      _log.Warning("'{Version}' is not a valid semantic version.", version);
       output = null;
       return false;
     }
@@ -69,7 +70,10 @@ public class SemanticVersionParser
     return true;
   }
 
-  public bool IsSemver (string version) => Regex.IsMatch(version, _versionPattern, RegexOptions.Multiline);
+  public bool IsSemver (string version)
+  {
+    return Regex.IsMatch(version, _versionPattern, RegexOptions.Multiline);
+  }
 
   private SemanticVersion ParseVersionInternal (string version)
   {

@@ -37,15 +37,14 @@ public class ContinueReleaseStepWithOptionalSupportBranchStepBase
     _msBuildCallAndCommit = msBuildCallAndCommit;
   }
 
-  protected void CreateSupportBranchWithHotfixForRelease (SemanticVersion currentVersion)
+  protected void CreateSupportBranchWithHotfixForRelease (SemanticVersion nextHotfixVersion)
   {
     Console.WriteLine("Do you wish to create a new support branch?");
     if (!InputReader.ReadConfirmation())
       return;
 
-    var splitHotfixVersion = currentVersion.GetNextMinor();
-    GitClient.CheckoutNewBranch($"support/v{splitHotfixVersion.Major}.{splitHotfixVersion.Minor}");
-    GitClient.CheckoutNewBranch($"hotfix/v{splitHotfixVersion}");
-    _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, splitHotfixVersion);
+    GitClient.CheckoutNewBranch($"support/v{nextHotfixVersion.Major}.{nextHotfixVersion.Minor}");
+    GitClient.CheckoutNewBranch($"hotfix/v{nextHotfixVersion}");
+    _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, nextHotfixVersion);
   }
 }

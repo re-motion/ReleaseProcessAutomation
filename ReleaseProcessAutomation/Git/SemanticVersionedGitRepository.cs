@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 
@@ -29,15 +28,18 @@ public class SemanticVersionedGitRepository
     : ISemanticVersionedGitRepository
 {
   private readonly IGitClient _gitClient;
+  private readonly IGitBranchOperations _gitBranchOperations;
   private readonly ILogger _log = Log.ForContext<SemanticVersionedGitRepository>();
-  public SemanticVersionedGitRepository (IGitClient gitClient)
+
+  public SemanticVersionedGitRepository (IGitClient gitClient, IGitBranchOperations gitBranchOperations)
   {
     _gitClient = gitClient;
+    _gitBranchOperations = gitBranchOperations;
   }
 
   public IReadOnlyList<SemanticVersion> GetVersionsSorted (string from = "HEAD", string to = "")
   {
-    _log.Debug("Trying to get versions sorted from '{From}' to '{To}'", from, to);
+    _log.Debug("Trying to get versions sorted from '{From}' to '{To}'.", from, to);
 
     var parser = new SemanticVersionParser();
     var allVersions = _gitClient.GetTags(from, to);
@@ -52,8 +54,13 @@ public class SemanticVersionedGitRepository
 
   public bool TryGetCurrentVersion ([MaybeNullWhen(false)] out SemanticVersion version, string from = "HEAD", string to = "")
   {
-    _log.Debug("Trying to get first version from '{From}' to '{To}'", from, to);
+    _log.Debug("Trying to get first version from '{From}' to '{To}'.", from, to);
 
+    if (!from.Equals("HEAD"))
+      _gitBranchOperations.EnsureBranchUpToDate(from);
+    if (!string.IsNullOrEmpty(to))
+      _gitBranchOperations.EnsureBranchUpToDate(to);
+    
     var validVersions = GetVersionsSorted(from, to);
     version = validVersions.FirstOrDefault();
 
@@ -62,12 +69,12 @@ public class SemanticVersionedGitRepository
 
   public SemanticVersion GetMostRecentHotfixVersion ()
   {
-    _log.Debug("Trying to get most recent hotfix version");
+    _log.Debug("Trying to get most recent hotfix version.");
 
     var currentBranchName = _gitClient.GetCurrentBranchName();
     if (string.IsNullOrEmpty(currentBranchName))
     {
-      const string message = "Could not find the current branch while trying to get next hotfix version";
+      const string message = "Could not find the current branch while trying to get next hotfix version.";
       throw new InvalidOperationException(message);
     }
 

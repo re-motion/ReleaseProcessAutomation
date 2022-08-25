@@ -42,6 +42,7 @@ public class ContinueReleasePatchStep
 {
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly IPushPatchReleaseStep _pushPatchReleaseStep;
+  private readonly IGitBranchOperations _gitBranchOperations;
   private readonly ILogger _log = Log.ForContext<ContinueReleasePatchStep>();
 
   public ContinueReleasePatchStep (
@@ -50,11 +51,13 @@ public class ContinueReleasePatchStep
       IInputReader inputReader,
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IPushPatchReleaseStep pushPatchReleaseStep,
+      IGitBranchOperations gitBranchOperations,
       IAnsiConsole console)
       : base(gitClient, config, inputReader, console, msBuildCallAndCommit)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _pushPatchReleaseStep = pushPatchReleaseStep;
+    _gitBranchOperations = gitBranchOperations;
   }
 
   public void Execute (SemanticVersion nextVersion, bool noPush, bool onMaster)
@@ -64,13 +67,13 @@ public class ContinueReleasePatchStep
     var mergeTargetBranchName = onMaster ? "master" : $"support/v{nextVersion.Major}.{nextVersion.Minor}";
     var toMergeBranchName = $"release/v{nextVersion}";
 
-    _log.Debug("The branch '{ToMergeBranchName} 'will be merged into '{MergeTargetBranchName}'", toMergeBranchName, mergeTargetBranchName);
+    _log.Debug("The branch '{ToMergeBranchName} 'will be merged into '{MergeTargetBranchName}'.", toMergeBranchName, mergeTargetBranchName);
 
-    EnsureBranchUpToDate(mergeTargetBranchName);
-    EnsureBranchUpToDate(toMergeBranchName);
+    _gitBranchOperations.EnsureBranchUpToDate(mergeTargetBranchName);
+    _gitBranchOperations.EnsureBranchUpToDate(toMergeBranchName);
 
     var tagName = $"v{nextVersion}";
-    _log.Debug("Creating tag with name '{tagName}'", tagName);
+    _log.Debug("Creating tag with name '{tagName}'.", tagName);
 
     if (GitClient.DoesTagExist(tagName))
     {
@@ -93,7 +96,7 @@ public class ContinueReleasePatchStep
 
     GitClient.Checkout(mergeTargetBranchName);
 
-    CreateSupportBranchWithHotfixForRelease(nextVersion);
+    CreateSupportBranchWithHotfixForRelease(nextVersion.GetNextMinor());
 
     GitClient.Checkout(mergeTargetBranchName);
 

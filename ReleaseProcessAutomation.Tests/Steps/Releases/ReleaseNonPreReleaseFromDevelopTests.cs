@@ -71,7 +71,7 @@ namespace ReleaseProcessAutomation.Tests.Steps.Releases
       
       Assert.That(() => step.Execute(new SemanticVersion(), "", false, false, false),
           Throws.InstanceOf<Exception>()
-              .With.Message.EqualTo("Working directory not clean, user does not want to continue. Release process stopped"));
+              .With.Message.EqualTo("Working directory not clean, user does not want to continue. Release process stopped."));
     }
     
     [Test]

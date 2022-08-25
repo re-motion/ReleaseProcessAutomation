@@ -28,7 +28,6 @@ using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
 using Spectre.Console;
-using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.Tests.Steps.Releases
 {
@@ -229,6 +228,4 @@ namespace ReleaseProcessAutomation.Tests.Steps.Releases
       _msBuildInvokerMock.Verify();
     }
   }
-
-
 }

@@ -17,6 +17,7 @@
 
 using System;
 using ReleaseProcessAutomation.Configuration.Data;
+using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
@@ -41,7 +42,7 @@ public class ContinueReleaseOnMasterStep
     : ContinueReleaseStepWithOptionalSupportBranchStepBase, IContinueReleaseOnMasterStep
 {
   private readonly IPushMasterReleaseStep _pushMasterReleaseStep;
-  private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
+  private readonly IGitBranchOperations _gitBranchOperations;
   private readonly ILogger _log = Log.ForContext<ContinueReleaseOnMasterStep>();
 
   public ContinueReleaseOnMasterStep (
@@ -50,11 +51,12 @@ public class ContinueReleaseOnMasterStep
       IInputReader inputReader,
       IPushMasterReleaseStep pushMasterReleaseStep,
       IAnsiConsole console,
-      IMSBuildCallAndCommit msBuildCallAndCommit)
+      IMSBuildCallAndCommit msBuildCallAndCommit,
+      IGitBranchOperations gitBranchOperations)
       : base(gitClient, config, inputReader, console, msBuildCallAndCommit)
   {
     _pushMasterReleaseStep = pushMasterReleaseStep;
-    _msBuildCallAndCommit = msBuildCallAndCommit;
+    _gitBranchOperations = gitBranchOperations;
   }
 
   public void Execute (SemanticVersion nextVersion, bool noPush)
@@ -79,7 +81,7 @@ public class ContinueReleaseOnMasterStep
   {
     var currentBranchName = GitClient.GetCurrentBranchName();
 
-    _log.Debug("The current branch name is '{CurrentBranchName}'",currentBranchName);
+    _log.Debug("The current branch name is '{CurrentBranchName}'.",currentBranchName);
 
     if (currentBranchName == null)
     {
@@ -88,14 +90,14 @@ public class ContinueReleaseOnMasterStep
     }
 
     var currentVersion = new SemanticVersionParser().ParseVersionFromBranchName(currentBranchName);
-    _log.Debug("The current version is '{CurrentVersion}'",currentVersion);
+    _log.Debug("The current version is '{CurrentVersion}'.",currentVersion);
 
-    EnsureBranchUpToDate(currentBranchName);
-    EnsureBranchUpToDate("master");
-    EnsureBranchUpToDate("develop");
+    _gitBranchOperations.EnsureBranchUpToDate(currentBranchName);
+    _gitBranchOperations.EnsureBranchUpToDate("master");
+    _gitBranchOperations.EnsureBranchUpToDate("develop");
 
     var tagName = $"v{currentVersion}";
-    _log.Debug("Will try to create tag with name '{TagName}'", tagName);
+    _log.Debug("Will try to create tag with name '{TagName}'.", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
       var message = $"There is already a commit tagged with '{tagName}'.";
@@ -107,8 +109,8 @@ public class ContinueReleaseOnMasterStep
     GitClient.MergeBranchToOnlyContainChangesFromMergedBranch(currentBranchName);
 
     CreateTagWithMessage(tagName);
-    
-    CreateSupportBranchWithHotfixForRelease(currentVersion);
+
+    CreateSupportBranchWithHotfixForRelease(currentVersion.GetNextPatchVersion());
 
     GitClient.Checkout("develop");
   }

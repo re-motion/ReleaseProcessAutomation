@@ -42,10 +42,10 @@ public class ReleaseVersionCommand : Command<ReleaseVersionSettings>
 
   public override int Execute ([NotNull] CommandContext context, [NotNull] ReleaseVersionSettings settings)
   {
-    const string message = "Starting a new release";
+    const string message = "Starting a new release.";
     _log.Information(message);
     _console.WriteLine(message);
-    
+
     _startReleaseStep.Execute(settings.CommitHash, settings.PauseForCommit, settings.DoNotPush);
 
     return 0;

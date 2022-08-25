@@ -27,12 +27,12 @@ internal class CloseVersionSettings : CommandSettings
 {
   [UsedImplicitly]
   [CommandOption("-a|--ancestor")]
-  [Description("Optional Parameter that should contain the branch from which the release branch emerged from")]
+  [Description("Optional parameter that should contain the branch from which the release branch emerged from.")]
   public string? Ancestor { get; set; }
 
   [UsedImplicitly]
   [CommandOption("-n|--noPush")]
   [Description(
-      "Optional <switch> Parameter. If given, the scripts stops before pushing the changes to the remote repositories")]
+      "Optional <switch> parameter. If given, the scripts stops before pushing the changes to the remote repositories.")]
   public bool DoNotPush { get; set; }
 }
