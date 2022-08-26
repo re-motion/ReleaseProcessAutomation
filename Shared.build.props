@@ -24,7 +24,6 @@
     <PropertyGroup Condition="'$(ProjectType)' == 'Package'">
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <IsPackable>True</IsPackable>
-        <TargetFrameworks>net6.0-windows;</TargetFrameworks>
     </PropertyGroup>
     
 </Project>

@@ -42,7 +42,7 @@
       <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET48</TargetRuntimes>
       <TestCategoriesToExclude Condition="'$(TestCategoriesToExclude)' == ''"></TestCategoriesToExclude>
       <SkipCleanProjects Condition="'$(SkipCleanProjects)' == ''">False</SkipCleanProjects>
-      <SkipTests Condition="'$(SkipTests)' == ''">False</SkipTests>
+      <SkipTests Condition="'$(SkipTests)' == ''">True</SkipTests>
       <SkipDocumentation Condition="'$(SkipDocumentation)' == ''">True</SkipDocumentation>
       <SkipNuGetOrg Condition="'$(SkipNuGetOrg)' == ''">True</SkipNuGetOrg>
       <SkipSourceLinks Condition="'$(SkipSourceLinks)' == ''">True</SkipSourceLinks>
@@ -61,7 +61,7 @@
       <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET48</TargetRuntimes>
       <TestCategoriesToExclude Condition="'$(TestCategoriesToExclude)' == ''"></TestCategoriesToExclude>
       <SkipCleanProjects>False</SkipCleanProjects>
-      <SkipTests>False</SkipTests>
+      <SkipTests>True</SkipTests>
       <SkipDocumentation>True</SkipDocumentation>
       <SkipNuGetOrg>True</SkipNuGetOrg>
       <SkipSourceLinks>True</SkipSourceLinks>
@@ -119,7 +119,7 @@
   <Target Name="SetVersionTestBuild">
     <PropertyGroup>
       <!-- With local test builds, no version update is needed. -->
-      <Version></Version>
+      <Version>1.0.0</Version>
       <HasCustomVersion>False</HasCustomVersion>
     </PropertyGroup>
   </Target>

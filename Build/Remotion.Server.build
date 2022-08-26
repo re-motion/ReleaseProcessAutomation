@@ -57,7 +57,7 @@
       <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET48</TargetRuntimes>
       <TestCategoriesToExclude Condition="'$(TestCategoriesToExclude)' == ''"></TestCategoriesToExclude>
       <SkipCleanProjects Condition="'$(SkipCleanProjects)' == ''">False</SkipCleanProjects>
-      <SkipTests Condition="'$(SkipTests)' == ''">False</SkipTests>
+      <SkipTests Condition="'$(SkipTests)' == ''">True</SkipTests>
       <SkipDocumentation Condition="'$(SkipDocumentation)' == ''">True</SkipDocumentation>
       <SkipNuGetOrg Condition="'$(SkipNuGetOrg)' == ''">True</SkipNuGetOrg>
       <SkipSourceLinks Condition="'$(SkipSourceLinks)' == ''">True</SkipSourceLinks>
@@ -79,7 +79,7 @@
       <SkipCleanProjects Condition="'$(SkipCleanProjects)' == ''">False</SkipCleanProjects>
       <SkipTests Condition="'$(SkipTests)' == ''">False</SkipTests>
       <SkipDocumentation Condition="'$(SkipDocumentation)' == ''">False</SkipDocumentation>
-      <SkipNuGetOrg Condition="'$(SkipNuGetOrg)' == ''">False</SkipNuGetOrg>
+      <SkipNuGetOrg Condition="'$(SkipNuGetOrg)' == ''">True</SkipNuGetOrg>
       <SkipSourceLinks Condition="'$(SkipSourceLinks)' == ''">False</SkipSourceLinks>
       <SkipNuGet Condition="'$(SkipNuGet)' == ''">False</SkipNuGet>
       <SkipDependDB Condition="'$(SkipDependDB)' == ''">False</SkipDependDB>

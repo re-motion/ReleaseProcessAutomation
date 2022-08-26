@@ -3,7 +3,7 @@
 
   <Target Name="Before_TestBuild_Configuration" BeforeTargets="TestBuild_Configuration">
     <PropertyGroup>
-      <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET48</TargetRuntimes>
+      <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET60</TargetRuntimes>
     </PropertyGroup>
   </Target>
   <Target Name="After_TestBuild_Configuration" AfterTargets="TestBuild_Configuration">
@@ -14,7 +14,7 @@
 
   <Target Name="Before_FullBuild_Configuration" BeforeTargets="FullBuild_Configuration">
     <PropertyGroup>
-      <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET48</TargetRuntimes>
+      <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET60</TargetRuntimes>
     </PropertyGroup>
   </Target>
   <Target Name="After_FullBuild_Configuration" AfterTargets="FullBuild_Configuration">
