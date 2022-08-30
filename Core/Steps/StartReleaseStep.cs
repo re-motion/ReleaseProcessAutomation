@@ -82,7 +82,7 @@ public class StartReleaseStep
     {
       if(!startReleasePhase)
         _console.WriteLine(
-            "As you are not on a release branch, you won't be able to release a release candidate version.\nTo create a release branch, use the command [green]'New-Release-Branch'[/].");
+            "As you are not on a release branch, you won't be able to release a release candidate version.\nTo create a release branch, use the command 'New-Release-Branch'.");
       
       if (_gitClient.IsOnBranch("hotfix/"))
       {

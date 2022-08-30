@@ -47,7 +47,7 @@ public class InputReader
 
   public bool ReadConfirmation (bool defaultValue = true)
   {
-    return _console.Confirm("[orangered1]Confirm?[/]", defaultValue);
+    return _console.Confirm("Confirm?", defaultValue);
   }
 
   public string ReadString (string prompt)
@@ -60,7 +60,7 @@ public class InputReader
     var parser = new SemanticVersionParser();
     var input = _console.Prompt(
         new TextPrompt<string>(prompt)
-            .ValidationErrorMessage("[red]That's not a valid version.[/]")
+            .ValidationErrorMessage("That's not a valid version.")
             .Validate(version => parser.TryParseVersion(version, out _) ? ValidationResult.Success() : ValidationResult.Error()));
     return parser.ParseVersion(input);
   }
@@ -119,7 +119,7 @@ public class InputReader
     promptBuilder.AppendLine();
 
     foreach (var (v, oneBasedIndex) in versions.Select((v, i) => (v, i + 1)))
-      promptBuilder.Append("[orangered1](").Append(oneBasedIndex).Append(") ").Append(v).AppendLine("[/]");
+      promptBuilder.Append("(").Append(oneBasedIndex).Append(") ").Append(v).AppendLine("");
 
     promptBuilder.Append("Your version: ");
 
@@ -135,13 +135,13 @@ public class InputReader
                 if (indexedVersion > 0 && indexedVersion <= versions.Count)
                   return ValidationResult.Success();
                 return ValidationResult.Error(
-                    $"[red]The input '{v}' is not a valid option, please enter a valid version or select a valid option.[/]");
+                    $"The input '{v}' is not a valid option, please enter a valid version or select a valid option.");
               }
 
               if (versions.Contains(v))
                 return ValidationResult.Success();
               return ValidationResult.Error(
-                  $"[red]The input '{v}' is not a valid option, please enter a valid version or select a valid option.[/]");
+                  $"The input '{v}' is not a valid option, please enter a valid version or select a valid option.");
             });
   }
 }
