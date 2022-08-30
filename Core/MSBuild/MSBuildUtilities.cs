@@ -16,6 +16,7 @@
 //
 
 using System;
+using System.Linq;
 using System.Text;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.SemanticVersioning;
@@ -38,14 +39,7 @@ public static class MSBuildUtilities
       return null;
     }
 
-    var msBuildCallStringBuilder = new StringBuilder();
-
-    foreach (var argument in step.MSBuildCallArguments.Arguments)
-    {
-      var versionedArgument = argument.Replace("{version}", $"{version}").Replace("{Version}", $"{version}");
-      msBuildCallStringBuilder.Append(versionedArgument).Append(' ');
-    }
-
-    return msBuildCallStringBuilder.ToString();
+    var replacedArguments = step.MSBuildCallArguments.Arguments.Select(arg => arg.Replace("{version}", $"{version}").Replace("{Version}", $"{version}"));
+    return string.Join(" ", replacedArguments);
   }
 }

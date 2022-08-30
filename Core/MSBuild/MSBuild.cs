@@ -56,7 +56,8 @@ internal class MSBuild
     if (msBuildProcess.ExitCode != 0)
     {
       var errorMessage = msBuildProcess.StandardError.ReadToEnd();
-      var message = $"MSBuild '{arguments}' failed with Error: '{errorMessage}'.";
+      var errorOutput = msBuildProcess.StandardOutput.ReadToEnd();
+      var message = $"MSBuild '{arguments}' failed with Error: '{errorOutput}'.";
       throw new Exception(message);
     }
 
