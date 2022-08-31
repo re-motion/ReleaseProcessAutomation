@@ -449,13 +449,14 @@ public class CommandLineGitClient : IGitClient
               };
 
     using var command = Process.Start(psi);
+    var output = command!.StandardOutput.ReadToEnd();
     command!.WaitForExit(c_gitProcessWaitTimeout);
+
+    _log.Information($"git output: {output}");
 
     var success = command.ExitCode == 0;
     if (!success)
       return new CommandLineResult(success, command.StandardError.ReadToEnd());
-
-    var output = command.StandardOutput.ReadToEnd();
 
     return new CommandLineResult(success, output);
   }
