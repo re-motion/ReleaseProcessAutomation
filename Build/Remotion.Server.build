@@ -92,9 +92,7 @@
 
   <!-- Check properties -->
 
-  <Target Name="CheckProperties" DependsOnTargets="
-          CheckBuildConfigurationProperties;
-          CheckBuildLocationProperties;" />
+  <Target Name="CheckProperties" DependsOnTargets="CheckBuildConfigurationProperties;CheckBuildLocationProperties;" />
 
   <!-- Versioning -->
 
