@@ -16,6 +16,8 @@
   <Target Name="Before_FullBuild_Configuration" BeforeTargets="FullBuild_Configuration">
     <PropertyGroup>
       <ExecutionRuntimes Condition="'$(ExecutionRuntimes)' == ''">LocalMachine</ExecutionRuntimes>
+      <SupportedTargetRuntimes>NET60</SupportedTargetRuntimes>
+      <SkipDependDB>True</SkipDependDB>
       <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET60</TargetRuntimes>
     </PropertyGroup>
   </Target>

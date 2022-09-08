@@ -15,6 +15,7 @@
   <Target Name="Before_FullBuild_Configuration" BeforeTargets="FullBuild_Configuration">
     <PropertyGroup>
       <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET60</TargetRuntimes>
+      <SkipDependDB>True</SkipDependDB>
     </PropertyGroup>
   </Target>
   <Target Name="After_FullBuild_Configuration" AfterTargets="FullBuild_Configuration">

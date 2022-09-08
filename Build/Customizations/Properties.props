@@ -10,5 +10,6 @@
     <PackageProjectUrl>http://www.re-motion.org/</PackageProjectUrl>
     <RepositoryUrl>https://github.com/re-motion/ReleaseProcessAutomation</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
+    <DocumentationFileName>ReleaseProcessAutomation</DocumentationFileName>
   </PropertyGroup>
 </Project>
