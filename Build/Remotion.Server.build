@@ -90,15 +90,16 @@
 
   <Target Name="FullBuild" DependsOnTargets="FullBuild_Configuration;CreateAdditionalBuildMetadata;BuildAll;" />
 
-  <!-- Check properties -->
-
-  <Target Name="CheckProperties" DependsOnTargets="CheckBuildConfigurationProperties;CheckBuildLocationProperties;" />
-
   <!-- Versioning -->
 
   <Target Name="SetVersionCiAndNightlyBuild" DependsOnTargets="PrepareVersionCiAndNightlyBuild;CheckVersion">
     <Message Text="##teamcity[buildNumber '$(Version)']" />
   </Target>
+  
+  <!-- Check properties -->
+
+  <Target Name="CheckProperties" DependsOnTargets="CheckBuildConfigurationProperties;CheckBuildLocationProperties;" />
+
 
   <Target Name="PrepareVersionCiAndNightlyBuild" Condition="'$(Version)' != ''">
     <Error Text="The property 'BuildNumber' is not set." Condition="'$(BuildNumber)' == ''" />
