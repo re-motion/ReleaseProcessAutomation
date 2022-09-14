@@ -23,39 +23,6 @@
 
   <Target Name="After_UpdateAssemblyInfosForRelease" AfterTargets="UpdateAssemblyInfosForRelease" DependsOnTargets="PrepareAssemblyNuGetVersion">
     <Error Text="The property 'AssemblyNuGetVersion' is not set." Condition="'$(AssemblyNuGetVersion)' == ''" />
-
-    <ItemGroup>
-      <MyNamespaces Include="msb">
-        <Prefix>msb</Prefix>
-        <Uri>http://schemas.microsoft.com/developer/msbuild/2003</Uri>
-      </MyNamespaces>
-    </ItemGroup>
-
-    <MSBuild.ExtensionPack.Xml.XmlFile
-            Namespaces="@(MyNamespaces)"
-            TaskAction="ReadElementText"
-            File="$(RemotionBuildFile)"
-            XPath="/msb:Project/msb:PropertyGroup/msb:RemotionBuildScriptPath" >
-      <Output TaskParameter="Value" PropertyName="OldRemotionBuildScriptPathValue" />
-    </MSBuild.ExtensionPack.Xml.XmlFile>
-
-    <PropertyGroup>
-      <!-- Regex to match the Version number, which is between "Remotion.BuildScript and the first "\"
-        (?<=Remotion\.BuildScript\.) === positive lookbehind for "Remotion.BuildScript"
-        (.*?)                        === Match anything
-        (?=\\)                       === positive lookahead for first "\"
-      -->
-      <RegexForOldVersion>(?&lt;=Remotion\.BuildScript\.)(.*?)(?=\\)</RegexForOldVersion>
-
-      <OldVersion>$([System.Text.RegularExpressions.Regex]::Match($(OldRemotionBuildScriptPathValue), $(RegexForOldVersion)))</OldVersion>
-      <NewRemotionBuildScriptPathValue>$( OldRemotionBuildScriptPathValue.Replace( $(OldVersion), $(AssemblyNuGetVersion) ) )</NewRemotionBuildScriptPathValue>
-    </PropertyGroup>
-
-    <ReplaceFileText
-        InputFilename="$(RemotionBuildFile)"
-        OutputFilename="$(RemotionBuildFile)"
-        MatchExpression="$(OldRemotionBuildScriptPathValue)"
-        ReplacementText="$(NewRemotionBuildScriptPathValue)" />
   </Target>
 
   <UsingTask TaskName="ReplaceFileText" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
