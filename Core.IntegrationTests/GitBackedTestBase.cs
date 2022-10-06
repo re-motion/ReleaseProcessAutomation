@@ -18,6 +18,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 
@@ -96,16 +97,31 @@ public class GitBackedTestBase
     psi.RedirectStandardOutput = true;
     psi.RedirectStandardError = true;
 
-    using var command = Process.Start(psi);
-    command.WaitForExit();
-    if (command.ExitCode != 0)
+    var process = new Process
     {
-      var error = command.StandardError.ReadToEnd();
+        StartInfo = psi
+    };
+
+    var outputBuilder = new StringBuilder();
+    process.OutputDataReceived += (sender, e) => outputBuilder.Append(e.Data);
+
+    var errorBuilder = new StringBuilder();
+    process.ErrorDataReceived += (sender, e) => errorBuilder.Append(e.Data);
+
+    process.Start();
+
+    process.BeginErrorReadLine();
+    process.BeginOutputReadLine();
+
+    process.WaitForExit();
+
+    if (process.ExitCode != 0)
+    {
+      var message = $"Git command failed with error:\n'{errorBuilder}'.";
+      Assert.Fail(message);
     }
 
-    var output = command.StandardOutput.ReadToEnd();
-
-    return output;
+    return outputBuilder.ToString();
   }
 
   protected void AddCommit (string s = "")
