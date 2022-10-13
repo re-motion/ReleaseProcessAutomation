@@ -46,22 +46,24 @@ internal class MSBuild
 
     var msBuildStartInfo = new ProcessStartInfo(msBuildPath, arguments);
     msBuildStartInfo.UseShellExecute = false;
-    msBuildStartInfo.RedirectStandardError = true;
     msBuildStartInfo.RedirectStandardOutput = true;
     msBuildStartInfo.WorkingDirectory = Environment.CurrentDirectory;
 
     var msBuildProcess = Process.Start(msBuildStartInfo);
-    msBuildProcess!.WaitForExit(c_msBuildProcessTimeout);
+
+    // a deadlock condition can occur if the parent process calls p.waitForExit before p.StandardOutput.ReadToEnd
+    // and the child process writes enough text to fill the redirected stream.
+    // This is due to the parent process waiting indefinitely for the child process to exit,
+    // while the child process waits for the parent to read from the full stream.
+    var msBuildOutput = msBuildProcess!.StandardOutput.ReadToEnd();
+    msBuildProcess.WaitForExit(c_msBuildProcessTimeout);
 
     if (msBuildProcess.ExitCode != 0)
     {
-      var errorMessage = msBuildProcess.StandardError.ReadToEnd();
-      var errorOutput = msBuildProcess.StandardOutput.ReadToEnd();
-      var message = $"MSBuild '{arguments}' failed with Error: '{errorOutput}'.";
+      var message = $"MSBuild '{arguments}' failed with Error: '{msBuildOutput}'.";
       throw new Exception(message);
     }
 
-    var msBuildOutput = msBuildProcess.StandardOutput.ReadToEnd();
     _console.WriteLine(msBuildOutput);
 
     var successMessage = $"Successfully called MSBuild with '{arguments}'.";
