@@ -61,6 +61,6 @@ internal class ConfigUtilitiesTests
         parser.ParseVersion("1.0.0"),
         consoleMock.Object);
 
-    Assert.That(msBuildCallString, Is.EqualTo("Argument1 version1.0.0 "));
+    Assert.That(msBuildCallString, Is.EqualTo("Argument1 version1.0.0"));
   }
 }
