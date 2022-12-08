@@ -31,9 +31,9 @@ public static class ConfigExtensions
   {
     return ignoreListType switch
     {
-        IgnoreListType.DevelopStableMergeIgnoreList => config.DevelopStableMergeIgnoreList.FileName.Where(n => n is { Length: > 0 }).ToArray(),
-        IgnoreListType.TagStableMergeIgnoreList => config.TagStableMergeIgnoreList.FileName.Where(n => n is { Length: > 0 }).ToArray(),
-        IgnoreListType.PreReleaseMergeIgnoreList => config.PreReleaseMergeIgnoreList.FileName.Where(n => n is { Length: > 0 }).ToArray(),
+        IgnoreListType.DevelopStableMergeIgnoreList => config.DevelopStableMergeIgnoreList.FileName?.Where(n => n is { Length: > 0 })?.ToArray() ?? Array.Empty<string>(),
+        IgnoreListType.TagStableMergeIgnoreList => config.TagStableMergeIgnoreList.FileName?.Where(n => n is { Length: > 0 })?.ToArray() ?? Array.Empty<string>(),
+        IgnoreListType.PreReleaseMergeIgnoreList => config.PreReleaseMergeIgnoreList.FileName?.Where(n => n is { Length: > 0 })?.ToArray() ?? Array.Empty<string>(),
         _ => Array.Empty<string>()
     };
   }

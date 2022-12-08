@@ -25,5 +25,5 @@ namespace ReleaseProcessAutomation.Configuration.Data;
 public class IgnoreList
 {
   [XmlElement("fileName")]
-  public string[] FileName { get; set; }
+  public string[]? FileName { get; set; }
 }
