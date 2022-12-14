@@ -11,4 +11,6 @@ public interface IJiraIssueService
   IReadOnlyList<JiraToBeMovedIssue> FindIssuesWithOnlyExactFixVersion (
       IEnumerable<JiraProjectVersion> allVersions,
       JiraProjectVersion exactFixVersion);
+
+  void AddFixVersionToIssues(IEnumerable<JiraToBeMovedIssue> issues, string versionId);
 }

@@ -302,8 +302,12 @@ public class JiraCombinedIntegrationTests : IntegrationTestBase
     var movedAndOldClosedIssues = _issueService.FindAllClosedIssues(originalVersionID);
     Assert.That(movedAndOldClosedIssues.Count(), Is.EqualTo(2));
 
-    var shouldBeNoClosedIssues = _issueService.FindAllClosedIssues(previousFullVersionID);
-    Assert.That(shouldBeNoClosedIssues.Count(), Is.EqualTo(0));
+    var shouldContainAdditionalFixVersion = _issueService.FindAllClosedIssues(previousFullVersionID);
+
+    Assert.That(shouldContainAdditionalFixVersion, Is.Not.Empty);
+    Assert.That(shouldContainAdditionalFixVersion.All(
+        i => i.Fields.FixVersions.Exists(
+            v => v.ID == followingVersionID || v.ID == previousFullVersionID)));
 
     var additionalClosedIssues = _issueService.FindAllClosedIssues(additionalPreviousVersionID);
     Assert.That(additionalClosedIssues.Count(), Is.EqualTo(1));
@@ -419,6 +423,55 @@ public class JiraCombinedIntegrationTests : IntegrationTestBase
     Assert.That(jiraProjectVersions.Where(v => v.id.Equals(betaVersionID)), Is.Not.Null);
 
     JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, fullVersionName, alphaVersionName, betaVersionName);
+  }
+
+  [Test]
+  public void AddFixVersionToIssues_WithExistentFixVersions_AddsFixVersionToIssues ()
+  {
+    var fullVersionName = "1.3.0";
+    var alphaVersionName = "1.3.0-alpha.1";
+    var betaVersionName = "1.3.0-beta.3";
+
+    JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, fullVersionName, alphaVersionName, betaVersionName);
+
+    var fullVersionID = JiraTestUtility.CreateVersion(_restClient, fullVersionName, _config.Jira.JiraProjectKey);
+    var alphaVersionID = JiraTestUtility.CreateVersion(_restClient, alphaVersionName, _config.Jira.JiraProjectKey);
+    var betaVersionID = JiraTestUtility.CreateVersion(_restClient, betaVersionName, _config.Jira.JiraProjectKey);
+
+    var closedIssueOnlyFull = JiraTestUtility.AddTestIssueToVersion(
+        "Only full version fix",
+        true,
+        _config.Jira.JiraProjectKey,
+        _restClient,
+        fullVersionID);
+    var closedIssueFull1 = JiraTestUtility.AddTestIssueToVersion(
+        "test1",
+        true,
+        _config.Jira.JiraProjectKey,
+        _restClient,
+        alphaVersionID,
+        fullVersionID);
+
+    var outputIssues = _issueService.FindAllClosedIssues(fullVersionID)
+        .ToArray();
+
+    var equivalentIssueIDs = new [] { closedIssueFull1.ID, closedIssueOnlyFull.ID };
+    Assert.That(outputIssues.Select(i => i.ID), Is.EquivalentTo(equivalentIssueIDs));
+
+    _issueService.AddFixVersionToIssues(outputIssues, betaVersionID);
+
+    outputIssues = _issueService.FindAllClosedIssues(fullVersionID)
+        .ToArray();
+
+    Assert.That(outputIssues, Is.Not.Empty);
+    Assert.That(outputIssues.All(i => i.Fields.FixVersions.Exists(v => v.ID == betaVersionID)));
+    Assert.That(outputIssues.All(i => i.Fields.FixVersions.Exists(v => v.ID == fullVersionID)));
+
+    JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, fullVersionName, alphaVersionName, betaVersionName);
+    JiraTestUtility.DeleteIssues(
+        _restClient,
+        closedIssueFull1.ID,
+        closedIssueOnlyFull.ID);
   }
 
   [Test]
