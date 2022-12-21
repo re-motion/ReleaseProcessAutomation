@@ -105,7 +105,7 @@ internal class BranchFromHotfixStepTests
     nextVersion.Pre = PreReleaseStage.alpha;
     nextVersion.PreReleaseCounter = 1;
 
-    _inputReaderStub.Setup(_ => _.ReadVersionChoice("Please choose next Version:", It.IsAny<IReadOnlyCollection<SemanticVersion>>()))
+    _inputReaderStub.Setup(_ => _.ReadVersionChoice("Please choose version to be released:", It.IsAny<IReadOnlyCollection<SemanticVersion>>()))
         .Returns(nextVersion);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("hotfix/v1.3.5");
     _semanticVersionedGitRepoStub.Setup(_ => _.GetMostRecentHotfixVersion()).Returns(new SemanticVersion());
