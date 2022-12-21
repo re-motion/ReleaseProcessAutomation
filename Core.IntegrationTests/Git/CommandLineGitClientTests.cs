@@ -360,17 +360,11 @@ internal class CommandLineGitClientTests : GitBackedTestBase
     var commitHash = ExecuteGitCommandWithOutput("log --pretty=%h").Split("\n")[0];
     ExecuteGitCommand("commit -m \"First commit\" --allow-empty");
 
-    var act = client.CheckoutCommitWithNewBranch(commitHash, "newBranch");
+    client.CheckoutCommitWithNewBranch(commitHash, "newBranch");
 
     ExecuteGitCommand("commit -m \"Commit on new branch\" --allow-empty");
 
-    var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
-    correctLogs1 = correctLogs1.Replace(" ", "").Replace("\r", "");
-    correctLogs2 = correctLogs2.Replace(" ", "").Replace("\r", "");
-
-    logs = logs.Replace(" ", "");
-
-    Assert.That(logs, Is.EqualTo(correctLogs1).Or.EqualTo(correctLogs2));
+    AssertValidLogs(correctLogs1, correctLogs2);
   }
 
   [Test]
@@ -692,7 +686,7 @@ internal class CommandLineGitClientTests : GitBackedTestBase
     var fetched = ExecuteGitCommandWithOutput("show HEAD --pretty=%d");
 
     Assert.That(fetched, Is.EqualTo(notBehind));
-    Assert.That(fetched, Is.EqualTo(" (HEAD -> master, origin/master)\n"));
+    Assert.That(fetched, Is.EqualTo(" (HEAD -> master, origin/master)"));
   }
 
   [Test]
