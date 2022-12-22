@@ -29,34 +29,34 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestBase
     var testCredentials = JiraTestUtility.GetLocallySavedCredentials();
     _jiraUsername = testCredentials.Username;
     _jiraPassword = testCredentials.Password;
-    
+
     var configPath = Path.Combine(Environment.CurrentDirectory, "Build", "Customizations", c_testConfigName);
     _config = new ConfigReader().LoadConfig(configPath);
-    
+
     _restClient = JiraRestClient.CreateWithBasicAuthentication(_config.Jira.JiraURL, testCredentials);
-    
+
     _restClientProviderMock = new Mock<IJiraRestClientProvider>();
     _restClientProviderMock.Setup(_ => _.GetJiraRestClient()).Returns(_restClient);
-    
+
     _issueService = new JiraIssueService(_restClientProviderMock.Object);
   }
-  
-   [Test]
+
+  [Test]
   public void ReleaseVersion_FromReleaseAlphaBetaStepWithJiraActive_MovesClosedIssuesFromOldToNewVersion ()
   {
     var currentVersionName = "1.3.0";
     var nextVersionName = "1.3.0-alpha.1";
     var jiraNextVersionName = "1.3.0-alpha.2";
-    
+
     JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, currentVersionName, nextVersionName);
-    
+
     var originalVersionID = JiraTestUtility.CreateVersion(_restClient, currentVersionName, _config.Jira.JiraProjectKey);
     var followingVersionID = JiraTestUtility.CreateVersion(_restClient, nextVersionName, _config.Jira.JiraProjectKey);
 
     var closedIssue1 = JiraTestUtility.AddTestIssueToVersion("test1", true, _config.Jira.JiraProjectKey, _restClient, originalVersionID);
     var closedIssue2 = JiraTestUtility.AddTestIssueToVersion("test2", true, _config.Jira.JiraProjectKey, _restClient, originalVersionID);
     var closedIssue3 = JiraTestUtility.AddTestIssueToVersion("test3", true, _config.Jira.JiraProjectKey, _restClient, originalVersionID);
-    
+
     var correctLogs =
         $@"*    (HEAD -> develop, origin/develop)Merge branch 'prerelease/v{nextVersionName}' into develop
           |\  
@@ -93,7 +93,7 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestBase
     Assert.That(act, Is.EqualTo(0));
 
     var oldClosedIssues = _issueService.FindAllClosedIssues(originalVersionID);
-    Assert.That(oldClosedIssues.Count(), Is.Zero);
+    Assert.That(oldClosedIssues.Count(), Is.EqualTo(3));
 
     var newClosedIssues = _issueService.FindAllClosedIssues(followingVersionID);
     Assert.That(newClosedIssues.Count(), Is.EqualTo(3));
@@ -101,23 +101,23 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestBase
     JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, currentVersionName, nextVersionName);
     JiraTestUtility.DeleteIssues(_restClient, closedIssue1.ID, closedIssue2.ID, closedIssue3.ID);
   }
-  
+
   [Test]
   public void ReleaseVersion_FromDevelopWithoutMovingClosedIssues_DoesNotMoveVersions ()
   {
     var currentVersionName = "1.3.0";
     var nextVersionName = "1.3.0-alpha.1";
     var jiraNextVersionName = "1.3.0-alpha.2";
-    
+
     JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, currentVersionName, nextVersionName);
-    
+
     var originalVersionID = JiraTestUtility.CreateVersion(_restClient, currentVersionName, _config.Jira.JiraProjectKey);
     var followingVersionID = JiraTestUtility.CreateVersion(_restClient, nextVersionName, _config.Jira.JiraProjectKey);
 
     var closedIssue1 = JiraTestUtility.AddTestIssueToVersion("test1", true, _config.Jira.JiraProjectKey, _restClient, originalVersionID);
     var closedIssue2 = JiraTestUtility.AddTestIssueToVersion("test2", true, _config.Jira.JiraProjectKey, _restClient, originalVersionID);
     var closedIssue3 = JiraTestUtility.AddTestIssueToVersion("test3", true, _config.Jira.JiraProjectKey, _restClient, originalVersionID);
-    
+
     var correctLogs =
         $@"*    (HEAD -> develop, origin/develop)Merge branch 'prerelease/v{nextVersionName}' into develop
           |\  

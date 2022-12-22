@@ -55,7 +55,7 @@ public class JiraIssueService
           });
       newFixVersions.Add(new JiraVersion { ID = newVersionId });
 
-      var body = new { fields = new { fixVersions = newFixVersions.Select(v => new { id = v.ID }) } };
+      var body = new { fields = new { fixVersions = GetDtoFrom(newFixVersions) } };
       request.AddBody(body);
 
       _jiraRestClientProvider.GetJiraRestClient().DoRequest<JiraIssue>(request, HttpStatusCode.NoContent);
@@ -95,5 +95,30 @@ public class JiraIssueService
             v => !allVersionLookup.Contains(v.ID)));
 
     return filteredIssues.ToList();
+  }
+
+  public void AddFixVersionToIssues (IEnumerable<JiraToBeMovedIssue> issues, string versionId)
+  {
+    foreach (var issue in issues)
+    {
+      var resource = $"issue/{issue.ID}";
+      var request = _jiraRestClientProvider.GetJiraRestClient().CreateRestRequest(resource, Method.PUT);
+
+      if (issue.Fields == null)
+        throw new InvalidOperationException($"Could not get fields from issue '{issue}");
+
+      var newFixVersions = issue.Fields.FixVersions;
+      newFixVersions.Add(new JiraVersion { ID = versionId });
+
+      var body = new { fields = new { fixVersions = GetDtoFrom(newFixVersions) } };
+      request.AddBody(body);
+
+      _jiraRestClientProvider.GetJiraRestClient().DoRequest<JiraIssue>(request, HttpStatusCode.NoContent);
+    }
+  }
+
+  private static object GetDtoFrom (IEnumerable<JiraVersion> fixVersions)
+  {
+    return fixVersions.Select(v => new { id = v.ID });
   }
 }
