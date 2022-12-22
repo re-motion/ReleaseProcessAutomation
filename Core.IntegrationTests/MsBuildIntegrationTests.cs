@@ -20,6 +20,7 @@ using NUnit.Framework;
 
 namespace ReleaseProcessAutomation.IntegrationTests;
 
+[TestFixture]
 internal class MSBuildIntegrationTests : IntegrationTestBase
 {
   [Test]

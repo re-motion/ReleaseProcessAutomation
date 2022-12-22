@@ -149,16 +149,9 @@ public class GitBackedTestBase
     ExecuteGitCommand($"tag -a {version} -m {version}");
   }
 
-  protected bool IsEqualRepo (string otherLogs)
-  {
-    var currentLogs = ExecuteGitCommandWithOutput("log--all--graph--oneline--decorate--pretty = '%d %s'");
-
-    return currentLogs.Equals(otherLogs);
-  }
-
   protected void AssertValidLogs (string expectedLogs)
   {
-    expectedLogs = expectedLogs.Replace(" ", "").Replace("\r", "");
+    expectedLogs = expectedLogs.Replace(" ", "").Replace("\r", "").Replace("\n", "");
 
     var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
     logs = logs.Replace(" ", "");
@@ -168,8 +161,8 @@ public class GitBackedTestBase
 
   protected void AssertValidLogs (string expectedLogs1, string expectedLogs2)
   {
-    expectedLogs1 = expectedLogs1.Replace(" ", "").Replace("\r", "");
-    expectedLogs2 = expectedLogs2.Replace(" ", "").Replace("\r", "");
+    expectedLogs1 = expectedLogs1.Replace(" ", "").Replace("\r", "").Replace("\n", "");
+    expectedLogs2 = expectedLogs2.Replace(" ", "").Replace("\r", "").Replace("\n", "");
 
     var logs = ExecuteGitCommandWithOutput("log --all --graph --oneline --decorate --pretty=%d%s");
     logs = logs.Replace(" ", "");

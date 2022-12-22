@@ -84,7 +84,7 @@ internal class StartReleaseStepTests
     Assert.That(
         _console.Output.ReplaceLineEndings(""),
         Is.EqualTo(
-            "As you are not on a release branch, you won't be able to release a release candidate version.To create a release branch, use the command [green]'New-Release-Branch'[/]."));
+            "As you are not on a release branch, you won't be able to release a release candidate version.To create a release branch, use the command 'New-Release-Branch'."));
   }
 
   [Test]
