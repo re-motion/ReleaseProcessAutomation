@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 
 namespace ReleaseProcessAutomation.Configuration;
@@ -38,8 +39,8 @@ public class ConfigReader
 
   private readonly ILogger _log = Log.ForContext<ConfigReader>();
 
-  /// <exception cref="FileNotFoundException">The file could not be found.</exception>
-  /// <exception cref="InvalidOperationException">The file is not in the correct format.</exception>
+  /// <exception cref="UserInteractionException">The file could not be found.</exception>
+  /// <exception cref="UserInteractionException">The file is not in the correct format.</exception>
   public Config LoadConfig (string configPath)
   {
     _log.Debug("Loading Config from '{ConfigPath}'.", configPath);
@@ -47,7 +48,7 @@ public class ConfigReader
     if (!File.Exists(configPath))
     {
       var message = $"Could not load config from '{configPath}' because the file does not exist.";
-      throw new FileNotFoundException(message);
+      throw new UserInteractionException(message);
     }
 
     using TextReader reader = new StreamReader(configPath);
@@ -57,31 +58,31 @@ public class ConfigReader
     if (config == null)
     {
       const string message = "Could not deserialize config, please check your config settings format.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var allPaths = new[] { config.MSBuildSettings.MSBuildPath };
-    
+
     // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
     if (config.MSBuildSettings.AlternativeMSBuildPaths != null)
       allPaths = allPaths.Concat(config.MSBuildSettings.AlternativeMSBuildPaths).ToArray();
-    
+
     try
     {
       var fullPath = allPaths.Select(Path.GetFullPath).First(File.Exists);
-      
+
       config.MSBuildSettings.MSBuildPath = fullPath;
       return config;
     }
     catch
     {
-      throw new ArgumentException("None of the configured MSBuild paths in the config exist.\nPlease configure a proper MSBuild path in the config.");
+      throw new UserInteractionException("None of the configured MSBuild paths in the config exist.\nPlease configure a proper MSBuild path in the config.");
 
     }
   }
 
-  /// <exception cref="FileNotFoundException">The file could not be found.</exception>
-  /// <exception cref="InvalidOperationException">The file is not in the correct format.</exception>
+  /// <exception cref="UserInteractionException">The file could not be found.</exception>
+  /// <exception cref="UserInteractionException">The file is not in the correct format.</exception>
   public string GetConfigPathFromBuildProject (string solutionRoot)
   {
     _log.Debug("Getting config path from '{c_buildProjectFileName}' file in the solution root '{solutionRoot}'.", c_buildProjectFileName, solutionRoot);
@@ -90,7 +91,7 @@ public class ConfigReader
     if (!File.Exists(path))
     {
       var message = $"Could not get config path from '{c_buildProjectFileName}' because the file '{path}' does not exist.";
-      throw new FileNotFoundException(message);
+      throw new UserInteractionException(message);
     }
 
     using TextReader reader = new StreamReader(path);
@@ -100,7 +101,7 @@ public class ConfigReader
     if (s == null)
     {
       const string message = $"Could not deserialize the '{c_buildProjectFileName}' file, please check the format of the file.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     return s;

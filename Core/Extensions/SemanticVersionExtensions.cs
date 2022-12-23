@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 
 namespace ReleaseProcessAutomation.Extensions;
@@ -156,7 +157,7 @@ public static class SemanticVersionExtensions
                };
 
       const string message = "Could not get next possible next versions for hotfix.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     return new[]

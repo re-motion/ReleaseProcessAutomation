@@ -22,6 +22,7 @@ using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -66,7 +67,7 @@ public class ContinueReleaseOnMasterStep
     if (!GitClient.IsOnBranch("release/"))
     {
       var currentBranch = GitClient.GetCurrentBranchName();
-      throw new InvalidOperationException("Cannot call ContinueReleaseOnMaster when not on release branch.");
+      throw new UserInteractionException("Cannot call ContinueReleaseOnMaster when not on release branch.");
     }
 
     CreateTagAndMerge();
@@ -86,7 +87,7 @@ public class ContinueReleaseOnMasterStep
     if (currentBranchName == null)
     {
       const string message = "Could not create tag and merge because there was no current branch found.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var currentVersion = new SemanticVersionParser().ParseVersionFromBranchName(currentBranchName);
@@ -101,7 +102,7 @@ public class ContinueReleaseOnMasterStep
     if (GitClient.DoesTagExist(tagName))
     {
       var message = $"There is already a commit tagged with '{tagName}'.";
-      throw new Exception(message);
+      throw new UserInteractionException(message);
     }
 
     GitClient.Checkout("master");

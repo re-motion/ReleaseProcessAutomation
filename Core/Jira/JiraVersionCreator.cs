@@ -21,6 +21,7 @@ using System.Linq;
 using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 using ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
+using Remotion.ReleaseProcessAutomation;
 
 namespace ReleaseProcessAutomation.Jira;
 
@@ -42,7 +43,7 @@ public class JiraVersionCreator
   {
     var jiraProject = _config.Jira.JiraProjectKey;
     if (string.IsNullOrEmpty(jiraProject))
-      throw new InvalidOperationException("Jira project was not assigned.");
+      throw new UserInteractionException("Jira project key was not assigned in config.");
 
     var jiraProjectVersionRepairer = new JiraProjectVersionRepairer(_jiraProjectVersionService, _projectVersionFinder);
 
@@ -53,7 +54,7 @@ public class JiraVersionCreator
     if (jiraProjectVersion != null)
     {
       if (jiraProjectVersion.released)
-        throw new JiraException("The Version '" + versionNumber + "' got already released in Jira.");
+        throw new UserInteractionException("The Version '" + versionNumber + "' got already released in Jira.");
 
       if (string.IsNullOrEmpty(jiraProjectVersion.id))
         throw new InvalidOperationException("Jira project id was not assigned.");

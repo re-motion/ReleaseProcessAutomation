@@ -20,6 +20,7 @@ using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -67,13 +68,13 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
     
     if (preReleaseBranchName == null)
     {
-      throw new InvalidOperationException("Could not find current branch.");
+      throw new UserInteractionException("Could not find current branch.");
     }
 
     if (!preReleaseBranchName.StartsWith("prerelease/"))
     {
       const string message = "Cannot call ContinuePreReleaseFromDevelop when not on prerelease branch.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var baseBranchName = ancestor switch
@@ -92,7 +93,7 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
     if (GitClient.DoesTagExist(tagName))
     {
       var message = $"Could not create tag {tagName} because it already exists";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     CreateTagWithMessage(tagName);

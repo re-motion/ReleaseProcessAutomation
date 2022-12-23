@@ -20,6 +20,7 @@ using ReleaseProcessAutomation.Configuration.Data;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -60,7 +61,7 @@ public class PushMasterReleaseStep
     if (!_gitClient.DoesBranchExist(branchName))
     {
       var message = $"The Branch '{branchName}' does not exist. Please create a release branch by using 'new-release-branch' first.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     _gitBranchOperations.EnsureBranchUpToDate(branchName);

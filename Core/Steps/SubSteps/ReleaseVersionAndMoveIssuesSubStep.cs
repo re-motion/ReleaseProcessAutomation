@@ -6,6 +6,7 @@ using ReleaseProcessAutomation.Jira;
 using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -74,10 +75,10 @@ public class ReleaseVersionAndMoveIssuesSubStep
       var allJiraVersionsStartingWithFullVersion = _jiraVersionCreator.FindAllVersionsStartingWithVersionNumber(currentFullVersion);
 
       if (allJiraVersionsStartingWithFullVersion.Count == 0)
-        throw new InvalidOperationException($"Could not find versions starting with '{currentFullVersion}'.");
+        throw new UserInteractionException($"Could not find versions starting with '{currentFullVersion}'.");
 
       var currentFullJiraVersion = _jiraVersionCreator.FindVersionWithVersionNumber(currentFullVersion)
-                                       ?? throw new InvalidOperationException(
+                                       ?? throw new UserInteractionException(
                                            $"Could not find any version with version number '{currentFullVersion}'.");
 
       var closedIssuesOnlyAssociatedWithFullVersion =
@@ -106,7 +107,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
       _console.WriteLine(e.Message);
       _console.WriteLine($"Could not move closed jira issues from version '{currentFullVersion}' to '{currentVersion}'. \nDo you wish to continue?");
       if (!_inputReader.ReadConfirmation())
-        throw new UserDoesNotWantToContinueException("User does not want to continue due to inability to move jira issues.");
+        throw new UserInteractionException();
     }
   }
 
@@ -116,7 +117,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
   {
     var currentJiraVersion = _jiraVersionCreator.FindVersionWithVersionNumber(currentVersion);
     if (currentJiraVersion == null)
-      throw new InvalidOperationException($"Could not find next jira version '{currentVersion}'");
+      throw new UserInteractionException($"Could not find next jira version '{currentVersion}'");
 
     _jiraIssueService.AddFixVersionToIssues(issues, currentJiraVersion.id);
   }

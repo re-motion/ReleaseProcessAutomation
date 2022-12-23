@@ -21,6 +21,7 @@ using NUnit.Framework;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.Steps;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation;
 using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.UnitTests.Steps;
@@ -60,7 +61,7 @@ internal class StartReleaseStepTests
 
     Assert.That(
         () => startReleaseStep.Execute(commitHash, false, false),
-        Throws.InstanceOf<ArgumentException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("The given commit hash was not found in the repository."));
   }
 

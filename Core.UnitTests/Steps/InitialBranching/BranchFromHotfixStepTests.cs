@@ -23,6 +23,7 @@ using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation;
 
 namespace ReleaseProcessAutomation.UnitTests.Steps.InitialBranching;
 
@@ -59,7 +60,7 @@ internal class BranchFromHotfixStepTests
 
     Assert.That(
         () => hotfixBranch.Execute("", true, false, false),
-        Throws.InstanceOf<InvalidOperationException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("Could not find the current branch while trying to get next hotfix version."));
   }
 

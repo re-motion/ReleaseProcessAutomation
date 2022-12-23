@@ -19,6 +19,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -40,9 +41,11 @@ public static class Program
     {
       app.Run(args);
     }
-    catch (UserDoesNotWantToContinueException u)
+    catch (UserInteractionException e)
     {
-      Console.WriteLine(u.Message);
+      Console.WriteLine(e.Message);
+      var log = Log.ForContext(e.TargetSite!.DeclaringType);
+      log.Error(e.Message);
       return -1;
     }
     catch (Exception e)

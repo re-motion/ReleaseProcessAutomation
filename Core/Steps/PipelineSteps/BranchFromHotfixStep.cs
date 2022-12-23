@@ -20,6 +20,7 @@ using ReleaseProcessAutomation.Extensions;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 
 namespace ReleaseProcessAutomation.Steps.PipelineSteps;
@@ -83,7 +84,7 @@ public class BranchFromHotfixStep
       if (string.IsNullOrEmpty(currentBranchName))
       {
         const string message = "Could not find the current branch while trying to get next hotfix version.";
-        throw new InvalidOperationException(message);
+        throw new UserInteractionException(message);
       }
 
       return new SemanticVersionParser().ParseVersionFromBranchName(currentBranchName);

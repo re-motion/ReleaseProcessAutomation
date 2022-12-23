@@ -21,6 +21,8 @@ using NUnit.Framework;
 using ReleaseProcessAutomation.Configuration;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation;
+using Remotion.ReleaseProcessAutomation.Git;
 
 namespace ReleaseProcessAutomation.IntegrationTests.Git;
 
@@ -697,9 +699,9 @@ internal class CommandLineGitClientTests : GitBackedTestBase
 
     Assert.That(
         () => gitClient.PushToRepos(remoteNames, "", "tag"),
-        Throws.InstanceOf<InvalidOperationException>()
+        Throws.InstanceOf<GitException>()
             .With.Message.EqualTo(
-                "Tag with name 'tag' does not exist, must not have been created before calling pushToRepos, check previous steps."));
+                "Tag with name 'tag' does not exist, must not have been created before calling pushToRepos."));
   }
 
   [Test]

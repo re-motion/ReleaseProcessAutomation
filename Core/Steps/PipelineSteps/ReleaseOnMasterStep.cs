@@ -24,6 +24,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -81,14 +82,14 @@ public class ReleaseOnMasterStep
     {
       var currentBranch = GitClient.GetCurrentBranchName();
       var message = $"Cannot call ReleaseOnMasterStep when not on develop branch. Current branch: '{currentBranch}'.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var releaseBranchName = $"release/v{nextVersion}";
     if (GitClient.DoesBranchExist(releaseBranchName))
     {
       var message = $"The branch '{releaseBranchName}' already exists.";
-      throw new Exception(message);
+      throw new UserInteractionException(message);
     }
 
     _log.Debug("Getting next possible jira versions for develop from version '{NextVersion}'.", nextVersion);
