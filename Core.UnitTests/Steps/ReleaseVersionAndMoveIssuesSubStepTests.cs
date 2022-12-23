@@ -212,7 +212,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
         _jiraReleaserMock.Object);
 
     releaseVersionAndMoveIssuesSubStep.Execute(currentVersion, nextVersion, false, true);
-    Assert.That(_console.Output, Does.Contain($"Could not find any version with version number '{currentVersion}'."));
+    Assert.That(_console.Output, Does.Contain($"Version '{currentVersion}' does not exist in JIRA."));
 
     _jiraIssueServiceMock.Verify(_ => _.FindAllClosedIssues(It.IsAny<string>()), Times.Never);
     _jiraIssueServiceMock.Verify(
@@ -252,7 +252,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
         _jiraReleaserMock.Object);
 
     releaseVersionAndMoveIssuesSubStep.Execute(currentVersion, nextVersion, false, true);
-    Assert.That(_console.Output, Does.Contain($"Could not find any version with version number '{fullVersion}'."));
+    Assert.That(_console.Output, Does.Contain($"Version '{fullVersion}' does not exist in JIRA."));
 
     _jiraIssueServiceMock.Verify(_ => _.FindAllClosedIssues(It.IsAny<string>()), Times.Never);
     _jiraIssueServiceMock.Verify(

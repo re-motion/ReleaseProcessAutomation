@@ -42,7 +42,7 @@ public class JiraVersionCreator
   {
     var jiraProject = _config.Jira.JiraProjectKey;
     if (string.IsNullOrEmpty(jiraProject))
-      throw new InvalidOperationException("Jira project was not assigned.");
+      throw new InvalidOperationException("There is no JIRA project key specified in the config. Stopping execution.");
 
     var jiraProjectVersionRepairer = new JiraProjectVersionRepairer(_jiraProjectVersionService, _projectVersionFinder);
 
@@ -53,7 +53,7 @@ public class JiraVersionCreator
     if (jiraProjectVersion != null)
     {
       if (jiraProjectVersion.released)
-        throw new JiraException("The Version '" + versionNumber + "' got already released in Jira.");
+        throw new UserInteractionException("The Version '" + versionNumber + "' is already marked as released in JIRA.");
 
       if (string.IsNullOrEmpty(jiraProjectVersion.id))
         throw new InvalidOperationException("Jira project id was not assigned.");

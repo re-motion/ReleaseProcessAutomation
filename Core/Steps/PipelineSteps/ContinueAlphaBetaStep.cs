@@ -67,13 +67,13 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
     
     if (preReleaseBranchName == null)
     {
-      throw new InvalidOperationException("Could not find current branch.");
+      throw new InvalidOperationException("Could not identify the currently checked-out branch in the repository's working directory.");
     }
 
     if (!preReleaseBranchName.StartsWith("prerelease/"))
     {
-      const string message = "Cannot call ContinuePreReleaseFromDevelop when not on prerelease branch.";
-      throw new InvalidOperationException(message);
+      var currentBranch = GitClient.GetCurrentBranchName();
+      throw new UserInteractionException($"Cannot complete the release when not on a 'prerelease/*' branch. Current branch: '{currentBranch}'.");
     }
 
     var baseBranchName = ancestor switch
@@ -91,8 +91,8 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
     _log.Debug("Will try to create tag with name '{TagName}'.", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
-      var message = $"Could not create tag {tagName} because it already exists";
-      throw new InvalidOperationException(message);
+      var message = $"Could not create tag {tagName} because it already exists.";
+      throw new UserInteractionException(message);
     }
 
     CreateTagWithMessage(tagName);

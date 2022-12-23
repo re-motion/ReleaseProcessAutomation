@@ -66,7 +66,7 @@ public class BranchFromMasterStep
     _semanticVersionedGitRepository.TryGetCurrentVersion(out var currentVersion, "master");
     _log.Debug("The current found version is '{CurrentVersion}'.", currentVersion);
     
-    var nextVersion = FindNextPatch(currentVersion ?? throw new InvalidOperationException("No current version exists."));
+    var nextVersion = FindNextPatch(currentVersion ?? throw new UserInteractionException("No release tags in the form of 'v*.*.*' or 'v*.*.*-***.*' exist on branch 'master'."));
     _log.Debug("The next version to be released is '{NextVersion}'.", nextVersion);
     
     _releasePatchStep.Execute(nextVersion, commitHash, startReleasePhase, pauseForCommit, noPush, true);

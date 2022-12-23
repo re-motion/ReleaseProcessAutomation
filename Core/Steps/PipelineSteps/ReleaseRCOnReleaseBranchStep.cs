@@ -71,8 +71,8 @@ public class ReleaseRCOnReleaseBranchStep : ReleaseProcessStepBase, IReleaseRCOn
 
     if (!GitClient.IsOnBranch("release/"))
     {
-      const string message = "Cannot call ReleaseRCStep when not on a release branch";
-      throw new InvalidOperationException(message);
+      const string message = $"Cannot release a release candidate version when not on a 'release/*' branch.";
+      throw new UserInteractionException(message);
     }
 
     if (string.IsNullOrEmpty(ancestor))
@@ -83,7 +83,7 @@ public class ReleaseRCOnReleaseBranchStep : ReleaseProcessStepBase, IReleaseRCOn
     var currentBranchName = GitClient.GetCurrentBranchName();
     if (string.IsNullOrEmpty(currentBranchName))
     {
-      const string message = "Could not find current branch.";
+      const string message = "Could not identify the currently checked-out branch in the repository's working directory.";
       throw new InvalidOperationException(message);
     }
 
@@ -102,7 +102,7 @@ public class ReleaseRCOnReleaseBranchStep : ReleaseProcessStepBase, IReleaseRCOn
     else
     {
       var message = $"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was '{ancestor}'.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there): ", nextPossibleVersions);
@@ -112,8 +112,8 @@ public class ReleaseRCOnReleaseBranchStep : ReleaseProcessStepBase, IReleaseRCOn
     _log.Debug("Will try to create pre release branch with name '{PrereleaseBranchName}'.", preReleaseBranchName);
     if (GitClient.DoesBranchExist(preReleaseBranchName))
     {
-      var message = $"The branch {preReleaseBranchName} already exists while trying to create a branch with that name.";
-      throw new InvalidOperationException(message);
+      var message = $"Cannot create branch '{preReleaseBranchName}' because it already exists.";
+      throw new UserInteractionException(message);
     }
 
     _ = GitClient.CheckoutCommitWithNewBranch(commitHash, preReleaseBranchName);

@@ -36,8 +36,8 @@ public class GitBranchOperationTests : GitBackedTestBase
 
     Assert.That(
         () => gitBranchOperation.EnsureBranchUpToDate(""),
-        Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("There were no remotes specified in the config. Stopping execution"));
+        Throws.InstanceOf<UserInteractionException>()
+            .With.Message.EqualTo("There are no remote repositories specified in the config. Stopping execution."));
   }
 
   [Test]
@@ -92,8 +92,8 @@ public class GitBranchOperationTests : GitBackedTestBase
 
     Assert.That(
         () => gitBranchOperation.EnsureBranchUpToDate("branch"),
-        Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("Need to pull, local 'branch' branch is behind on repository 'origin'"));
+        Throws.InstanceOf<UserInteractionException>()
+            .With.Message.EqualTo("Need to pull, local 'branch' branch is behind on repository 'origin'."));
   }
 
   [Test]
@@ -113,7 +113,7 @@ public class GitBranchOperationTests : GitBackedTestBase
 
     Assert.That(
         () => gitBranchOperation.EnsureBranchUpToDate("branch"),
-        Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("'branch' diverged, need to rebase at repository 'origin'"));
+        Throws.InstanceOf<UserInteractionException>()
+            .With.Message.EqualTo("'branch' diverged, need to rebase at repository 'origin'."));
   }
 }

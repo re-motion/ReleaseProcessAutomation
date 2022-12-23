@@ -77,8 +77,8 @@ public class ContinueReleasePatchStep
 
     if (GitClient.DoesTagExist(tagName))
     {
-      var message = $"Cannot create tag {tagName} because it already exists.";
-      throw new InvalidOperationException(message);
+      var message = $"Cannot create tag '{tagName}' because it already exists.";
+      throw new UserInteractionException(message);
     }
 
     GitClient.Checkout(mergeTargetBranchName);

@@ -72,7 +72,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     var currentBranchName = GitClient.GetCurrentBranchName();
     if (currentBranchName == null)
     {
-      const string message = "Could not get the name of the current branch.";
+      const string message = "Could not identify the currently checked-out branch in the repository's working directory.";
       throw new InvalidOperationException(message);
     }
 
@@ -80,16 +80,15 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     {
       if (currentBranchName != "master")
       {
-        const string message = "Cannot release a patch for master when not on master branch.";
-        throw new InvalidOperationException(message);
+        var message = $"Cannot release a patch for master when not on the 'master' branch. Current branch: '{currentBranchName}'";
+        throw new UserInteractionException(message);
       }
     }
     else
     {
       if (!currentBranchName.StartsWith("hotfix/"))
       {
-        const string message = "Cannot release a patch for hotfix when not on hotfix branch";
-        throw new InvalidOperationException(message);
+        throw new UserInteractionException($"Cannot release a patch for hotfix when not on a 'hotfix/*' branch. Current branch: '{currentBranchName}'");
       }
     }
 
@@ -106,15 +105,15 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     if (GitClient.DoesBranchExist(releaseBranchName))
     {
       var message = $"Cannot create release branch '{releaseBranchName}' because it already exists.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var tagName = $"v{nextVersion}";
     _log.Debug("Will try to create tag with name '{TagName}'.", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
-      var message = $"Cannot create tag'{tagName}' because that tag already exists.";
-      throw new InvalidOperationException(message);
+      var message = $"Cannot create tag '{tagName}' because it already exists.";
+      throw new UserInteractionException(message);
     }
 
     GitClient.CheckoutCommitWithNewBranch(commitHash, releaseBranchName);

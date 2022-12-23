@@ -69,8 +69,8 @@ public class StartReleaseStep
   {
     if (commitHash != null && !_gitClient.IsCommitHash(commitHash))
     {
-      const string message = "The given commit hash was not found in the repository.";
-      throw new ArgumentException(message);
+      var message = $"The given commit hash '{commitHash}' was not found in the repository.";
+      throw new UserInteractionException(message);
     }
 
     if (_gitClient.IsOnBranch("release/"))
@@ -102,7 +102,7 @@ public class StartReleaseStep
       else
       {
         const string message = "You have to be on either a 'hotfix/*' or 'release/*' or 'develop' or 'master' branch to release a version.";
-        throw new InvalidOperationException(message);
+        throw new UserInteractionException(message);
       }
     }
   }

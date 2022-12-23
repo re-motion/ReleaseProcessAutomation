@@ -82,7 +82,7 @@ public class BranchFromHotfixStep
       var currentBranchName = _gitClient.GetCurrentBranchName();
       if (string.IsNullOrEmpty(currentBranchName))
       {
-        const string message = "Could not find the current branch while trying to get next hotfix version.";
+        const string message = "Could not identify the currently checked-out branch in the repository's working directory.";
         throw new InvalidOperationException(message);
       }
 

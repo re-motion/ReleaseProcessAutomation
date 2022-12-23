@@ -82,7 +82,7 @@ internal class ContinueReleaseOnMasterStepTests
     Assert.That(
         () => step.Execute(version, false),
         Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("Could not create tag and merge because there was no current branch found."));
+            .With.Message.EqualTo("Could not identify the currently checked-out branch in the repository's working directory."));
   }
 
   [Test]
@@ -115,7 +115,7 @@ internal class ContinueReleaseOnMasterStepTests
     Assert.That(
         () => step.Execute(version, false),
         Throws.InstanceOf<Exception>()
-            .With.Message.EqualTo("There is already a commit tagged with 'v1.0.0'."));
+            .With.Message.EqualTo("Cannot create tag 'v1.0.0' because it already exists."));
   }
 
   [Test]

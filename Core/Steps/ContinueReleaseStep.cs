@@ -56,7 +56,7 @@ public class ContinueReleaseStep
     var currentBranchName = _gitClient.GetCurrentBranchName();
     if (string.IsNullOrEmpty(currentBranchName))
     {
-      const string message = "Could not continue the release because there was no current branch found.";
+      const string message = "Could not identify the currently checked-out branch in the repository's working directory.";
       throw new InvalidOperationException(message);
     }
 
@@ -77,7 +77,7 @@ public class ContinueReleaseStep
     }
     else
     {
-      throw new InvalidOperationException("You have to be on a prerelease/* or release/* branch to continue a release.");
+      throw new UserInteractionException("You have to be on a 'prerelease/*' or 'release/*' branch to continue a release.");
     }
   }
 }

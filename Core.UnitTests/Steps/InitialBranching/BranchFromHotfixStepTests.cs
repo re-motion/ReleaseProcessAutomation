@@ -60,7 +60,7 @@ internal class BranchFromHotfixStepTests
     Assert.That(
         () => hotfixBranch.Execute("", true, false, false),
         Throws.InstanceOf<InvalidOperationException>()
-            .With.Message.EqualTo("Could not find the current branch while trying to get next hotfix version."));
+            .With.Message.EqualTo("Could not identify the currently checked-out branch in the repository's working directory."));
   }
 
   [Test]

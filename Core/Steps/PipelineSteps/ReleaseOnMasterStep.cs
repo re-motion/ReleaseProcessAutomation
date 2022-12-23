@@ -69,25 +69,24 @@ public class ReleaseOnMasterStep
   {
     EnsureWorkingDirectoryClean();
 
-    if (string.IsNullOrEmpty(GitClient.GetCurrentBranchName()))
+    var currentBranch = GitClient.GetCurrentBranchName();
+    if (string.IsNullOrEmpty(currentBranch))
     {
-      var message = $"Could not find a branch in '{Environment.CurrentDirectory}'.";
-      _log.Warning(message);
-      Console.WriteLine(message);
+      var message = "Could not identify the currently checked-out branch in the repository's working directory.";
+      throw new InvalidOperationException(message);
     }
 
     if (!GitClient.IsOnBranch("develop"))
     {
-      var currentBranch = GitClient.GetCurrentBranchName();
-      var message = $"Cannot call ReleaseOnMasterStep when not on develop branch. Current branch: '{currentBranch}'.";
-      throw new InvalidOperationException(message);
+      var message = $"Cannot release a release candidate when not on the 'develop' branch. Current branch: '{currentBranch}'.";
+      throw new UserInteractionException(message);
     }
 
     var releaseBranchName = $"release/v{nextVersion}";
     if (GitClient.DoesBranchExist(releaseBranchName))
     {
       var message = $"The branch '{releaseBranchName}' already exists.";
-      throw new Exception(message);
+      throw new UserInteractionException(message);
     }
 
     _log.Debug("Getting next possible jira versions for develop from version '{NextVersion}'.", nextVersion);

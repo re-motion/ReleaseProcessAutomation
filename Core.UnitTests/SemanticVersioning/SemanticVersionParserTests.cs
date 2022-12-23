@@ -33,7 +33,7 @@ internal class SemanticVersionParserTests
 
     Assert.That(
         () => parser.ParseVersion(invalidFormat),
-        Throws.InstanceOf<ArgumentException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("Version has an invalid format. Expected equivalent to '1.2.3' or '1.2.3-alpha.4'."));
   }
 
@@ -76,7 +76,7 @@ internal class SemanticVersionParserTests
 
     Assert.That(
         () => parser.ParseVersionFromBranchName(invalidFormat),
-        Throws.InstanceOf<InvalidOperationException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo(
                 "Could not parse version from branch name 'help' because it is not in a valid format. Expected equivalent to 'release/v1.2.3'."));
   }

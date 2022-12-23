@@ -25,8 +25,8 @@ public class GitBranchOperations : IGitBranchOperations
 
     if (remoteNames.Length == 0)
     {
-      const string message = "There were no remotes specified in the config. Stopping execution";
-      throw new InvalidOperationException(message);
+      const string message = "There are no remote repositories specified in the config. Stopping execution.";
+      throw new UserInteractionException(message);
     }
 
     _log.Debug("Ensuring branch '{BranchName}' is up to date", branchName);
@@ -54,8 +54,8 @@ public class GitBranchOperations : IGitBranchOperations
       else if (local.Equals(basis))
       {
         _gitClient.Checkout(beforeBranchName!);
-        var message = $"Need to pull, local '{branchName}' branch is behind on repository '{remoteName}'";
-        throw new InvalidOperationException(message);
+        var message = $"Need to pull, local '{branchName}' branch is behind on repository '{remoteName}'.";
+        throw new UserInteractionException(message);
       }
       else if (remote.Equals(basis))
       {
@@ -65,8 +65,8 @@ public class GitBranchOperations : IGitBranchOperations
       }
       else
       {
-        var message = $"'{branchName}' diverged, need to rebase at repository '{remoteName}'";
-        throw new InvalidOperationException(message);
+        var message = $"'{branchName}' diverged, need to rebase at repository '{remoteName}'.";
+        throw new UserInteractionException(message);
       }
     }
     _gitClient.Checkout(beforeBranchName!);
