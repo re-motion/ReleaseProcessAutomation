@@ -15,6 +15,7 @@
 // under the License.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,24 +30,40 @@ public class InputReader
   private const string c_moreChoicesText = "[grey](Move up and down to choose version)[/]";
 
   private readonly IAnsiConsole _console;
+  private readonly Style _textPromptStyle;
+  private readonly Style _selectionPromptHighlightStyle;
+  //standard console colors, #10 & #9 respectively
+  private readonly string _yesColor = "lime";
+  private readonly string _noColor = "red";
 
   public InputReader (IAnsiConsole console)
   {
     _console = console;
+    var style = new Style(foreground: ConsoleColor.Green);
+    _textPromptStyle = style;
+    _selectionPromptHighlightStyle = style;
   }
 
   public string ReadHiddenString (string prompt)
   {
     return _console.Prompt(
         new TextPrompt<string>(prompt)
-            .PromptStyle("orangered1")
             .Secret()
     );
   }
 
   public bool ReadConfirmation (bool defaultValue = true)
   {
-    return _console.Confirm("Confirm?", defaultValue);
+    var input = _console.Prompt(
+        new TextPrompt<string>($"Confirm? [[[{_yesColor}]y[/]/[{_noColor}]n[/]]] ({(defaultValue ? $"[{_yesColor}]y[/]" : $"[{_noColor}]n[/]")}):" )
+            .Validate(input => input is "y" or "Y" or "n" or "N" or "" ? ValidationResult.Success() : ValidationResult.Error($"The input '{input}' is not a valid option."))
+            .AllowEmpty());
+    return input switch
+      {
+        "y" or "Y" => true,
+        "n" or "N" => false,
+        _ => defaultValue
+      };
   }
 
   public string ReadString (string prompt)
@@ -59,6 +76,7 @@ public class InputReader
     var parser = new SemanticVersionParser();
     var input = _console.Prompt(
         new TextPrompt<string>(prompt)
+            .PromptStyle(_textPromptStyle)
             .ValidationErrorMessage("That's not a valid version.")
             .Validate(version => parser.TryParseVersion(version, out _) ? ValidationResult.Success() : ValidationResult.Error()));
     return parser.ParseVersion(input);
@@ -69,6 +87,7 @@ public class InputReader
     if (_console.Profile.Capabilities.Interactive)
       return _console.Prompt(
           new SelectionPrompt<SemanticVersion>()
+              .HighlightStyle(_selectionPromptHighlightStyle)
               .Title(prompt)
               .MoreChoicesText(c_moreChoicesText)
               .AddChoices(possibleVersions)
@@ -97,6 +116,7 @@ public class InputReader
     if (_console.Profile.Capabilities.Interactive)
       return _console.Prompt(
           new SelectionPrompt<string>()
+              .HighlightStyle(_selectionPromptHighlightStyle)
               .Title(prompt)
               .MoreChoicesText(c_moreChoicesText)
               .AddChoices(possibleAnswers)
@@ -123,6 +143,7 @@ public class InputReader
     promptBuilder.Append("Your version: ");
 
     return new TextPrompt<string>(promptBuilder.ToString())
+        .PromptStyle(_textPromptStyle)
         .ShowChoices(false)
         .AddChoices(versions)
         .AddChoices(versions.Select((_, i) => (i + 1).ToString()).ToArray())
