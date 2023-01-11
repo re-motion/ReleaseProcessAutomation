@@ -3,13 +3,13 @@ using System.IO;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.IntegrationTests.Jira;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.IntegrationTests.Jira;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
 
-namespace ReleaseProcessAutomation.IntegrationTests;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests;
 
 [Explicit]
 [TestFixture]

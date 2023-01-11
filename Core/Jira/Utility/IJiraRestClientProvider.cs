@@ -1,6 +1,6 @@
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
-namespace ReleaseProcessAutomation.Jira.Utility;
+namespace Remotion.ReleaseProcessAutomation.Jira.Utility;
 
 public interface IJiraRestClientProvider
 {

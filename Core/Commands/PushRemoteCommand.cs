@@ -15,17 +15,16 @@
 // under the License.
 //
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Git;
 using Serilog;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using NotNull = System.Diagnostics.CodeAnalysis.NotNullAttribute;
 
-namespace ReleaseProcessAutomation.Commands;
+namespace Remotion.ReleaseProcessAutomation.Commands;
 
 [UsedImplicitly]
 [SuppressMessage("ReSharper", "RedundantNullableFlowAttribute")]

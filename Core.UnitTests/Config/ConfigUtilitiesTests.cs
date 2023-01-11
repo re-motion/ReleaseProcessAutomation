@@ -15,15 +15,14 @@
 // under the License.
 //
 
-using System;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.MSBuild;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.MSBuild;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.UnitTests.Config;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Config;
 
 [TestFixture]
 internal class ConfigUtilitiesTests

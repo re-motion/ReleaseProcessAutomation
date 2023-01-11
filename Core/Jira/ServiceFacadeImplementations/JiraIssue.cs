@@ -15,12 +15,11 @@
 // under the License.
 //
 
-using System;
-using System.Collections.Generic;
-
 #nullable disable
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using System.Collections.Generic;
+
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public class JiraIssue
 {

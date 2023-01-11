@@ -19,7 +19,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Spectre.Console.Cli;
 
-namespace ReleaseProcessAutomation;
+namespace Remotion.ReleaseProcessAutomation;
 
 [ExcludeFromCodeCoverage]
 public class TypeResolver : ITypeResolver

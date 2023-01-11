@@ -16,16 +16,15 @@
 //
 
 using System;
-using System.Linq;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Extensions;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Extensions;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Steps;
+namespace Remotion.ReleaseProcessAutomation.Steps;
 
 /// <summary>
 ///   Abstract class to hold some much used methods for the other steps.

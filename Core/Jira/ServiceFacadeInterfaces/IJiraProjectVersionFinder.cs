@@ -15,12 +15,10 @@
 // under the License.
 //
 
-using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
 
 public interface IJiraProjectVersionFinder
 {

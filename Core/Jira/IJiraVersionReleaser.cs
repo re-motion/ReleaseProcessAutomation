@@ -1,4 +1,4 @@
-namespace ReleaseProcessAutomation.Jira;
+namespace Remotion.ReleaseProcessAutomation.Jira;
 
 public interface IJiraVersionReleaser
 {

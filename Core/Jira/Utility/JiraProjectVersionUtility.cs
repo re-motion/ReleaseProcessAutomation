@@ -17,10 +17,10 @@
 
 using System;
 using System.Collections.Generic;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.Jira.Utility;
+namespace Remotion.ReleaseProcessAutomation.Jira.Utility;
 
 public class JiraProjectVersionUtility
 {

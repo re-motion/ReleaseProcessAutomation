@@ -17,18 +17,17 @@
 
 using System;
 using System.Collections.Generic;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Extensions;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.Jira;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.Scripting;
-using ReleaseProcessAutomation.SemanticVersioning;
-using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Extensions;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.Scripting;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Steps.SubSteps;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Steps.PipelineSteps;
+namespace Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 
 /// <summary>
 ///   Should only be called by startReleaseStep and when on release branch.

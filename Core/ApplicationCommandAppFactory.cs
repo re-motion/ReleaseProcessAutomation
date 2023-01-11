@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
-using ReleaseProcessAutomation.Commands;
+using Remotion.ReleaseProcessAutomation.Commands;
 using Spectre.Console.Cli;
 
-namespace ReleaseProcessAutomation;
+namespace Remotion.ReleaseProcessAutomation;
 
 public class ApplicationCommandAppFactory
 {

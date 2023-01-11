@@ -1,4 +1,4 @@
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public interface IJiraProjectVersionRepairer
 {

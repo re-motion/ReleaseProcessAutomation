@@ -19,15 +19,15 @@ using System;
 using System.IO;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.Steps;
+using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.Steps;
 using Spectre.Console;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.IntegrationTests.Steps;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Steps;
 
 [TestFixture]
 internal class ReleaseProcessStepTests : GitBackedTestBase

@@ -15,10 +15,9 @@
 // under the License.
 //
 
-using System;
 using NUnit.Framework;
 
-namespace ReleaseProcessAutomation.IntegrationTests;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests;
 
 [TestFixture]
 internal class ReleaseFromHotfixTests : IntegrationTestBase

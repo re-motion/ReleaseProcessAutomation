@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReleaseProcessAutomation.ReadInput;
+namespace Remotion.ReleaseProcessAutomation.ReadInput;
 
 public class UserDoesNotWantToContinueException : Exception
 {

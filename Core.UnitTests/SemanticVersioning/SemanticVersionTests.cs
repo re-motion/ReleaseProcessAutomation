@@ -15,12 +15,11 @@
 // under the License.
 //
 
-using System;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Extensions;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Extensions;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.UnitTests.SemanticVersioning;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.SemanticVersioning;
 
 [TestFixture]
 public class SemanticVersionTests

@@ -19,9 +19,9 @@ using System;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Configuration;
 
-namespace ReleaseProcessAutomation.UnitTests.Config;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Config;
 
 [TestFixture]
 internal class ConfigReaderTests

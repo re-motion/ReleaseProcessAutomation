@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.Jira.Utility;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.UnitTests.Jira;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Jira;
 
 [TestFixture]
 public class JiraVersionMovePositionerTest

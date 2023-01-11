@@ -15,14 +15,13 @@
 // under the License.
 //
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.ReadInput;
+namespace Remotion.ReleaseProcessAutomation.ReadInput;
 
 public class InputReader
     : IInputReader

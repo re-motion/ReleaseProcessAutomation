@@ -15,14 +15,13 @@
 // under the License.
 //
 
-using System;
-using ReleaseProcessAutomation.Extensions;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Extensions;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 
-namespace ReleaseProcessAutomation.Steps.PipelineSteps;
+namespace Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 
 /// <summary>
 ///   Should only be called by StartReleaseStep.

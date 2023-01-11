@@ -1,4 +1,4 @@
-namespace ReleaseProcessAutomation.Jira.CredentialManagement;
+namespace Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
 
 public interface IJiraCredentialAPI
 {

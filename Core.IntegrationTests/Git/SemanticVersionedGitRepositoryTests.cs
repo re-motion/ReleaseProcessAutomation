@@ -15,15 +15,14 @@
 // under the License.
 //
 
-using System;
 using System.Linq;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.IntegrationTests.Git;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Git;
 
 [TestFixture]
 internal class SemanticVersionedGitRepositoryTests : GitBackedTestBase

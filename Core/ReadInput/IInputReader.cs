@@ -15,11 +15,10 @@
 // under the License.
 //
 
-using System;
 using System.Collections.Generic;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.ReadInput;
+namespace Remotion.ReleaseProcessAutomation.ReadInput;
 
 public interface IInputReader
 {

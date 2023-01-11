@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ReleaseProcessAutomation.Extensions;
-using ReleaseProcessAutomation.Jira;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Extensions;
+using Remotion.ReleaseProcessAutomation.Jira;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Steps.SubSteps;
+namespace Remotion.ReleaseProcessAutomation.Steps.SubSteps;
 
 public interface IReleaseVersionAndMoveIssuesSubStep
 {

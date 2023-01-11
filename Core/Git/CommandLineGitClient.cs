@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Serilog;
 
-namespace ReleaseProcessAutomation.Git;
+namespace Remotion.ReleaseProcessAutomation.Git;
 
 public class CommandLineGitClient : IGitClient
 {

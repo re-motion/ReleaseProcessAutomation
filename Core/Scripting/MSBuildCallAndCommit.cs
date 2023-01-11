@@ -17,15 +17,15 @@
 
 using System;
 using System.IO;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Extensions;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.MSBuild;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Extensions;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.MSBuild;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Scripting;
+namespace Remotion.ReleaseProcessAutomation.Scripting;
 
 public interface IMSBuildCallAndCommit
 {

@@ -20,7 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console.Cli;
 
-namespace ReleaseProcessAutomation;
+namespace Remotion.ReleaseProcessAutomation;
 
 [ExcludeFromCodeCoverage]
 public class TypeRegistrar : ITypeRegistrar

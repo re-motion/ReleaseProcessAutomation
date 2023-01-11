@@ -2,17 +2,17 @@
 using System.Linq;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.IntegrationTests.Jira;
-using ReleaseProcessAutomation.Jira;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.Jira.Utility;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
-using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.IntegrationTests.Jira;
+using Remotion.ReleaseProcessAutomation.Jira;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Steps.SubSteps;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.IntegrationTests.Steps;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Steps;
 
 [Explicit]
 [TestFixture]

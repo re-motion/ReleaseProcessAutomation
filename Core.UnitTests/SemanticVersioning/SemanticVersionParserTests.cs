@@ -17,9 +17,9 @@
 
 using System;
 using NUnit.Framework;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.UnitTests.SemanticVersioning;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.SemanticVersioning;
 
 [TestFixture]
 internal class SemanticVersionParserTests

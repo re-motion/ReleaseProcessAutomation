@@ -1,8 +1,7 @@
-using System.Runtime.InteropServices.ComTypes;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Git;
 
-namespace ReleaseProcessAutomation.Steps.PipelineSteps;
+namespace Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 
 public interface IPushNewReleaseBranchStep
 {

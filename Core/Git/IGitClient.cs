@@ -15,10 +15,9 @@
 // under the License.
 //
 
-using System;
 using System.Collections.Generic;
 
-namespace ReleaseProcessAutomation.Git;
+namespace Remotion.ReleaseProcessAutomation.Git;
 
 public interface IGitClient
 {

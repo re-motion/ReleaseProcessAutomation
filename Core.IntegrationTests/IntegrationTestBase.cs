@@ -15,19 +15,17 @@
 // under the License.
 //
 
-using System;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Jira;
-using ReleaseProcessAutomation.Jira.Utility;
-using ReleaseProcessAutomation.SemanticVersioning;
-using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Steps.SubSteps;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.IntegrationTests;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests;
 
 public abstract class IntegrationTestBase : GitBackedTestBase
 {

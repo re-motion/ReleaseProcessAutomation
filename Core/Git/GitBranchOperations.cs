@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
-using ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
 using Serilog;
 
-namespace ReleaseProcessAutomation.Git;
+namespace Remotion.ReleaseProcessAutomation.Git;
 
 public class GitBranchOperations : IGitBranchOperations
 {

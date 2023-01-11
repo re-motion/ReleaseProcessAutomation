@@ -18,7 +18,7 @@
 using System;
 using System.Net;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public class JiraException : Exception
 {

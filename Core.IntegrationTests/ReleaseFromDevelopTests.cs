@@ -20,7 +20,7 @@ using System.IO;
 using NUnit.Framework;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.IntegrationTests;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests;
 
 [TestFixture]
 internal class ReleaseFromDevelopTests : IntegrationTestBase

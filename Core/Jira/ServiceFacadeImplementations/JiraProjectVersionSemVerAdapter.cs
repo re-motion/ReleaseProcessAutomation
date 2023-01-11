@@ -15,10 +15,9 @@
 // under the License.
 //
 
-using System;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 #nullable disable
 public class JiraProjectVersionSemVerAdapter
 {

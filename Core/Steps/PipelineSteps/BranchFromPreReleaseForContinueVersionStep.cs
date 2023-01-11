@@ -15,14 +15,13 @@
 // under the License.
 //
 
-using System;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Steps.PipelineSteps;
+namespace Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 
 /// <summary>
 ///   Should only be called when on the prerelease branch when StartReleaseStep was ended early with the option

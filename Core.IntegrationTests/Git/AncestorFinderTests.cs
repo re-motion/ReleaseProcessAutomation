@@ -18,12 +18,12 @@
 using System;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
 using Spectre.Console;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.IntegrationTests.Git;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Git;
 
 [TestFixture]
 internal class AncestorFinderTests

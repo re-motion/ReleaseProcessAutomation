@@ -15,16 +15,14 @@
 // under the License.
 //
 
-using System;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Extensions;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.Scripting;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.Scripting;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Steps;
+namespace Remotion.ReleaseProcessAutomation.Steps;
 
 public class ContinueReleaseStepWithOptionalSupportBranchStepBase
     : ReleaseProcessStepBase

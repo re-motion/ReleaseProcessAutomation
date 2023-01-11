@@ -15,13 +15,12 @@
 // under the License.
 //
 
-using System;
 using System.Linq;
-using ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.ReadInput;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Git;
+namespace Remotion.ReleaseProcessAutomation.Git;
 
 public interface IAncestorFinder
 {

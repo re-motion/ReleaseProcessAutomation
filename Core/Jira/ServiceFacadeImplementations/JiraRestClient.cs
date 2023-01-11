@@ -15,15 +15,12 @@
 // under the License.
 //
 
-using System;
 using System.Net;
-using System.Reflection.Metadata;
-using System.Threading;
-using ReleaseProcessAutomation.Jira.CredentialManagement;
+using Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public class JiraRestClient
 {

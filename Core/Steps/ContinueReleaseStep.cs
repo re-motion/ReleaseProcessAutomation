@@ -16,12 +16,12 @@
 //
 
 using System;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.SemanticVersioning;
-using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 using Serilog;
 
-namespace ReleaseProcessAutomation.Steps;
+namespace Remotion.ReleaseProcessAutomation.Steps;
 
 /// <summary>
 ///   Should be called when StartReleaseStep was ended early with the option pauseForCommit.

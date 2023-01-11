@@ -16,13 +16,13 @@
 //
 
 using System;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Jira.Authentication;
-using ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Jira.Authentication;
+using Remotion.ReleaseProcessAutomation.ReadInput;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Jira.CredentialManagement;
+namespace Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
 
 public class JiraCredentialManager
     : IJiraCredentialManager

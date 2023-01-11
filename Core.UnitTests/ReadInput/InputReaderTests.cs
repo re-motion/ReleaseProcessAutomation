@@ -18,12 +18,12 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Extensions;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Extensions;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.UnitTests.ReadInput;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.ReadInput;
 
 [TestFixture]
 internal class InputReaderTests

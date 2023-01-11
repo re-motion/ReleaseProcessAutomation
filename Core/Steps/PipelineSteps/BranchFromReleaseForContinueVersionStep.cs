@@ -16,14 +16,14 @@
 //
 
 using System;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Steps.PipelineSteps;
+namespace Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 
 /// <summary>
 ///   Should only be called by ContinueReleaseStep when on the release branch.

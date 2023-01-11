@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using Serilog;
 
-namespace ReleaseProcessAutomation.SemanticVersioning;
+namespace Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
 public class SemanticVersionParser
 {

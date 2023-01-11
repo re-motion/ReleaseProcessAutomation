@@ -1,4 +1,4 @@
-namespace ReleaseProcessAutomation.Git;
+namespace Remotion.ReleaseProcessAutomation.Git;
 
 public interface IGitBranchOperations
 {

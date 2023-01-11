@@ -15,9 +15,7 @@
 // under the License.
 //
 
-using System;
-
-namespace ReleaseProcessAutomation.SemanticVersioning;
+namespace Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
 public enum PreReleaseStage
 {
