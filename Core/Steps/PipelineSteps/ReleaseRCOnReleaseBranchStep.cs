@@ -34,21 +34,21 @@ namespace Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 ///   Calls msBuild and Jira stuff.
 ///   Always continues with continueAlphaBetaStep.
 /// </summary>
-public interface IReleaseRCStep
+public interface IReleaseRCOnReleaseBranchStep
 {
   void Execute (SemanticVersion nextVersion, string? commitHash, bool pauseForCommit, bool noPush, string ancestor);
 }
 
-/// <inheritdoc cref="IReleaseRCStep" />
-public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
+/// <inheritdoc cref="IReleaseRCOnReleaseBranchStep" />
+public class ReleaseRCOnReleaseBranchStep : ReleaseProcessStepBase, IReleaseRCOnReleaseBranchStep
 {
   private readonly IAncestorFinder _ancestorFinder;
   private readonly IContinueAlphaBetaStep _continueAlphaBetaStep;
   private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
-  private readonly ILogger _log = Log.ForContext<ReleaseRCStep>();
+  private readonly ILogger _log = Log.ForContext<ReleaseRCOnReleaseBranchStep>();
 
-  public ReleaseRCStep (
+  public ReleaseRCOnReleaseBranchStep (
       IGitClient gitClient,
       Config config,
       IInputReader inputReader,

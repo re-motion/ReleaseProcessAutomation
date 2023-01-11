@@ -39,16 +39,16 @@ public class BranchFromReleaseStep
 {
   private readonly IGitClient _gitClient;
   private readonly IInputReader _inputReader;
-  private readonly IReleaseRCStep _releaseRCStep;
-  private readonly IReleaseWithRCStep _releaseWithRCStep;
+  private readonly IReleaseRCOnReleaseBranchStep _releaseRCOnReleaseBranchStep;
+  private readonly IReleaseFullVersionFromReleaseBranchStep _releaseFullVersionFromReleaseBranchStep;
   private readonly ILogger _log = Log.ForContext<BranchFromReleaseStep>();
 
-  public BranchFromReleaseStep (IGitClient gitClient, IInputReader inputReader, IReleaseRCStep releaseRCStep, IReleaseWithRCStep releaseWithRCStep)
+  public BranchFromReleaseStep (IGitClient gitClient, IInputReader inputReader, IReleaseRCOnReleaseBranchStep releaseRCOnReleaseBranchStep, IReleaseFullVersionFromReleaseBranchStep releaseFullVersionFromReleaseBranchStep)
   {
     _gitClient = gitClient;
     _inputReader = inputReader;
-    _releaseRCStep = releaseRCStep;
-    _releaseWithRCStep = releaseWithRCStep;
+    _releaseRCOnReleaseBranchStep = releaseRCOnReleaseBranchStep;
+    _releaseFullVersionFromReleaseBranchStep = releaseFullVersionFromReleaseBranchStep;
   }
 
   public void Execute (string? commitHash, bool pauseForCommit, bool noPush)
@@ -62,12 +62,12 @@ public class BranchFromReleaseStep
     if (choice.Equals(rcVersion))
     {
       _log.Debug("The choice was the rc version '{RCVersion}', calling release rc.", rcVersion);
-      _releaseRCStep.Execute(rcVersion, commitHash, pauseForCommit, noPush, "");
+      _releaseRCOnReleaseBranchStep.Execute(rcVersion, commitHash, pauseForCommit, noPush, "");
     }
     else
     {
       _log.Debug("The choice was the release-to-master version '{CurrentVersion}', calling release with rc.", currentVersion);
-      _releaseWithRCStep.Execute(pauseForCommit, noPush, "");
+      _releaseFullVersionFromReleaseBranchStep.Execute(pauseForCommit, noPush, "");
     }
   }
 

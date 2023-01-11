@@ -77,7 +77,7 @@ internal class ReleaseRCStepTests
 
     _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, false)).Verifiable();
 
-    var rcStep = new ReleaseRCStep(
+    var rcStep = new ReleaseRCOnReleaseBranchStep(
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -109,7 +109,7 @@ internal class ReleaseRCStepTests
 
     _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, false)).Verifiable();
 
-    var rcStep = new ReleaseRCStep(
+    var rcStep = new ReleaseRCOnReleaseBranchStep(
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -141,7 +141,7 @@ internal class ReleaseRCStepTests
 
     _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, false)).Verifiable();
 
-    var rcStep = new ReleaseRCStep(
+    var rcStep = new ReleaseRCOnReleaseBranchStep(
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -171,7 +171,7 @@ internal class ReleaseRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var rcStep = new ReleaseRCStep(
+    var rcStep = new ReleaseRCOnReleaseBranchStep(
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -203,7 +203,7 @@ internal class ReleaseRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var rcStep = new ReleaseRCStep(
+    var rcStep = new ReleaseRCOnReleaseBranchStep(
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -233,7 +233,7 @@ internal class ReleaseRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var rcStep = new ReleaseRCStep(
+    var rcStep = new ReleaseRCOnReleaseBranchStep(
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,

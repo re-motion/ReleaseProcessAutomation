@@ -75,7 +75,7 @@ internal class ReleaseWithRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
 
-    var withRcStep = new ReleaseWithRCStep (
+    var releaseStep = new ReleaseFullVersionFromReleaseBranchStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -87,7 +87,7 @@ internal class ReleaseWithRCStepTests
         _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
-        () => withRcStep.Execute(false, false, "hotfix/v1.3.5"),
+        () => releaseStep.Execute(false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
     _inputReaderMock.Verify();
   }
@@ -104,7 +104,7 @@ internal class ReleaseWithRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
 
-    var withRcStep = new ReleaseWithRCStep (
+    var releaseStep = new ReleaseFullVersionFromReleaseBranchStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -116,7 +116,7 @@ internal class ReleaseWithRCStepTests
         _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
-        () => withRcStep.Execute(false, false, "develop"),
+        () => releaseStep.Execute(false, false, "develop"),
         Throws.Nothing);
     _inputReaderMock.Verify();
   }
@@ -133,7 +133,7 @@ internal class ReleaseWithRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var withRcStep = new ReleaseWithRCStep (
+    var releaseStep = new ReleaseFullVersionFromReleaseBranchStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -145,7 +145,7 @@ internal class ReleaseWithRCStepTests
         _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
-        () => withRcStep.Execute(false, false, "develop"),
+        () => releaseStep.Execute(false, false, "develop"),
         Throws.Nothing);
     _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion));
@@ -163,7 +163,7 @@ internal class ReleaseWithRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var withRcStep = new ReleaseWithRCStep (
+    var releaseStep = new ReleaseFullVersionFromReleaseBranchStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -175,7 +175,7 @@ internal class ReleaseWithRCStepTests
         _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
-        () => withRcStep.Execute(false, false, "hotfix/v1.3.5"),
+        () => releaseStep.Execute(false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
 
     _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
@@ -194,7 +194,7 @@ internal class ReleaseWithRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var withRcStep = new ReleaseWithRCStep (
+    var releaseStep = new ReleaseFullVersionFromReleaseBranchStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -206,7 +206,7 @@ internal class ReleaseWithRCStepTests
         _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
-        () => withRcStep.Execute(false, false, "develop"),
+        () => releaseStep.Execute(false, false, "develop"),
         Throws.Nothing);
 
     _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
@@ -225,7 +225,7 @@ internal class ReleaseWithRCStepTests
     var nextPossibleVersions = new SemanticVersion().GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
-    var withRcStep = new ReleaseWithRCStep (
+    var releaseStep = new ReleaseFullVersionFromReleaseBranchStep (
         _gitClientStub.Object,
         _config,
         _inputReaderMock.Object,
@@ -237,7 +237,7 @@ internal class ReleaseWithRCStepTests
         _releaseVersionAndMoveIssuesMock.Object);
 
     Assert.That(
-        () => withRcStep.Execute(true, false, "develop"),
+        () => releaseStep.Execute(true, false, "develop"),
         Throws.Nothing);
 
     _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));

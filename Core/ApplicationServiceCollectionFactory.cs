@@ -61,8 +61,8 @@ public class ApplicationServiceCollectionFactory
         .AddTransient<IReleasePatchStep, ReleasePatchStep>()
         .AddTransient<IReleaseOnMasterStep, ReleaseOnMasterStep>()
         .AddTransient<IReleaseAlphaBetaStep, ReleaseAlphaBetaStep>()
-        .AddTransient<IReleaseRCStep, ReleaseRCStep>()
-        .AddTransient<IReleaseWithRCStep, ReleaseWithRCStep>()
+        .AddTransient<IReleaseRCOnReleaseBranchStep, ReleaseRCOnReleaseBranchStep>()
+        .AddTransient<IReleaseFullVersionFromReleaseBranchStep, ReleaseFullVersionFromReleaseBranchStep>()
 
         //Continuation of actual release behaviour
         .AddTransient<IContinueReleaseOnMasterStep, ContinueReleaseOnMasterStep>()
