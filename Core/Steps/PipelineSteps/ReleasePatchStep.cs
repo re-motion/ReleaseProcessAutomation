@@ -24,6 +24,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -74,7 +75,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     if (currentBranchName == null)
     {
       const string message = "Could not get the name of the current branch.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     if (onMaster)
@@ -82,7 +83,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
       if (currentBranchName != "master")
       {
         const string message = "Cannot release a patch for master when not on master branch.";
-        throw new InvalidOperationException(message);
+        throw new UserInteractionException(message);
       }
     }
     else
@@ -90,7 +91,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
       if (!currentBranchName.StartsWith("hotfix/"))
       {
         const string message = "Cannot release a patch for hotfix when not on hotfix branch";
-        throw new InvalidOperationException(message);
+        throw new UserInteractionException(message);
       }
     }
 
@@ -107,7 +108,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     if (GitClient.DoesBranchExist(releaseBranchName))
     {
       var message = $"Cannot create release branch '{releaseBranchName}' because it already exists.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var tagName = $"v{nextVersion}";
@@ -115,7 +116,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
     if (GitClient.DoesTagExist(tagName))
     {
       var message = $"Cannot create tag'{tagName}' because that tag already exists.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     GitClient.CheckoutCommitWithNewBranch(commitHash, releaseBranchName);

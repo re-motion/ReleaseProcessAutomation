@@ -19,6 +19,7 @@ using System;
 using ReleaseProcessAutomation.Git;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 
 namespace ReleaseProcessAutomation.Steps;
@@ -57,7 +58,7 @@ public class ContinueReleaseStep
     if (string.IsNullOrEmpty(currentBranchName))
     {
       const string message = "Could not continue the release because there was no current branch found.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     //should already be on the releaseBranch, therefore this version is the next version
@@ -77,7 +78,7 @@ public class ContinueReleaseStep
     }
     else
     {
-      throw new InvalidOperationException("You have to be on a prerelease/* or release/* branch to continue a release.");
+      throw new UserInteractionException("You have to be on a prerelease/* or release/* branch to continue a release.");
     }
   }
 }

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 
 namespace ReleaseProcessAutomation.Extensions;
@@ -47,6 +48,6 @@ public static class ConfigExtensions
       return config.DevelopmentForNextReleaseMSBuildSteps;
 
     const string message = "Invalid parameter in InvokeMSBuildAndCommit. No MSBuild steps were completed. Please check if MSBuildMode parameter is equivalent with the value in the config.";
-    throw new ArgumentException(message);
+    throw new UserInteractionException(message);
   }
 }

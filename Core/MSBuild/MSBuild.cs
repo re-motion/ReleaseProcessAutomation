@@ -17,6 +17,7 @@
 
 using System;
 using System.Diagnostics;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -61,7 +62,7 @@ internal class MSBuild
     if (msBuildProcess.ExitCode != 0)
     {
       var message = $"MSBuild '{arguments}' failed with Error: '{msBuildOutput}'.";
-      throw new Exception(message);
+      throw new UserInteractionException(message);
     }
 
     _console.WriteLine(msBuildOutput);

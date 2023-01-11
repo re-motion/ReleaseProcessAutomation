@@ -26,6 +26,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation;
 using Spectre.Console;
 
 namespace ReleaseProcessAutomation.UnitTests.Steps.Continues;
@@ -81,7 +82,7 @@ internal class ContinueReleaseOnMasterStepTests
 
     Assert.That(
         () => step.Execute(version, false),
-        Throws.InstanceOf<InvalidOperationException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("Could not create tag and merge because there was no current branch found."));
   }
 

@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using NUnit.Framework;
 using ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation;
 
 namespace ReleaseProcessAutomation.UnitTests.Config;
 
@@ -37,7 +38,7 @@ internal class ConfigReaderTests
     Assert.That(
         () => reader.GetConfigPathFromBuildProject(
             guid.ToString()),
-        Throws.InstanceOf<FileNotFoundException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo(
                 $"Could not get config path from '.BuildProject' because the file '{guid}\\.BuildProject' does not exist."));
   }
@@ -49,7 +50,7 @@ internal class ConfigReaderTests
 
     Assert.That(
         () => reader.LoadConfig(""),
-        Throws.InstanceOf<FileNotFoundException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("Could not load config from '' because the file does not exist."));
   }
 
@@ -175,7 +176,7 @@ internal class ConfigReaderTests
   </msBuildSettings>
 </settings>");
 
-    Assert.That(() => reader.LoadConfig(altConfigPath), Throws.InstanceOf<ArgumentException>());
+    Assert.That(() => reader.LoadConfig(altConfigPath), Throws.InstanceOf<UserInteractionException>());
 
     File.Delete(altConfigPath);
     File.Delete(tempFilePath);

@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using ReleaseProcessAutomation.Configuration;
 using ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation;
 using Spectre.Console;
 using Spectre.Console.Testing;
 
@@ -36,7 +37,7 @@ public class GitBranchOperationTests : GitBackedTestBase
 
     Assert.That(
         () => gitBranchOperation.EnsureBranchUpToDate(""),
-        Throws.InstanceOf<InvalidOperationException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("There were no remotes specified in the config. Stopping execution"));
   }
 
@@ -92,7 +93,7 @@ public class GitBranchOperationTests : GitBackedTestBase
 
     Assert.That(
         () => gitBranchOperation.EnsureBranchUpToDate("branch"),
-        Throws.InstanceOf<InvalidOperationException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("Need to pull, local 'branch' branch is behind on repository 'origin'"));
   }
 
@@ -113,7 +114,7 @@ public class GitBranchOperationTests : GitBackedTestBase
 
     Assert.That(
         () => gitBranchOperation.EnsureBranchUpToDate("branch"),
-        Throws.InstanceOf<InvalidOperationException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("'branch' diverged, need to rebase at repository 'origin'"));
   }
 }

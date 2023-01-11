@@ -8,6 +8,7 @@ using ReleaseProcessAutomation.Jira.Authentication;
 using ReleaseProcessAutomation.Jira.CredentialManagement;
 using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 using ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation;
 using Spectre.Console.Testing;
 
 namespace ReleaseProcessAutomation.UnitTests.Jira;
@@ -123,7 +124,7 @@ public class JiraCredentialManagerTests
 
     Assert.That(
         () => jiraCredentialManager.GetCredential(c_target),
-        Throws.InstanceOf<JiraAuthenticationException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("Authentication not successful, user does not want to try again."));
 
     _inputReaderMock.Verify(_ => _.ReadString(It.IsAny<string>()));
@@ -193,7 +194,7 @@ public class JiraCredentialManagerTests
 
     Assert.That(
         () => jiraCredentialManager.GetCredential(c_target),
-        Throws.InstanceOf<JiraAuthenticationException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("Authentication not successful, user does not want to try again."));
 
     _jiraAuthenticatorMock.Verify(

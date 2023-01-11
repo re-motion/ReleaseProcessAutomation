@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation;
 
 namespace ReleaseProcessAutomation.Jira.Utility;
 
@@ -41,7 +42,7 @@ public class JiraProjectVersionUtility
                     version.name ?? throw new InvalidOperationException("The given version did not have a name assigned."))
             });
       }
-      catch (ArgumentException)
+      catch (UserInteractionException)
       {
         //Empty Catch. Invalid versions are not relevant for us
       }

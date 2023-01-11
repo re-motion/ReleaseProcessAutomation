@@ -8,6 +8,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation;
 using Spectre.Console;
 using Spectre.Console.Testing;
 
@@ -95,7 +96,7 @@ public class BranchFromReleaseForContinueVersionStepTests
         new TestConsole());
     
     var ancestor = "notAnAncestor";
-    Assert.That(() => branch.Execute(nextVersion, ancestor, false), Throws.InstanceOf<InvalidOperationException>()
+    Assert.That(() => branch.Execute(nextVersion, ancestor, false), Throws.InstanceOf<UserInteractionException>()
         .With.Message.EqualTo($"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was '{ancestor}'."));
 
   }

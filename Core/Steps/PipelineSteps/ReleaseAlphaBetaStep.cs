@@ -24,6 +24,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -83,12 +84,12 @@ public class ReleaseAlphaBetaStep
     else
     {
       var currentBranch = GitClient.GetCurrentBranchName();
-      throw new InvalidOperationException("Cannot call ReleasePreReleaseFromDevelop from a non develop or hotfix/ branch.");
+      throw new UserInteractionException("Cannot call ReleasePreReleaseFromDevelop from a non develop or hotfix/ branch.");
     }
 
     var branchName = $"prerelease/v{nextVersion}";
     if (GitClient.DoesBranchExist(branchName))
-      throw new InvalidOperationException($"The branch '{branchName}' already exists.");
+      throw new UserInteractionException($"The branch '{branchName}' already exists.");
 
     GitClient.CheckoutCommitWithNewBranch(commitHash, branchName);
 

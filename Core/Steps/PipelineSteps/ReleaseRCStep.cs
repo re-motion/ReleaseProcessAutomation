@@ -25,6 +25,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -73,7 +74,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
     if (!GitClient.IsOnBranch("release/"))
     {
       const string message = "Cannot call ReleaseRCStep when not on a release branch";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     if (string.IsNullOrEmpty(ancestor))
@@ -85,7 +86,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
     if (string.IsNullOrEmpty(currentBranchName))
     {
       const string message = "Could not find current branch.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     IReadOnlyCollection<SemanticVersion> nextPossibleVersions;
@@ -103,7 +104,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
     else
     {
       var message = $"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was '{ancestor}'.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there): ", nextPossibleVersions);
@@ -114,7 +115,7 @@ public class ReleaseRCStep : ReleaseProcessStepBase, IReleaseRCStep
     if (GitClient.DoesBranchExist(preReleaseBranchName))
     {
       var message = $"The branch {preReleaseBranchName} already exists while trying to create a branch with that name.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     _ = GitClient.CheckoutCommitWithNewBranch(commitHash, preReleaseBranchName);

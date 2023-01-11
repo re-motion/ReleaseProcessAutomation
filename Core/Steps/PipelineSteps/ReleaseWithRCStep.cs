@@ -25,6 +25,7 @@ using ReleaseProcessAutomation.ReadInput;
 using ReleaseProcessAutomation.Scripting;
 using ReleaseProcessAutomation.SemanticVersioning;
 using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 using Spectre.Console;
 
@@ -79,7 +80,7 @@ public class ReleaseWithRCStep : ReleaseProcessStepBase, IReleaseWithRCStep
     {
       var currentBranch = GitClient.GetCurrentBranchName();
       var message = $"Cannot call ReleaseWithRC while not on a releaseBranch. Current branch: '{currentBranch}'.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     if (string.IsNullOrEmpty(ancestor))
@@ -93,7 +94,7 @@ public class ReleaseWithRCStep : ReleaseProcessStepBase, IReleaseWithRCStep
     if (GitClient.DoesTagExist(tagName))
     {
       var message = $"There is already a commit tagged with {tagName} while trying to create a tag.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var releaseInformationMessage = $"You are releasing version '{nextVersion}'.";
@@ -115,7 +116,7 @@ public class ReleaseWithRCStep : ReleaseProcessStepBase, IReleaseWithRCStep
     else
     {
       var message = $"Could not get next possible Jira Versions from the next version '{nextVersion}', current branch is '{currentBranchName}' and ancestor is '{ancestor}'.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Choose next version (open JIRA issues get moved there):", nextPossibleVersions);
