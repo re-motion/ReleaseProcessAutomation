@@ -30,16 +30,16 @@ internal class BranchFromReleaseStepTests
 {
   private Mock<IGitClient> _gitClient;
   private Mock<IInputReader> _inputReader;
-  private Mock<IReleaseRCStep> _releaseRCStep;
-  private Mock<IReleaseWithRCStep> _releaseWithRCStep;
+  private Mock<IReleaseRCOnReleaseBranchStep> _releaseRCStep;
+  private Mock<IReleaseFullVersionFromReleaseBranchStep> _releaseWithRCStep;
 
   [SetUp]
   public void Setup ()
   {
     _gitClient = new Mock<IGitClient>();
     _inputReader = new Mock<IInputReader>();
-    _releaseRCStep = new Mock<IReleaseRCStep>();
-    _releaseWithRCStep = new Mock<IReleaseWithRCStep>();
+    _releaseRCStep = new Mock<IReleaseRCOnReleaseBranchStep>();
+    _releaseWithRCStep = new Mock<IReleaseFullVersionFromReleaseBranchStep>();
   }
 
   [Test]

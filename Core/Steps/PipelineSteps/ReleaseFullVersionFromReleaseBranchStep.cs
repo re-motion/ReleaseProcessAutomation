@@ -35,23 +35,24 @@ namespace Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 ///   Calls msBuild and Jira stuff.
 ///   Determines the next step based on the ancestor of the branch.
 ///   Can optionally call release on master, but is unreachable.
+///   Releases a new version to either master or support, merging the release branch in the process.
 /// </summary>
-public interface IReleaseWithRCStep
+public interface IReleaseFullVersionFromReleaseBranchStep
 {
   void Execute (bool pauseForCommit, bool noPush, string ancestor);
 }
 
-/// <inheritdoc cref="IReleaseWithRCStep" />
-public class ReleaseWithRCStep : ReleaseProcessStepBase, IReleaseWithRCStep
+/// <inheritdoc cref="IReleaseFullVersionFromReleaseBranchStep" />
+public class ReleaseFullVersionFromReleaseBranchStep : ReleaseProcessStepBase, IReleaseFullVersionFromReleaseBranchStep
 {
   private readonly IAncestorFinder _ancestorFinder;
   private readonly IContinueReleaseOnMasterStep _continueReleaseOnMasterStep;
   private readonly IContinueReleasePatchStep _continueReleasePatchStep;
   private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
-  private readonly ILogger _log = Log.ForContext<ReleaseWithRCStep>();
+  private readonly ILogger _log = Log.ForContext<ReleaseFullVersionFromReleaseBranchStep>();
 
-  public ReleaseWithRCStep (
+  public ReleaseFullVersionFromReleaseBranchStep (
       IGitClient gitClient,
       Config config,
       IInputReader inputReader,
