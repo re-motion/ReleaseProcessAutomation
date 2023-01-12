@@ -15,6 +15,7 @@
 // under the License.
 //
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,17 +30,21 @@ public class InputReader
   private const string c_moreChoicesText = "[grey](Move up and down to choose version)[/]";
 
   private readonly IAnsiConsole _console;
+  private readonly Style _textPromptStyle;
+  private readonly Style _selectionPromptHighlightStyle;
 
   public InputReader (IAnsiConsole console)
   {
     _console = console;
+    var style = new Style(foreground: ConsoleColor.Green);
+    _textPromptStyle = style;
+    _selectionPromptHighlightStyle = style;
   }
 
   public string ReadHiddenString (string prompt)
   {
     return _console.Prompt(
         new TextPrompt<string>(prompt)
-            .PromptStyle("orangered1")
             .Secret()
     );
   }
@@ -59,6 +64,7 @@ public class InputReader
     var parser = new SemanticVersionParser();
     var input = _console.Prompt(
         new TextPrompt<string>(prompt)
+            .PromptStyle(_textPromptStyle)
             .ValidationErrorMessage("That's not a valid version.")
             .Validate(version => parser.TryParseVersion(version, out _) ? ValidationResult.Success() : ValidationResult.Error()));
     return parser.ParseVersion(input);
@@ -69,6 +75,7 @@ public class InputReader
     if (_console.Profile.Capabilities.Interactive)
       return _console.Prompt(
           new SelectionPrompt<SemanticVersion>()
+              .HighlightStyle(_selectionPromptHighlightStyle)
               .Title(prompt)
               .MoreChoicesText(c_moreChoicesText)
               .AddChoices(possibleVersions)
@@ -94,9 +101,10 @@ public class InputReader
   /// <param name="possibleAnswers">Must never just be integers between 0 and the number of possible answers</param>
   public string ReadStringChoice (string prompt, IReadOnlyCollection<string> possibleAnswers)
   {
-    if (_console.Profile.Capabilities.Interactive)
+    if (_console.Profile.Capabilities.Ansi)
       return _console.Prompt(
           new SelectionPrompt<string>()
+              .HighlightStyle(_selectionPromptHighlightStyle)
               .Title(prompt)
               .MoreChoicesText(c_moreChoicesText)
               .AddChoices(possibleAnswers)
@@ -123,6 +131,7 @@ public class InputReader
     promptBuilder.Append("Your version: ");
 
     return new TextPrompt<string>(promptBuilder.ToString())
+        .PromptStyle(_textPromptStyle)
         .ShowChoices(false)
         .AddChoices(versions)
         .AddChoices(versions.Select((_, i) => (i + 1).ToString()).ToArray())
