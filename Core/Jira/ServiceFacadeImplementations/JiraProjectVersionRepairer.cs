@@ -18,11 +18,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
-using ReleaseProcessAutomation.Jira.Utility;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public class JiraProjectVersionRepairer
     : IJiraProjectVersionRepairer

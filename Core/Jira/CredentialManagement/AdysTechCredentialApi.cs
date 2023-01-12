@@ -1,7 +1,7 @@
 using System.Net;
 using AdysTech.CredentialManager;
 
-namespace ReleaseProcessAutomation.Jira.CredentialManagement;
+namespace Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
 
 public class AdysTechCredentialApi : IJiraCredentialAPI
 {

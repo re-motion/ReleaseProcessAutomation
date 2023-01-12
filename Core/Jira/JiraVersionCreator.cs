@@ -18,11 +18,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
 
-namespace ReleaseProcessAutomation.Jira;
+namespace Remotion.ReleaseProcessAutomation.Jira;
 
 public class JiraVersionCreator
     : IJiraVersionCreator

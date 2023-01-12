@@ -1,9 +1,8 @@
-using System;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Jira.Authentication;
-using ReleaseProcessAutomation.Jira.CredentialManagement;
+using Remotion.ReleaseProcessAutomation.Jira.Authentication;
+using Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
 
-namespace ReleaseProcessAutomation.IntegrationTests.Jira;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Jira;
 
 [TestFixture]
 [Explicit]

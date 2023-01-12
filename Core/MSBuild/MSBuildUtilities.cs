@@ -15,15 +15,13 @@
 // under the License.
 //
 
-using System;
 using System.Linq;
-using System.Text;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.MSBuild;
+namespace Remotion.ReleaseProcessAutomation.MSBuild;
 
 public static class MSBuildUtilities
 {

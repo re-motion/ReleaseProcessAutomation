@@ -3,8 +3,8 @@
     <PropertyGroup>
         <TargetFrameworks>net6.0</TargetFrameworks>
         <IsPackable>false</IsPackable>
-
-        <RootNamespace>ReleaseProcessAutomation.IntegrationTests</RootNamespace>
+        <AssemblyName>Remotion.ReleaseProcessAutomation.IntegrationTests</AssemblyName>
+        <RootNamespace>$(AssemblyName)</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

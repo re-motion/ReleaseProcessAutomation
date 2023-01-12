@@ -15,9 +15,7 @@
 // under the License.
 //
 
-using System;
-
-namespace ReleaseProcessAutomation.Configuration.Data;
+namespace Remotion.ReleaseProcessAutomation.Configuration.Data;
 
 public enum IgnoreListType
 {

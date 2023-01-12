@@ -2,10 +2,10 @@
 using System.Linq;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
 
-namespace ReleaseProcessAutomation.IntegrationTests.Jira;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Jira;
 
 [Explicit]
 [TestFixture]

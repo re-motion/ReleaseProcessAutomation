@@ -20,7 +20,7 @@ using System.Diagnostics;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.MSBuild;
+namespace Remotion.ReleaseProcessAutomation.MSBuild;
 
 public interface IMSBuild
 {

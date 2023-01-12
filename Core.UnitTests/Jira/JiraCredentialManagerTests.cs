@@ -1,16 +1,15 @@
-using System;
 using System.Net;
 using AdysTech.CredentialManager;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Jira.Authentication;
-using ReleaseProcessAutomation.Jira.CredentialManagement;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Jira.Authentication;
+using Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.ReadInput;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.UnitTests.Jira;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Jira;
 
 [TestFixture]
 public class JiraCredentialManagerTests

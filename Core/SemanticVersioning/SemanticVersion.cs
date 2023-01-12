@@ -18,7 +18,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ReleaseProcessAutomation.SemanticVersioning;
+namespace Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
 public class SemanticVersion : IComparable<SemanticVersion>
 {

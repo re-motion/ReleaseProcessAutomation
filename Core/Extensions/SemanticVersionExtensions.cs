@@ -17,10 +17,10 @@
 
 using System;
 using System.Collections.Generic;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Serilog;
 
-namespace ReleaseProcessAutomation.Extensions;
+namespace Remotion.ReleaseProcessAutomation.Extensions;
 
 public static class SemanticVersionExtensions
 {

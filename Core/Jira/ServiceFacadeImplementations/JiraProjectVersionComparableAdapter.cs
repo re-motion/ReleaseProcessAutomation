@@ -17,7 +17,7 @@
 
 using System;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public class JiraProjectVersionComparableAdapter<T>
     where T : IComparable<T>

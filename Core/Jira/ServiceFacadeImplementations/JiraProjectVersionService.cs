@@ -19,12 +19,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
-using ReleaseProcessAutomation.Jira.Utility;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using RestSharp;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public class JiraProjectVersionService : IJiraProjectVersionService
 {

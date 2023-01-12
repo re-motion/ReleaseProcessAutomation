@@ -16,12 +16,12 @@
 //
 
 using System;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.Steps;
+namespace Remotion.ReleaseProcessAutomation.Steps;
 
 /// <summary>
 ///   Called by new-version and new-release-branch.

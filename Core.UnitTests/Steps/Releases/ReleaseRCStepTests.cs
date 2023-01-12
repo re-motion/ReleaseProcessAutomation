@@ -15,23 +15,21 @@
 // under the License.
 //
 
-using System;
 using System.IO;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Extensions;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.Jira;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.Scripting;
-using ReleaseProcessAutomation.SemanticVersioning;
-using ReleaseProcessAutomation.Steps.PipelineSteps;
-using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Extensions;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.Scripting;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation.Steps.SubSteps;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.UnitTests.Steps.Releases;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Steps.Releases;
 
 [TestFixture]
 internal class ReleaseRCStepTests

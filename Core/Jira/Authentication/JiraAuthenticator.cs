@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Net;
-using ReleaseProcessAutomation.Jira.CredentialManagement;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 using RestSharp;
 
-namespace ReleaseProcessAutomation.Jira.Authentication;
+namespace Remotion.ReleaseProcessAutomation.Jira.Authentication;
 
 public class JiraAuthenticator
     : IJiraAuthenticator

@@ -1,7 +1,6 @@
-using System;
-using ReleaseProcessAutomation.Jira.CredentialManagement;
+using Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
 
-namespace ReleaseProcessAutomation.Jira.Authentication;
+namespace Remotion.ReleaseProcessAutomation.Jira.Authentication;
 
 public interface IJiraAuthenticator
 {

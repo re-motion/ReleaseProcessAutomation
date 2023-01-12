@@ -19,16 +19,16 @@ using System;
 using System.IO;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.MSBuild;
-using ReleaseProcessAutomation.Scripting;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.MSBuild;
+using Remotion.ReleaseProcessAutomation.Scripting;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Spectre.Console;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.UnitTests.MsBuild;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.MsBuild;
 
 [TestFixture]
 internal class MSBuildInvokerTests

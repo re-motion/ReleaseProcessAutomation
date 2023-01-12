@@ -5,11 +5,11 @@ using System.Net;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
-using ReleaseProcessAutomation.Jira.CredentialManagement;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 using RestSharp;
 
-namespace ReleaseProcessAutomation.IntegrationTests.Jira;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Jira;
 
 public static class JiraTestUtility
 {

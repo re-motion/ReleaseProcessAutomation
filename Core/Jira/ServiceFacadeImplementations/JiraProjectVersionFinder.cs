@@ -20,12 +20,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using JetBrains.Annotations;
-using ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
-using ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
 using RestSharp;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public class JiraProjectVersionFinder : IJiraProjectVersionFinder
 {

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
 
-namespace ReleaseProcessAutomation.UnitTests.Jira;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Jira;
 
 public class JiraProjectVersionRepairerTest
 {

@@ -1,8 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
-namespace ReleaseProcessAutomation.Jira;
+namespace Remotion.ReleaseProcessAutomation.Jira;
 
 public interface IJiraVersionCreator
 {

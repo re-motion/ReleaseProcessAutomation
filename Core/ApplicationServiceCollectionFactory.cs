@@ -1,21 +1,21 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using ReleaseProcessAutomation.Configuration;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.Jira;
-using ReleaseProcessAutomation.Jira.Authentication;
-using ReleaseProcessAutomation.Jira.CredentialManagement;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
-using ReleaseProcessAutomation.Jira.Utility;
-using ReleaseProcessAutomation.MSBuild;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.Scripting;
-using ReleaseProcessAutomation.Steps;
-using ReleaseProcessAutomation.Steps.PipelineSteps;
-using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Jira;
+using Remotion.ReleaseProcessAutomation.Jira.Authentication;
+using Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.MSBuild;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.Scripting;
+using Remotion.ReleaseProcessAutomation.Steps;
+using Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation.Steps.SubSteps;
 
-namespace ReleaseProcessAutomation;
+namespace Remotion.ReleaseProcessAutomation;
 
 public class ApplicationServiceCollectionFactory
 {

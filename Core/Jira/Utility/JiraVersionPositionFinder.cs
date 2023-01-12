@@ -18,9 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
-namespace ReleaseProcessAutomation.Jira.Utility;
+namespace Remotion.ReleaseProcessAutomation.Jira.Utility;
 
 public class JiraVersionPositionFinder<T> : IJiraVersionMovePositioner<T>
     where T : IComparable<T>

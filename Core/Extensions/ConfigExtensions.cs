@@ -18,10 +18,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
 using Serilog;
 
-namespace ReleaseProcessAutomation.Extensions;
+namespace Remotion.ReleaseProcessAutomation.Extensions;
 
 public static class ConfigExtensions
 {

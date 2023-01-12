@@ -18,7 +18,7 @@
 using System;
 using System.Xml.Serialization;
 
-namespace ReleaseProcessAutomation.Configuration.Data;
+namespace Remotion.ReleaseProcessAutomation.Configuration.Data;
 
 public class RemoteRepositoryNames
 {

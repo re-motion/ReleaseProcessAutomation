@@ -19,10 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using ReleaseProcessAutomation.Jira.Utility;
+using Remotion.ReleaseProcessAutomation.Jira.Utility;
 using RestSharp;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public class JiraIssueService
     : IJiraIssueService

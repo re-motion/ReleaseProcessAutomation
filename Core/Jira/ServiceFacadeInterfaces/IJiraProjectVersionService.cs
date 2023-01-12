@@ -17,7 +17,7 @@
 
 using System;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
 
 public interface IJiraProjectVersionService
 {

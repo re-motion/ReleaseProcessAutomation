@@ -18,11 +18,11 @@
 using System;
 using System.IO;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.IntegrationTests.Git;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Git;
 
 [TestFixture]
 internal class CommandLineGitClientTests : GitBackedTestBase

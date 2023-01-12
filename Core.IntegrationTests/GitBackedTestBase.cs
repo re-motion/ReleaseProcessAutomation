@@ -20,9 +20,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 
-namespace ReleaseProcessAutomation.IntegrationTests;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests;
 
 public class GitBackedTestBase
 {

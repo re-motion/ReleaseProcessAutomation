@@ -18,11 +18,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.ReadInput;
 using Serilog;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation;
+namespace Remotion.ReleaseProcessAutomation;
 
 [ExcludeFromCodeCoverage]
 public static class Program

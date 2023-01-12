@@ -1,9 +1,8 @@
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Jira.CredentialManagement;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using RestSharp.Authenticators;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Jira.CredentialManagement;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
-namespace ReleaseProcessAutomation.Jira.Utility;
+namespace Remotion.ReleaseProcessAutomation.Jira.Utility;
 
 public class JiraRestClientProvider
     : IJiraRestClientProvider

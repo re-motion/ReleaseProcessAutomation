@@ -2,12 +2,12 @@ using System;
 using System.IO;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration;
-using ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Git;
 using Spectre.Console;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.IntegrationTests.Git;
+namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Git;
 
 [TestFixture]
 public class GitBranchOperationTests : GitBackedTestBase

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+namespace Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 
 public interface IJiraIssueService
 {

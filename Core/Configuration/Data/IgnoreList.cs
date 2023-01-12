@@ -15,12 +15,11 @@
 // under the License.
 //
 
-using System;
 using System.Xml.Serialization;
 
 #pragma warning disable CS8618
 
-namespace ReleaseProcessAutomation.Configuration.Data;
+namespace Remotion.ReleaseProcessAutomation.Configuration.Data;
 
 public class IgnoreList
 {

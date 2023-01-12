@@ -15,11 +15,10 @@
 // under the License.
 //
 
-using System;
 using System.Diagnostics.CodeAnalysis;
-using ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 
-namespace ReleaseProcessAutomation.Git;
+namespace Remotion.ReleaseProcessAutomation.Git;
 
 public interface ISemanticVersionedGitRepository
 {

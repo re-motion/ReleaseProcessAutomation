@@ -18,12 +18,12 @@
 using System;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.Steps;
-using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Steps;
+using Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.UnitTests.Steps;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Steps;
 
 [TestFixture]
 internal class StartReleaseStepTests

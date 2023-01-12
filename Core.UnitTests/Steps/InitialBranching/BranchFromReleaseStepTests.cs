@@ -15,16 +15,15 @@
 // under the License.
 //
 
-using System;
 using System.Collections.Generic;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
-using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 
-namespace ReleaseProcessAutomation.UnitTests.Steps.InitialBranching;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Steps.InitialBranching;
 
 [TestFixture]
 internal class BranchFromReleaseStepTests

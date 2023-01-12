@@ -15,18 +15,17 @@
 // under the License.
 //
 
-using System;
 using System.IO;
 using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration;
-using ReleaseProcessAutomation.Git;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
-using ReleaseProcessAutomation.Steps.PipelineSteps;
+using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Steps.PipelineSteps;
 using Spectre.Console;
 
-namespace ReleaseProcessAutomation.UnitTests.Steps.Continues;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Steps.Continues;
 
 internal class ContinueAlphaBetaStepTests
 {

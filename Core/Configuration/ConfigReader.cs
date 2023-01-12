@@ -19,10 +19,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-using ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
 using Serilog;
 
-namespace ReleaseProcessAutomation.Configuration;
+namespace Remotion.ReleaseProcessAutomation.Configuration;
 
 public class ConfigReader
 {

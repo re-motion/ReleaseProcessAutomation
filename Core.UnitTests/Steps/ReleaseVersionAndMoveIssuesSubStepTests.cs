@@ -1,16 +1,16 @@
-﻿using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Moq;
 using NUnit.Framework;
-using ReleaseProcessAutomation.Configuration.Data;
-using ReleaseProcessAutomation.Jira;
-using ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
-using ReleaseProcessAutomation.ReadInput;
-using ReleaseProcessAutomation.SemanticVersioning;
-using ReleaseProcessAutomation.Steps.SubSteps;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
+using Remotion.ReleaseProcessAutomation.Jira;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
+using Remotion.ReleaseProcessAutomation.ReadInput;
+using Remotion.ReleaseProcessAutomation.SemanticVersioning;
+using Remotion.ReleaseProcessAutomation.Steps.SubSteps;
 using Spectre.Console.Testing;
 
-namespace ReleaseProcessAutomation.UnitTests.Steps;
+namespace Remotion.ReleaseProcessAutomation.UnitTests.Steps;
 
 [TestFixture]
 public class ReleaseVersionAndMoveIssuesSubStepTests
