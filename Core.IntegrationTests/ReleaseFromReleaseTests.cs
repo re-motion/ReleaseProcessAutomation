@@ -66,10 +66,10 @@ internal class ReleaseFromReleaseTests : IntegrationTestBase
   public void ReleaseWithRC_FromSupportHotfixReleaseWithUserRequestingNewSupportBranch_CreatesSupportAndHotfixBranch ()
   {
     var correctLogs1 =
-        @"*  (hotfix/v1.4.0)Update metadata to version '1.4.0'.
+        @"*  (origin/hotfix/v1.4.0, hotfix/v1.4.0)Update metadata to version '1.4.0'.
           | *  (origin/hotfix/v1.3.6, hotfix/v1.3.6)Update metadata to version '1.3.6'.
           |/  
-          *    (HEAD -> support/v1.3, tag: v1.3.5, origin/support/v1.3, support/v1.4) Merge branch 'release/v1.3.5' into support/v1.3
+          *    (HEAD -> support/v1.3, tag: v1.3.5, origin/support/v1.4, origin/support/v1.3, support/v1.4) Merge branch 'release/v1.3.5' into support/v1.3
           |\  
           | *  (origin/release/v1.3.5, release/v1.3.5)Update metadata to version '1.3.5'.
           | *  (hotfix/v1.3.5)feature4
@@ -83,9 +83,9 @@ internal class ReleaseFromReleaseTests : IntegrationTestBase
 
     var correctLogs2 =
         @"*  (origin/hotfix/v1.3.6, hotfix/v1.3.6)Update metadata to version '1.3.6'.
-          | *  (hotfix/v1.4.0)Update metadata to version '1.4.0'.
+          | *  (origin/hotfix/v1.4.0, hotfix/v1.4.0)Update metadata to version '1.4.0'.
           |/  
-          *    (HEAD -> support/v1.3, tag: v1.3.5, origin/support/v1.3, support/v1.4) Merge branch 'release/v1.3.5' into support/v1.3
+          *    (HEAD -> support/v1.3, tag: v1.3.5, origin/support/v1.4, origin/support/v1.3, support/v1.4) Merge branch 'release/v1.3.5' into support/v1.3
           |\  
           | *  (origin/release/v1.3.5, release/v1.3.5)Update metadata to version '1.3.5'.
           | *  (hotfix/v1.3.5)feature4

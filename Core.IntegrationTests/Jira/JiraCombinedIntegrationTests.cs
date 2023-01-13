@@ -50,6 +50,77 @@ public class JiraCombinedIntegrationTests : IntegrationTestBase
   }
 
   [Test]
+  public void ReleaseFromDevelopToMaster_WithCreateSupportBranchAfterwards_ShouldCreateHotfixVersionOnJira ()
+  {
+    var currentReleaseVersion = "1.0.0";
+    var nextJiraReleaseVersion = "1.1.0";
+    var hotfixVersion = "1.0.1";
+
+    JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, hotfixVersion, currentReleaseVersion, nextJiraReleaseVersion);
+    JiraTestUtility.CreateVersion(_restClient, currentReleaseVersion, _config.Jira.JiraProjectKey);
+
+    ExecuteGitCommand("commit -m feature --allow-empty");
+    ExecuteGitCommand("checkout -b develop");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter(currentReleaseVersion);
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter(nextJiraReleaseVersion);
+
+    TestConsole.Input.PushTextWithEnter(_jiraUsername);
+    TestConsole.Input.PushTextWithEnter(_jiraPassword);
+
+    TestConsole.Input.PushTextWithEnter("y");
+    //should create support and hotfix branch?
+    TestConsole.Input.PushTextWithEnter("y");
+
+    var act = JiraTestUtility.RunProgramWithoutWindowsCredentials(new[] { "Release-Version" });
+
+    Assert.That(act, Is.EqualTo(0));
+
+    var doesHotfixVersionExistJira = JiraTestUtility.IsPartOfJiraVersions(_config.Jira.JiraProjectKey, hotfixVersion, _restClient, out var hotfixJiraVersion);
+    Assert.That(doesHotfixVersionExistJira, Is.True);
+    Assert.That(hotfixJiraVersion.released, Is.False);
+
+    JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, hotfixVersion, currentReleaseVersion, nextJiraReleaseVersion);
+  }
+
+[Test]
+  public void ReleaseFromDevelopToMaster_WithoutCreateSupportBranchAfterwards_ShouldNotCreateHotfixVersionOnJira ()
+  {
+    var currentReleaseVersion = "1.0.0";
+    var nextJiraReleaseVersion = "1.1.0";
+    var hotfixVersion = "1.0.1";
+
+    JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, hotfixVersion, currentReleaseVersion, nextJiraReleaseVersion);
+    JiraTestUtility.CreateVersion(_restClient, currentReleaseVersion, _config.Jira.JiraProjectKey);
+
+    ExecuteGitCommand("commit -m feature --allow-empty");
+    ExecuteGitCommand("checkout -b develop");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter(currentReleaseVersion);
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter(nextJiraReleaseVersion);
+
+    TestConsole.Input.PushTextWithEnter(_jiraUsername);
+    TestConsole.Input.PushTextWithEnter(_jiraPassword);
+
+    TestConsole.Input.PushTextWithEnter("y");
+    //should create support and hotfix branch?
+    TestConsole.Input.PushTextWithEnter("n");
+
+    var act = JiraTestUtility.RunProgramWithoutWindowsCredentials(new[] { "Release-Version" });
+
+    Assert.That(act, Is.EqualTo(0));
+
+    var doesHotfixVersionExistJira = JiraTestUtility.IsPartOfJiraVersions(_config.Jira.JiraProjectKey, hotfixVersion, _restClient, out var hotfixJiraVersion);
+    Assert.That(doesHotfixVersionExistJira, Is.False);
+
+    JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, hotfixVersion, currentReleaseVersion, nextJiraReleaseVersion);
+  }
+
+  [Test]
   public void TestJiraRunThrough_FromDevelop_MovesOnlyOpenJiraVersions ()
   {
     var prevVersion = "1.0.0";

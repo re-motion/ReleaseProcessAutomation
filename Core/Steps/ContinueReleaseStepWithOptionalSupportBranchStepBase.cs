@@ -17,6 +17,7 @@
 
 using Remotion.ReleaseProcessAutomation.Configuration.Data;
 using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Jira;
 using Remotion.ReleaseProcessAutomation.ReadInput;
 using Remotion.ReleaseProcessAutomation.Scripting;
 using Remotion.ReleaseProcessAutomation.SemanticVersioning;
@@ -28,21 +29,34 @@ public class ContinueReleaseStepWithOptionalSupportBranchStepBase
     : ReleaseProcessStepBase
 {
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
+  private readonly IJiraVersionCreator _jiraVersionCreator;
 
-  protected ContinueReleaseStepWithOptionalSupportBranchStepBase (IGitClient gitClient, Config config, IInputReader inputReader, IAnsiConsole console, IMSBuildCallAndCommit msBuildCallAndCommit)
+  protected ContinueReleaseStepWithOptionalSupportBranchStepBase (IGitClient gitClient, Config config, IInputReader inputReader, IAnsiConsole console, IMSBuildCallAndCommit msBuildCallAndCommit, IJiraVersionCreator jiraVersionCreator)
       : base(gitClient, config, inputReader, console)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
+    _jiraVersionCreator = jiraVersionCreator;
   }
 
-  protected void CreateSupportBranchWithHotfixForRelease (SemanticVersion nextHotfixVersion)
+  protected void CreateSupportBranchWithHotfixForRelease (SemanticVersion nextHotfixVersion, bool noPush)
   {
     Console.WriteLine("Do you wish to create a new support branch?");
     if (!InputReader.ReadConfirmation())
       return;
 
-    GitClient.CheckoutNewBranch($"support/v{nextHotfixVersion.Major}.{nextHotfixVersion.Minor}");
-    GitClient.CheckoutNewBranch($"hotfix/v{nextHotfixVersion}");
+    var supportBranchName = $"support/v{nextHotfixVersion.Major}.{nextHotfixVersion.Minor}";
+    var hotfixBranchName = $"hotfix/v{nextHotfixVersion}";
+    GitClient.CheckoutNewBranch(supportBranchName);
+    GitClient.CheckoutNewBranch(hotfixBranchName);
+
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.DevelopmentForNextRelease, nextHotfixVersion);
+    _jiraVersionCreator.CreateNewVersionWithVersionNumber(nextHotfixVersion.ToString());
+
+    if (noPush)
+      return;
+
+    var remoteNames = Config.RemoteRepositories.RemoteNames;
+    GitClient.PushToRepos(remoteNames, supportBranchName);
+    GitClient.PushToRepos(remoteNames, hotfixBranchName);
   }
 }

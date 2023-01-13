@@ -83,8 +83,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestBase
   public void ReleaseOnMaster_FromDevelopAndCreateSupportBranch_CreatesProperSupportBranch ()
   {
     var correctLogs =
-        @"*  (hotfix/v1.0.1)Update metadata to version '1.0.1'.
-          *    (tag: v1.0.0, origin/master, support/v1.0, master)Merge branch 'release/v1.0.0'
+        @"*  (origin/hotfix/v1.0.1, hotfix/v1.0.1)Update metadata to version '1.0.1'.
+          *    (tag: v1.0.0, origin/support/v1.0, origin/master, support/v1.0, master)Merge branch 'release/v1.0.0'
           |\  
           | *  (origin/release/v1.0.0, release/v1.0.0)Update metadata to version '1.0.0'.
           | | *  (HEAD -> develop, origin/develop)Update metadata to version '1.1.0'.
@@ -122,8 +122,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestBase
   public void ReleaseOnMaster_FromDevelopAndCreateSupportBranchWithPause_CreatesProperSupportBranch ()
   {
     var correctLogs =
-        @"*  (hotfix/v1.0.1)Update metadata to version '1.0.1'.
-          *    (tag: v1.0.0, origin/master, support/v1.0, master)Merge branch 'release/v1.0.0'
+        @"*  (origin/hotfix/v1.0.1, hotfix/v1.0.1)Update metadata to version '1.0.1'.
+          *    (tag: v1.0.0, origin/support/v1.0, origin/master, support/v1.0, master)Merge branch 'release/v1.0.0'
           |\  
           | *  (origin/release/v1.0.0, release/v1.0.0)Update metadata to version '1.0.0'.
           | | *  (HEAD -> develop, origin/develop)Update metadata to version '1.1.0'.

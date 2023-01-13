@@ -20,6 +20,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
 using NUnit.Framework;
+using Remotion.ReleaseProcessAutomation.Jira;
+using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeInterfaces;
 using Remotion.ReleaseProcessAutomation.Jira.Utility;
 using Remotion.ReleaseProcessAutomation.SemanticVersioning;
 using Remotion.ReleaseProcessAutomation.Steps.SubSteps;
@@ -76,8 +78,15 @@ public abstract class IntegrationTestBase : GitBackedTestBase
         x => jiraRestClientProviderStub.Object,
         ServiceLifetime.Singleton);
 
+    var jiraVersionCreatorStub = new Mock<IJiraVersionCreator>();
+    var jiraVersionCreatorDescriptor = new ServiceDescriptor(
+        typeof(IJiraVersionCreator),
+        _ => jiraVersionCreatorStub.Object,
+        ServiceLifetime.Singleton);
+
     services.Replace(releaseVersionAndMoveIssuesDescriptor);
     services.Replace(jiraRestClientProviderDescriptor);
+    services.Replace(jiraVersionCreatorDescriptor);
 
     var app = new ApplicationCommandAppFactory().CreateConfiguredCommandApp(services);
 
