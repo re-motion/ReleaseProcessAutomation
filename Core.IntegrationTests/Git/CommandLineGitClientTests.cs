@@ -180,9 +180,7 @@ internal class CommandLineGitClientTests : GitBackedTestBase
 
     var ancestor = client.GetAncestors("develop");
 
-    Assert.That(ancestor, Does.Contain("develop"));
-    Assert.That(ancestor, Does.Not.Contain("master"));
-    Assert.That(ancestor, Does.Not.Contain("release/v1.0.1"));
+    Assert.That(ancestor, Is.EquivalentTo(new []{"develop"}));
   }
 
   [Test]
@@ -202,9 +200,26 @@ internal class CommandLineGitClientTests : GitBackedTestBase
 
     var ancestor = client.GetAncestors("develop", "release");
 
-    Assert.That(ancestor, Does.Contain("develop"));
-    Assert.That(ancestor, Does.Contain("release/v1.0.1"));
-    Assert.That(ancestor, Does.Not.Contain("master"));
+    Assert.That(ancestor, Is.EquivalentTo(new []{"develop", "release/v1.0.1"}));
+  }
+
+  [Test]
+  public void GetAncestors_WithFeatureBranchWithAncestorNameInTitle_DoesNotReturnFeatureBranch()
+  {
+    AddCommit();
+    ExecuteGitCommand("checkout -b develop");
+    AddCommit();
+    ExecuteGitCommand("checkout develop");
+    AddCommit();
+    ExecuteGitCommand("checkout -b feature/something-needs-to-be-developed");
+    AddCommit();
+    ExecuteGitCommand("checkout master");
+
+    var client = new CommandLineGitClient();
+
+    var ancestor = client.GetAncestors("develop");
+
+    Assert.That(ancestor, Is.EquivalentTo(new []{"develop"}));
   }
 
   [Test]
@@ -218,9 +233,7 @@ internal class CommandLineGitClientTests : GitBackedTestBase
 
     var ancestor = client.GetAncestors("develop");
 
-    Assert.That(ancestor, Does.Contain("develop"));
-    Assert.That(ancestor, Does.Contain("developer"));
-    Assert.That(ancestor, Does.Not.Contain("release/v1.0.1"));
+    Assert.That(ancestor, Is.EquivalentTo(new []{"develop", "developer"}));
   }
 
   [Test]
@@ -240,8 +253,7 @@ internal class CommandLineGitClientTests : GitBackedTestBase
 
     var ancestor = client.GetAncestors("develop");
 
-    Assert.That(ancestor, Does.Contain("developer"));
-    Assert.That(ancestor, Does.Contain("developeria"));
+    Assert.That(ancestor, Is.EquivalentTo(new []{"developeria", "developer", "develop"}));
   }
 
   [Test]
