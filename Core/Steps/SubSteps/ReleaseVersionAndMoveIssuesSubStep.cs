@@ -1,6 +1,22 @@
-﻿using System;
+﻿// Copyright (c) rubicon IT GmbH, www.rubicon.eu
+//
+// See the NOTICE file distributed with this work for additional information
+// regarding copyright ownership.  rubicon licenses this file to you under
+// the Apache License, Version 2.0 (the "License"); you may not use this
+// file except in compliance with the License.  You may obtain a copy of the
+// License at
+//
+//   http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+// WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+// License for the specific language governing permissions and limitations
+// under the License.
+//
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using Remotion.ReleaseProcessAutomation.Extensions;
 using Remotion.ReleaseProcessAutomation.Jira;
 using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
@@ -17,12 +33,8 @@ public interface IReleaseVersionAndMoveIssuesSubStep
 }
 
 public class ReleaseVersionAndMoveIssuesSubStep
-    : IReleaseVersionAndMoveIssuesSubStep
+    : AddMoveCreateFixVersionsSubStepBase, IReleaseVersionAndMoveIssuesSubStep
 {
-  private readonly IAnsiConsole _console;
-  private readonly IInputReader _inputReader;
-  private readonly IJiraIssueService _jiraIssueService;
-  private readonly IJiraVersionCreator _jiraVersionCreator;
   private readonly IJiraVersionReleaser _jiraVersionReleaser;
   private readonly ILogger _log = Log.ForContext<ReleaseVersionAndMoveIssuesSubStep>();
 
@@ -32,11 +44,8 @@ public class ReleaseVersionAndMoveIssuesSubStep
       IJiraIssueService jiraIssueService,
       IJiraVersionCreator jiraVersionCreator,
       IJiraVersionReleaser jiraVersionReleaser)
+      : base(console, inputReader, jiraIssueService, jiraVersionCreator)
   {
-    _console = console;
-    _inputReader = inputReader;
-    _jiraIssueService = jiraIssueService;
-    _jiraVersionCreator = jiraVersionCreator;
     _jiraVersionReleaser = jiraVersionReleaser;
   }
 
@@ -47,14 +56,14 @@ public class ReleaseVersionAndMoveIssuesSubStep
 
     var releaseMessage = $"Releasing version '{currentVersion}' on JIRA. ";
     _log.Information(releaseMessage);
-    _console.WriteLine(releaseMessage);
+    Console.WriteLine(releaseMessage);
 
-    if (ShouldMoveIssuesToNextVersion(currentVersionID, nextVersionID, out var issuesToMove))
+    if (ShouldMoveIssuesToNextVersion(currentVersionID, nextVersionID, currentVersion, nextVersion, out var issuesToMove))
     {
       var moveMessage = $"Moving open issues to '{nextVersion}'.";
       _log.Information(moveMessage);
-      _console.WriteLine(moveMessage);
-      _jiraIssueService.MoveIssuesToVersion(issuesToMove, currentVersionID, nextVersionID);
+      Console.WriteLine(moveMessage);
+      JiraIssueService.MoveIssuesToVersion(issuesToMove, currentVersionID, nextVersionID);
     }
 
     if (squashUnreleased)
@@ -66,67 +75,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
       AddNewlyReleasedVersionToClosedIssuesOnlyAssociatedWithFullVersion(currentVersion);
   }
 
-  private void AddNewlyReleasedVersionToClosedIssuesOnlyAssociatedWithFullVersion (SemanticVersion currentVersion)
-  {
-    var currentFullVersion = currentVersion.GetCurrentFullVersion().ToString();
-    try
-    {
-      var allJiraVersionsStartingWithFullVersion = _jiraVersionCreator.FindAllVersionsStartingWithVersionNumber(currentFullVersion);
-
-      if (allJiraVersionsStartingWithFullVersion.Count == 0)
-        throw new UserInteractionException($"Could not find versions starting with '{currentFullVersion}' in JIRA.");
-
-      var currentFullJiraVersion =
-          _jiraVersionCreator.FindVersionWithVersionNumber(currentFullVersion)
-          ?? throw new UserInteractionException($"Version '{currentFullVersion}' does not exist in JIRA.");
-
-      var closedIssuesOnlyAssociatedWithFullVersion =
-          _jiraIssueService.FindIssuesWithOnlyExactFixVersion(allJiraVersionsStartingWithFullVersion, currentFullJiraVersion);
-
-      if (closedIssuesOnlyAssociatedWithFullVersion.Count == 0)
-      {
-        var message = $"Could not find any issues only associated with fixVersion '{currentFullVersion}', no moving of these issues is necessary.";
-        _console.WriteLine(message);
-        _log.Debug(message);
-        return;
-      }
-
-      _console.WriteLine($"The following Jira tickets are closed and only associated with version '{currentFullVersion}':");
-
-      PrintIssueListing(closedIssuesOnlyAssociatedWithFullVersion);
-
-      _console.WriteLine($"Add the newly released version '{currentVersion}' to the fix-version of these Jira tickets?");
-      if (!_inputReader.ReadConfirmation())
-        return;
-
-      AddFixVersionToIssues(currentVersion.ToString(), closedIssuesOnlyAssociatedWithFullVersion);
-    }
-    catch (Exception e)
-    {
-      _console.WriteLine(e.Message);
-      _console.WriteLine($"Could not move closed jira issues from version '{currentFullVersion}' to '{currentVersion}'. \nDo you wish to continue?");
-      if (!_inputReader.ReadConfirmation())
-        throw new UserInteractionException("Release canceled");
-    }
-  }
-
-  private void AddFixVersionToIssues (
-      string currentVersion,
-      IEnumerable<JiraToBeMovedIssue> issues)
-  {
-    var currentJiraVersion = _jiraVersionCreator.FindVersionWithVersionNumber(currentVersion);
-    if (currentJiraVersion == null)
-      throw new UserInteractionException($"Cannot apply fix version '{currentVersion}' because the version does not exist in JIRA.");
-
-    _jiraIssueService.AddFixVersionToIssues(issues, currentJiraVersion.id);
-  }
-
-  private string CreateVersion (SemanticVersion version)
-  {
-    return _jiraVersionCreator.CreateNewVersionWithVersionNumber(version.ToString());
-  }
-
-  private bool ShouldMoveIssuesToNextVersion (string versionID, string nextVersionID, out IReadOnlyList<JiraToBeMovedIssue> issuesToMove)
+  private bool ShouldMoveIssuesToNextVersion (string versionID, string nextVersionID, SemanticVersion currentVersion,SemanticVersion nextVersion, out IReadOnlyList<JiraToBeMovedIssue> issuesToMove)
   {
     if (versionID == nextVersionID)
     {
@@ -134,31 +83,59 @@ public class ReleaseVersionAndMoveIssuesSubStep
       return false;
     }
 
-    issuesToMove = _jiraIssueService.FindAllNonClosedIssues(versionID);
+    issuesToMove = JiraIssueService.FindAllNonClosedIssues(versionID);
     if (issuesToMove.Count == 0)
       return false;
 
-    _console.WriteLine("These are some of the issues that will be moved by releasing the version on jira:");
+    Console.WriteLine($"These are some of the issues that will be moved by releasing version '{currentVersion}' on JIRA:");
     PrintIssueListing(issuesToMove);
-    _console.WriteLine("Do you want to move these issues to the new version and release the old one or just release the old version?");
+    Console.WriteLine($"Do you want to move these issues to version '{nextVersion}' on JIRA?");
 
-    return _inputReader.ReadConfirmation();
+    return InputReader.ReadConfirmation();
   }
 
-  private void PrintIssueListing (IReadOnlyList<JiraToBeMovedIssue> issues, int maxLines = 5)
+  private void AddNewlyReleasedVersionToClosedIssuesOnlyAssociatedWithFullVersion (SemanticVersion currentVersion)
   {
-    const string elipses = "...";
-    var maxLength = _console.Profile.Width;
-    foreach (var issue in issues.Take(maxLines))
+    var currentFullVersion = currentVersion.GetCurrentFullVersion().ToString();
+    try
     {
-      var message = $"* {issue.Key} - {issue.Fields.Summary}";
+      var allJiraVersionsStartingWithFullVersion = JiraVersionCreator.FindAllVersionsStartingWithVersionNumber(currentFullVersion);
 
-      if (message.Length > maxLength)
-        message = message.Substring(0, maxLength - elipses.Length).TrimEnd() + elipses;
+      if (allJiraVersionsStartingWithFullVersion.Count == 0)
+        throw new UserInteractionException($"Could not find versions starting with '{currentFullVersion}' in JIRA.");
 
-      _console.WriteLine(message);
+      var currentFullJiraVersion =
+          JiraVersionCreator.FindVersionWithVersionNumber(currentFullVersion)
+          ?? throw new UserInteractionException($"Version '{currentFullVersion}' does not exist in JIRA.");
+
+      var closedIssuesOnlyAssociatedWithFullVersion =
+          JiraIssueService.FindIssuesWithOnlyExactFixVersion(allJiraVersionsStartingWithFullVersion, currentFullJiraVersion);
+
+      if (closedIssuesOnlyAssociatedWithFullVersion.Count == 0)
+      {
+        var message = $"Could not find any issues only associated with fixVersion '{currentFullVersion}', no moving of these issues is necessary.";
+        Console.WriteLine(message);
+        _log.Debug(message);
+        return;
+      }
+
+      Console.WriteLine($"The following JIRA tickets are closed and only associated with version '{currentFullVersion}':");
+
+      PrintIssueListing(closedIssuesOnlyAssociatedWithFullVersion);
+
+      Console.WriteLine($"Add the newly released version '{currentVersion}' to the fix-version of these JIRA tickets?");
+      if (!InputReader.ReadConfirmation())
+        return;
+
+      AddFixVersionToIssues(currentVersion.ToString(), closedIssuesOnlyAssociatedWithFullVersion);
     }
-    if (issues.Count > maxLines)
-      _console.WriteLine(elipses);
+    catch (Exception e)
+    {
+      Console.WriteLine(e.Message);
+      Console.WriteLine($"Could not move closed JIRA issues from version '{currentFullVersion}' to '{currentVersion}'. \nDo you wish to continue?");
+      if (!InputReader.ReadConfirmation())
+        throw new UserInteractionException("Release canceled");
+    }
   }
+
 }

@@ -72,6 +72,12 @@ public abstract class IntegrationTestBase : GitBackedTestBase
         x => releaseVersionAndMoveIssuesMock.Object,
         ServiceLifetime.Singleton);
 
+    var addFixVersionForNewReleaseBranchSubStepMock = new Mock<IAddFixVersionsForNewReleaseBranchSubStep>();
+    var addFixVersionForNewReleaseBranchSubStepDescriptor = new ServiceDescriptor(
+        typeof(IAddFixVersionsForNewReleaseBranchSubStep),
+        x => addFixVersionForNewReleaseBranchSubStepMock.Object,
+        ServiceLifetime.Singleton);
+
     var jiraRestClientProviderStub = new Mock<IJiraRestClientProvider>();
     var jiraRestClientProviderDescriptor = new ServiceDescriptor(
         typeof(IJiraRestClientProvider),
@@ -85,6 +91,7 @@ public abstract class IntegrationTestBase : GitBackedTestBase
         ServiceLifetime.Singleton);
 
     services.Replace(releaseVersionAndMoveIssuesDescriptor);
+    services.Replace(addFixVersionForNewReleaseBranchSubStepDescriptor);
     services.Replace(jiraRestClientProviderDescriptor);
     services.Replace(jiraVersionCreatorDescriptor);
 

@@ -181,6 +181,71 @@ public class JiraCombinedIntegrationTests : IntegrationTestBase
   }
 
   [Test]
+  public void TestJiraRunThrough_FromDevelopWithStartReleasePhase_AddsRCVersionAndNextJiraVersionToOpenTickets ()
+  {
+    var prevVersion = "1.0.0";
+    var nextVersion = "1.1.0";
+    var rcVersion = "1.0.0-rc.1";
+    JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, prevVersion, nextVersion, rcVersion);
+
+    var newVersionID = JiraTestUtility.CreateVersion(_restClient, prevVersion, _config.Jira.JiraProjectKey);
+
+    var openIssue = JiraTestUtility.AddTestIssueToVersion(
+        "Some open issue",
+        false,
+        _config.Jira.JiraProjectKey,
+        _restClient,
+        new JiraProjectVersion() { name = prevVersion, id = newVersionID });
+
+    var closedIssue = JiraTestUtility.AddTestIssueToVersion(
+        "Some closed issue",
+        true,
+        _config.Jira.JiraProjectKey,
+        _restClient,
+        new JiraProjectVersion() { name = prevVersion, id = newVersionID });
+
+    ExecuteGitCommand("commit -m feature --allow-empty");
+    ExecuteGitCommand("checkout -b develop");
+
+    //Get release version from user
+    TestConsole.Input.PushTextWithEnter(prevVersion);
+    //Get next release version from user for jira
+    TestConsole.Input.PushTextWithEnter(nextVersion);
+
+    TestConsole.Input.PushTextWithEnter(_jiraUsername);
+    TestConsole.Input.PushTextWithEnter(_jiraPassword);
+    //accept saving password
+    TestConsole.Input.PushTextWithEnter("y");
+
+    //accept adding rc version to open tickets
+    TestConsole.Input.PushTextWithEnter("y");
+    //accept adding next version to open tickets
+    TestConsole.Input.PushTextWithEnter("y");
+
+    var act = JiraTestUtility.RunProgramWithoutWindowsCredentials(new[] { "New-Release-Branch" });
+
+    Assert.That(act, Is.EqualTo(0));
+
+    var allJiraVersions = JiraTestUtility.GetAllJiraVersions(_config.Jira.JiraProjectKey, _restClient).ToList();
+    var rcVersionJira = allJiraVersions.First(v => v.name.Equals(rcVersion));
+    var prevVersionJira = allJiraVersions.First(v => v.name.Equals(prevVersion));
+    var nextVersionJira = allJiraVersions.First(v => v.name.Equals(nextVersion));
+
+    Assert.That(rcVersionJira.released, Is.False);
+    Assert.That(prevVersionJira.released, Is.False);
+    Assert.That(nextVersionJira.released, Is.False);
+
+    openIssue = JiraTestUtility.GetIssue(openIssue.ID, _restClient);
+    Assert.That(openIssue.fields.FixVersions.Select(v => v.ID), Is.EquivalentTo(new [] {rcVersionJira.id, prevVersionJira.id, nextVersionJira.id}));
+
+    closedIssue = JiraTestUtility.GetIssue(closedIssue.ID, _restClient);
+    Assert.That(closedIssue.fields.FixVersions.Select(v => v.ID), Is.EquivalentTo(new [] {prevVersionJira.id, }));
+
+    JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, prevVersion, nextVersion, rcVersion);
+    JiraTestUtility.DeleteIssues(_restClient, openIssue.ID, closedIssue.ID);
+  }
+
+  [Test]
   public void TestJiraRunThrough_FromRelease_MovesOnlyOpenJiraVersions ()
   {
     var prevVersion = "1.3.5";

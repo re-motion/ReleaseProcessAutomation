@@ -46,6 +46,7 @@ public class ReleaseOnMasterStep
   private readonly IPushNewReleaseBranchStep _pushNewReleaseBranchStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
+  private readonly IAddFixVersionsForNewReleaseBranchSubStep _addFixVersionsForNewReleaseBranchSubStep;
   private readonly ILogger _log = Log.ForContext<ReleaseOnMasterStep>();
 
   public ReleaseOnMasterStep (
@@ -56,13 +57,15 @@ public class ReleaseOnMasterStep
       Config config,
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IAnsiConsole console,
-      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep)
+      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep,
+      IAddFixVersionsForNewReleaseBranchSubStep addFixVersionsForNewReleaseBranchSubStep)
       : base(gitClient, config, inputReader, console)
   {
     _continueReleaseOnMasterStep = continueReleaseOnMasterStep;
     _pushNewReleaseBranchStep = pushNewReleaseBranchStep;
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _releaseVersionAndMoveIssuesSubStep = releaseVersionAndMoveIssuesSubStep;
+    _addFixVersionsForNewReleaseBranchSubStep = addFixVersionsForNewReleaseBranchSubStep;
   }
 
   public void Execute (SemanticVersion nextVersion, string? commitHash, bool startReleasePhase, bool pauseForCommit, bool noPush)
@@ -103,6 +106,7 @@ public class ReleaseOnMasterStep
 
     if (startReleasePhase)
     {
+      _addFixVersionsForNewReleaseBranchSubStep.Execute(nextVersion, nextJiraVersion);
       _pushNewReleaseBranchStep.Execute(releaseBranchName, "develop");
       return;
     }

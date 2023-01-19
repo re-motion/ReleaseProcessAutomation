@@ -157,6 +157,13 @@ public static class JiraTestUtility
     return true;
   }
 
+  public static IEnumerable<JiraProjectVersion> GetAllJiraVersions (string projectKey, JiraRestClient restClient)
+  {
+    var request = restClient.CreateRestRequest($"project/{projectKey}/versions", Method.GET);
+    var response = restClient.DoRequest<List<JiraProjectVersion>>(request, HttpStatusCode.OK);
+    return response.Data;
+  }
+
   private static void CloseIssue (string issueID, JiraRestClient restClient)
   {
     var resource = "issue/" + issueID + "/transitions";
@@ -166,12 +173,5 @@ public static class JiraTestUtility
     request.AddBody(body);
 
     restClient.DoRequest(request, HttpStatusCode.NoContent);
-  }
-
-  private static IEnumerable<JiraProjectVersion> GetAllJiraVersions (string projectKey, JiraRestClient restClient)
-  {
-    var request = restClient.CreateRestRequest($"project/{projectKey}/versions", Method.GET);
-    var response = restClient.DoRequest<List<JiraProjectVersion>>(request, HttpStatusCode.OK);
-    return response.Data;
   }
 }
