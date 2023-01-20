@@ -63,7 +63,9 @@ public class AncestorFinder
     }
 
     _log.Warning("Multiple matching ancestors were found: '{FoundAncestors}'", foundAncestors);
-    var input = _inputReader.ReadStringChoice("Please enter the name of the ancestor branch:", foundAncestors);
+    var input = _inputReader.ReadStringChoice(
+        "Found multiple branches that could be the ancestor branch.\nPlease choose the correct ancestor branch (used to determine which versions are available and which branch to merge into):",
+        foundAncestors);
     _log.Debug("User input for the name of the ancestor branch was read: '{UserInput}'", input);
     return input;
   }

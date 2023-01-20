@@ -151,7 +151,7 @@ public class CommandLineGitClient : IGitClient
 
     foreach (var ancestor in selectAncestors)
     foreach (var expected in expectedAncestor)
-      if (expected.Contains(ancestor) || ancestor.Contains(expected))
+      if (expected.StartsWith(ancestor) || ancestor.StartsWith(expected))
         foundAncestors.Add(ancestor);
 
     return foundAncestors;
