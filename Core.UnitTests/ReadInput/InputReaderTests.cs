@@ -29,6 +29,67 @@ namespace Remotion.ReleaseProcessAutomation.UnitTests.ReadInput;
 internal class InputReaderTests
 {
   [Test]
+  [TestCase("y", true)]
+  [TestCase("Y", true)]
+  [TestCase("n", false)]
+  [TestCase("N", false)]
+  public void ReadConfirmation_WithInput_ReturnsOutput (string inputText, bool expectedOutput)
+  {
+    var testConsole = new TestConsole();
+    testConsole.Input.PushTextWithEnter(inputText);
+    var inputReader = new InputReader(testConsole);
+
+    var result = inputReader.ReadConfirmation();
+
+    Assert.That(result, Is.EqualTo(expectedOutput));
+  }
+
+  [Test]
+  public void ReadConfirmation_WithFirstIllegalInput_WithSecondOKInput_AsksUserAgainAfterFirstInput ()
+  {
+    var testConsole = new TestConsole();
+    testConsole.Input.PushTextWithEnter("notACorrectInput");
+    testConsole.Input.PushTextWithEnter("y");
+    var inputReader = new InputReader(testConsole);
+
+    var result = inputReader.ReadConfirmation();
+
+    var lines = testConsole.Output.Split("\n");
+    Assert.That(lines[0], Is.EqualTo("Confirm? [y/n] (y): notACorrectInput"));
+    Assert.That(lines[1], Is.EqualTo("The input 'notACorrectInput' is not a valid option."));
+    Assert.That(lines[2], Is.EqualTo("Confirm? [y/n] (y): y"));
+    Assert.That(result, Is.EqualTo(true));
+  }
+
+  [Test]
+  [TestCase(true, "Confirm? [y/n] (y)")]
+  [TestCase(false, "Confirm? [y/n] (n)")]
+  public void ReadConfirmation_WithDifferingDefaultValues_ChangesYesNoAtEndOfMessageDependingOnDefaultValue (bool defaultValue, string consoleMessage)
+  {
+    var testConsole = new TestConsole();
+    testConsole.Input.PushTextWithEnter("y");
+    var inputReader = new InputReader(testConsole);
+
+    var result = inputReader.ReadConfirmation(defaultValue);
+
+    Assert.That(testConsole.Output, Does.Contain(consoleMessage));
+  }
+
+  [Test]
+  [TestCase(true)]
+  [TestCase(false)]
+  public void ReadConfirmation_WithEnterInput_ReturnsDefault (bool defaultValue)
+  {
+    var testConsole = new TestConsole();
+    testConsole.Input.PushKey(ConsoleKey.Enter);
+    var inputReader = new InputReader(testConsole);
+
+    var result = inputReader.ReadConfirmation(defaultValue);
+
+    Assert.That(result, Is.EqualTo(defaultValue));
+  }
+
+  [Test]
   public void ReadVersionChoice_WithInteractiveConsole_ReturnsFirstVersion ()
   {
     var nextVersions = new SemanticVersion().GetNextPossibleVersionsDevelop(true);
