@@ -19,6 +19,7 @@ using System;
 using Remotion.ReleaseProcessAutomation.Configuration.Data;
 using Remotion.ReleaseProcessAutomation.Extensions;
 using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Jira;
 using Remotion.ReleaseProcessAutomation.ReadInput;
 using Remotion.ReleaseProcessAutomation.Scripting;
 using Remotion.ReleaseProcessAutomation.SemanticVersioning;
@@ -52,8 +53,9 @@ public class ContinueReleasePatchStep
       IMSBuildCallAndCommit msBuildCallAndCommit,
       IPushPatchReleaseStep pushPatchReleaseStep,
       IGitBranchOperations gitBranchOperations,
-      IAnsiConsole console)
-      : base(gitClient, config, inputReader, console, msBuildCallAndCommit)
+      IAnsiConsole console,
+      IJiraVersionCreator jiraVersionCreator)
+      : base(gitClient, config, inputReader, console, msBuildCallAndCommit, jiraVersionCreator)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _pushPatchReleaseStep = pushPatchReleaseStep;
@@ -96,7 +98,7 @@ public class ContinueReleasePatchStep
 
     GitClient.Checkout(mergeTargetBranchName);
 
-    CreateSupportBranchWithHotfixForRelease(nextVersion.GetNextMinor());
+    CreateSupportBranchWithHotfixForRelease(nextVersion.GetNextMinor(), noPush);
 
     GitClient.Checkout(mergeTargetBranchName);
 

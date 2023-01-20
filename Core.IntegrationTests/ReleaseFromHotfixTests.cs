@@ -121,9 +121,9 @@ internal class ReleaseFromHotfixTests : IntegrationTestBase
   {
     var correctLogs1 =
         @"*  (origin/hotfix/v1.1.2, hotfix/v1.1.2)Update metadata to version '1.1.2'.
-          | *  (hotfix/v1.2.0)Update metadata to version '1.2.0'.
+          | *  (origin/hotfix/v1.2.0, hotfix/v1.2.0)Update metadata to version '1.2.0'.
           |/  
-          *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1, support/v1.2) Merge branch 'release/v1.1.1' into support/v1.1
+          *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.2, origin/support/v1.1, support/v1.2) Merge branch 'release/v1.1.1' into support/v1.1
           |\  
           | *  (origin/release/v1.1.1, release/v1.1.1)Update metadata to version '1.1.1'.
           |/  
@@ -132,10 +132,10 @@ internal class ReleaseFromHotfixTests : IntegrationTestBase
           ";
 
     var correctLogs2 =
-        @"*  (hotfix/v1.2.0)Update metadata to version '1.2.0'.
+        @"*  (origin/hotfix/v1.2.0, hotfix/v1.2.0)Update metadata to version '1.2.0'.
           | *  (origin/hotfix/v1.1.2, hotfix/v1.1.2)Update metadata to version '1.1.2'.
           |/  
-          *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.1, support/v1.2) Merge branch 'release/v1.1.1' into support/v1.1
+          *    (HEAD -> support/v1.1, tag: v1.1.1, origin/support/v1.2, origin/support/v1.1, support/v1.2) Merge branch 'release/v1.1.1' into support/v1.1
           |\  
           | *  (origin/release/v1.1.1, release/v1.1.1)Update metadata to version '1.1.1'.
           |/  

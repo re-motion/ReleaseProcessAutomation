@@ -22,6 +22,7 @@ using Moq;
 using NUnit.Framework;
 using Remotion.ReleaseProcessAutomation.Configuration;
 using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Jira;
 using Remotion.ReleaseProcessAutomation.ReadInput;
 using Remotion.ReleaseProcessAutomation.Scripting;
 using Remotion.ReleaseProcessAutomation.SemanticVersioning;
@@ -40,6 +41,7 @@ internal class ContinueReleaseOnMasterStepTests
   private Mock<IPushMasterReleaseStep> _nextReleaseStepMock;
   private Mock<IMSBuildCallAndCommit> _msBuildCallAndCommitStub;
   private Mock<IGitBranchOperations> _gitBranchOperationsStub;
+  private Mock<IJiraVersionCreator> _jiraVersionCreatorStub;
 
   [SetUp]
   public void Setup ()
@@ -52,6 +54,7 @@ internal class ContinueReleaseOnMasterStepTests
     _consoleStub = new Mock<IAnsiConsole>();
     _msBuildCallAndCommitStub = new Mock<IMSBuildCallAndCommit>();
     _gitBranchOperationsStub = new Mock<IGitBranchOperations>();
+    _jiraVersionCreatorStub = new Mock<IJiraVersionCreator>();
   }
 
   [Test]
@@ -76,7 +79,8 @@ internal class ContinueReleaseOnMasterStepTests
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
         _msBuildCallAndCommitStub.Object,
-        _gitBranchOperationsStub.Object
+        _gitBranchOperationsStub.Object,
+        _jiraVersionCreatorStub.Object
     );
 
     Assert.That(
@@ -109,7 +113,8 @@ internal class ContinueReleaseOnMasterStepTests
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
         _msBuildCallAndCommitStub.Object,
-        _gitBranchOperationsStub.Object
+        _gitBranchOperationsStub.Object,
+        _jiraVersionCreatorStub.Object
     );
 
     Assert.That(
@@ -151,7 +156,8 @@ internal class ContinueReleaseOnMasterStepTests
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
         _msBuildCallAndCommitStub.Object,
-        _gitBranchOperationsStub.Object
+        _gitBranchOperationsStub.Object,
+        _jiraVersionCreatorStub.Object
     );
 
     Assert.That(() => step.Execute(version, false), Throws.Nothing);
@@ -185,7 +191,8 @@ internal class ContinueReleaseOnMasterStepTests
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
         _msBuildCallAndCommitStub.Object,
-        _gitBranchOperationsStub.Object
+        _gitBranchOperationsStub.Object,
+        _jiraVersionCreatorStub.Object
     );
 
     step.Execute(version, false);
@@ -218,7 +225,8 @@ internal class ContinueReleaseOnMasterStepTests
         _nextReleaseStepMock.Object,
         _consoleStub.Object,
         _msBuildCallAndCommitStub.Object,
-        _gitBranchOperationsStub.Object
+        _gitBranchOperationsStub.Object,
+        _jiraVersionCreatorStub.Object
     );
 
     step.Execute(version, true);

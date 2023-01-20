@@ -19,6 +19,7 @@ using System;
 using Remotion.ReleaseProcessAutomation.Configuration.Data;
 using Remotion.ReleaseProcessAutomation.Extensions;
 using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Jira;
 using Remotion.ReleaseProcessAutomation.ReadInput;
 using Remotion.ReleaseProcessAutomation.Scripting;
 using Remotion.ReleaseProcessAutomation.SemanticVersioning;
@@ -52,8 +53,9 @@ public class ContinueReleaseOnMasterStep
       IPushMasterReleaseStep pushMasterReleaseStep,
       IAnsiConsole console,
       IMSBuildCallAndCommit msBuildCallAndCommit,
-      IGitBranchOperations gitBranchOperations)
-      : base(gitClient, config, inputReader, console, msBuildCallAndCommit)
+      IGitBranchOperations gitBranchOperations,
+      IJiraVersionCreator jiraVersionCreator)
+      : base(gitClient, config, inputReader, console, msBuildCallAndCommit, jiraVersionCreator)
   {
     _pushMasterReleaseStep = pushMasterReleaseStep;
     _gitBranchOperations = gitBranchOperations;
@@ -69,7 +71,7 @@ public class ContinueReleaseOnMasterStep
       throw new UserInteractionException($"Cannot complete the release when not on a 'master' branch. Current branch: '{currentBranch}'.");
     }
 
-    CreateTagAndMerge();
+    CreateTagAndMerge(noPush);
 
     if (noPush)
       return;
@@ -77,7 +79,7 @@ public class ContinueReleaseOnMasterStep
     _pushMasterReleaseStep.Execute(nextVersion);
   }
 
-  private void CreateTagAndMerge ()
+  private void CreateTagAndMerge (bool noPush)
   {
     var currentBranchName = GitClient.GetCurrentBranchName();
 
@@ -110,7 +112,7 @@ public class ContinueReleaseOnMasterStep
 
     CreateTagWithMessage(tagName);
 
-    CreateSupportBranchWithHotfixForRelease(currentVersion.GetNextPatchVersion());
+    CreateSupportBranchWithHotfixForRelease(currentVersion.GetNextPatchVersion(), noPush);
 
     GitClient.Checkout("develop");
   }

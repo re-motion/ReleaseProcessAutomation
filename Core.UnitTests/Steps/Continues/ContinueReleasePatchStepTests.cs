@@ -22,6 +22,7 @@ using Remotion.ReleaseProcessAutomation.Configuration;
 using Remotion.ReleaseProcessAutomation.Configuration.Data;
 using Remotion.ReleaseProcessAutomation.Extensions;
 using Remotion.ReleaseProcessAutomation.Git;
+using Remotion.ReleaseProcessAutomation.Jira;
 using Remotion.ReleaseProcessAutomation.ReadInput;
 using Remotion.ReleaseProcessAutomation.Scripting;
 using Remotion.ReleaseProcessAutomation.SemanticVersioning;
@@ -41,6 +42,7 @@ internal class ContinueReleasePatchStepTests
   private Mock<IMSBuildCallAndCommit> _msBuildExecutorMock;
   private Mock<IPushPatchReleaseStep> _pushReleasePatchMock;
   private Mock<IGitBranchOperations> _gitBranchOperationsMock;
+  private Mock<IJiraVersionCreator> _jiraVersionCreatorStub;
 
   [SetUp]
   public void Setup ()
@@ -51,6 +53,7 @@ internal class ContinueReleasePatchStepTests
     _pushReleasePatchMock = new Mock<IPushPatchReleaseStep>();
     _consoleStub = new Mock<IAnsiConsole>();
     _gitBranchOperationsMock = new Mock<IGitBranchOperations>();
+    _jiraVersionCreatorStub = new Mock<IJiraVersionCreator>();
 
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
@@ -69,7 +72,9 @@ internal class ContinueReleasePatchStepTests
         _msBuildExecutorMock.Object,
         _pushReleasePatchMock.Object,
         _gitBranchOperationsMock.Object,
-        _consoleStub.Object);
+        _consoleStub.Object,
+        _jiraVersionCreatorStub.Object
+    );
 
     Assert.That(
         () => releasePatchStep.Execute(new SemanticVersion(), false, true),
@@ -90,7 +95,9 @@ internal class ContinueReleasePatchStepTests
         _msBuildExecutorMock.Object,
         _pushReleasePatchMock.Object,
         _gitBranchOperationsMock.Object,
-        _consoleStub.Object);
+        _consoleStub.Object,
+        _jiraVersionCreatorStub.Object
+    );
 
     Assert.That(
         () => releasePatchStep.Execute(new SemanticVersion(), false, false),
@@ -112,7 +119,9 @@ internal class ContinueReleasePatchStepTests
         _msBuildExecutorMock.Object,
         _pushReleasePatchMock.Object,
         _gitBranchOperationsMock.Object,
-        _consoleStub.Object);
+        _consoleStub.Object,
+        _jiraVersionCreatorStub.Object
+    );
 
     Assert.That(
         () => releasePatchStep.Execute(new SemanticVersion(), true, false),
@@ -135,7 +144,9 @@ internal class ContinueReleasePatchStepTests
         _msBuildExecutorMock.Object,
         _pushReleasePatchMock.Object,
         _gitBranchOperationsMock.Object,
-        _consoleStub.Object);
+        _consoleStub.Object,
+        _jiraVersionCreatorStub.Object
+    );
 
     Assert.That(
         () => releasePatchStep.Execute(new SemanticVersion(), true, true),
