@@ -19,6 +19,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
+using Remotion.ReleaseProcessAutomation;
 using Serilog;
 
 namespace Remotion.ReleaseProcessAutomation.SemanticVersioning;
@@ -34,7 +35,7 @@ public class SemanticVersionParser
   {
     if (!Regex.IsMatch(version, _versionPattern, RegexOptions.Multiline))
     {
-      throw new ArgumentException("Version has an invalid format. Expected equivalent to '1.2.3' or '1.2.3-alpha.4'.");
+      throw new UserInteractionException("Version has an invalid format. Expected equivalent to '1.2.3' or '1.2.3-alpha.4'.");
     }
 
     return ParseVersionInternal(version);
@@ -48,7 +49,7 @@ public class SemanticVersionParser
     if (splitBranchName.Length != 2)
     {
       var message = $"Could not parse version from branch name '{branchName}' because it is not in a valid format. Expected equivalent to 'release/v1.2.3'.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
 
     return ParseVersion(splitBranchName[1]);

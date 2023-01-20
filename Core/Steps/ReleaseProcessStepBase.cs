@@ -70,7 +70,7 @@ public abstract class ReleaseProcessStepBase
       return;
     }
 
-    throw new Exception("Working directory not clean, user does not want to continue. Release process stopped.");
+    throw new UserInteractionException("Working directory not clean, user does not want to continue. Release process stopped.");
   }
 
   protected void ResetItemsOfIgnoreList (IgnoreListType ignoreListType)

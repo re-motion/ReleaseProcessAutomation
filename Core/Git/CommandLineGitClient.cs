@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Remotion.ReleaseProcessAutomation;
+using Remotion.ReleaseProcessAutomation.Git;
 using Serilog;
 
 namespace Remotion.ReleaseProcessAutomation.Git;
@@ -48,7 +50,7 @@ public class CommandLineGitClient : IGitClient
     {
       var currentVersion = ExecuteGitCommandWithOutput("version");
       var message = $"Could not find a recent enough git version. Version 2.7.0 or higher is required, version found is '{currentVersion}'";
-      throw new InvalidOperationException(message);
+      throw new GitException(message);
     }
   }
 
@@ -188,7 +190,7 @@ public class CommandLineGitClient : IGitClient
       var currentCommit = ExecuteGitCommandWithOutput("rev-parse HEAD");
       var message =
           $"Could not find tags from '{from}' to '{to}' while on branch '{currentBranchName}' from commit '{currentCommit}'. \nGit error: \n{allVersionsOutput.Output}";
-      throw new InvalidOperationException(message);
+      throw new GitException(message);
     }
 
     var allVersionsSplit = allVersionsOutput.Output.Split("\n").Select(s => s.Trim());
@@ -213,7 +215,7 @@ public class CommandLineGitClient : IGitClient
     if (!checkout.Success)
     {
       var message = $"Could not checkout commit '{commitHash}'.\nGit error:\n{checkout.Output}";
-      throw new InvalidOperationException(message);
+      throw new GitException(message);
     }
 
     return checkout.Output;
@@ -227,7 +229,7 @@ public class CommandLineGitClient : IGitClient
     {
       var currentBranch = GetCurrentBranchName();
       var message = $"Could not checkout '{toCheckout}' from branch {currentBranch}.\nGit error:\n{checkout.Output}";
-      throw new InvalidOperationException(message);
+      throw new GitException(message);
     }
 
     return checkout.Output;
@@ -240,7 +242,7 @@ public class CommandLineGitClient : IGitClient
     if (!checkout.Success)
     {
       var message = $"Could not checkout new branch '{branchName}'.\nGit error:\n{checkout.Output}";
-      throw new Exception(message);
+      throw new GitException(message);
     }
 
     return checkout.Output;
@@ -253,7 +255,7 @@ public class CommandLineGitClient : IGitClient
     {
       var currentBranch = GetCurrentBranchName();
       var message = $"Could not merge branch {branchName} into {currentBranch}.\nGit error: \n{merge.Output}";
-      throw new Exception(message);
+      throw new GitException(message);
     }
   }
 
@@ -270,7 +272,7 @@ public class CommandLineGitClient : IGitClient
     if (!diffOutput.Success || !diffOutput.Output.Equals(string.Empty))
     {
       var message = $"Could not merge branch {branchName} into {currentBranchName}.\nGit error: \n{diffOutput.Output}";
-      throw new Exception(message);
+      throw new GitException(message);
     }
   }
 
@@ -281,7 +283,7 @@ public class CommandLineGitClient : IGitClient
     {
       var status = ExecuteGitCommandWithOutput("status");
       var errorMessage = $"Could not commit on branch.\nGit status:\n{status.Output}\n\nGit error:\n{commit.Output}";
-      throw new Exception(errorMessage);
+      throw new GitException(errorMessage);
     }
   }
 
@@ -292,7 +294,7 @@ public class CommandLineGitClient : IGitClient
     {
       var status = ExecuteGitCommandWithOutput("status");
       var message = $"Could not add all to next commit. Git status:\n{status.Output}\n\nGit error:\n{add.Output}";
-      throw new Exception(message);
+      throw new GitException(message);
     }
   }
 
@@ -361,15 +363,15 @@ public class CommandLineGitClient : IGitClient
     {
       var status = ExecuteGitCommandWithOutput("status");
       var message = $"Could not determine current branch while trying to push to repos. Git status:\n{status}";
-      throw new InvalidOperationException(message);
+      throw new GitException(message);
     }
 
     Checkout(branchName);
 
     if (!string.IsNullOrEmpty(tagName) && !DoesTagExist(tagName))
     {
-      var message = $"Tag with name '{tagName}' does not exist, must not have been created before calling pushToRepos, check previous steps.";
-      throw new InvalidOperationException(message);
+      var message = $"Tag with name '{tagName}' does not exist, must not have been created before calling pushToRepos.";
+      throw new GitException(message);
     }
 
     foreach (var remoteName in remoteNames)
@@ -411,7 +413,7 @@ public class CommandLineGitClient : IGitClient
     {
       var currentCommit = ExecuteGitCommandWithOutput("rev-parse HEAD");
       var message = $"Did not find current branch when trying to find first ancestor. Current commit hash: '{currentCommit}'.";
-      throw new InvalidOperationException(message);
+      throw new GitException(message);
     }
 
     var allAncestorsString = ExecuteGitCommandWithOutput("show-branch");
@@ -419,7 +421,7 @@ public class CommandLineGitClient : IGitClient
     if (!allAncestorsString.Success)
     {
       var message = $"Did not find first ancestor on branch '{branchName}'.\nGit error:\n{allAncestorsString.Output}";
-      throw new InvalidOperationException(message);
+      throw new GitException(message);
     }
 
     var allAncestors = allAncestorsString.Output.Split("\n", StringSplitOptions.RemoveEmptyEntries);

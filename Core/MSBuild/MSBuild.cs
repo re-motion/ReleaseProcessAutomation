@@ -61,7 +61,7 @@ internal class MSBuild
     if (msBuildProcess.ExitCode != 0)
     {
       var message = $"MSBuild '{arguments}' failed with Error: '{msBuildOutput}'.";
-      throw new Exception(message);
+      throw new InvalidOperationException(message);
     }
 
     _console.WriteLine(msBuildOutput);

@@ -40,9 +40,11 @@ public static class Program
     {
       app.Run(args);
     }
-    catch (UserDoesNotWantToContinueException u)
+    catch (UserInteractionException e)
     {
-      Console.WriteLine(u.Message);
+      Console.WriteLine(e.Message);
+      var log = Log.ForContext(e.TargetSite!.DeclaringType);
+      log.Error(e, "User canceled the operation or cannot continue with release due to inconsistencies in the repository or JIRA.");
       return -1;
     }
     catch (Exception e)

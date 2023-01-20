@@ -155,8 +155,8 @@ public static class SemanticVersionExtensions
                    GetNextPatchVersion(semanticVersion)
                };
 
-      const string message = "Could not get next possible next versions for hotfix.";
-      throw new InvalidOperationException(message);
+      const string message = "Could not get possible next versions for hotfix.";
+      throw new UserInteractionException(message);
     }
 
     return new[]

@@ -75,7 +75,9 @@ public class JiraProjectVersionServiceTest
   {
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.0.0");
 
-    Assert.Throws(typeof(JiraException), () => _service.DeleteVersion(c_jiraProjectKey, "6.0.0.0"));
+    Assert.That(() => _service.DeleteVersion(c_jiraProjectKey, "6.0.0.0"),
+        Throws.InstanceOf<JiraException>().
+            With.Message.EqualTo("Error, version with name '6.0.0.0' does not exist in project 'SRCBLDTEST'."));
   }
 
   [Test]
@@ -98,8 +100,8 @@ public class JiraProjectVersionServiceTest
 
     Assert.That(
         () => { _service.ReleaseVersionAndSquashUnreleased(alpha1Version.id, beta1Version.id, c_jiraProjectKey); },
-        Throws.Exception.TypeOf<JiraException>().With.Message.EqualTo(
-            "Version '" + alpha1Version.name + "' cannot be released, as there is already one or multiple released version(s) (" + alpha2Version.name
+        Throws.Exception.TypeOf<UserInteractionException>().With.Message.EqualTo(
+            "Version '" + alpha1Version.name + "' cannot be released, as there is already one or more released version (" + alpha2Version.name
             + ") before the next version '" + beta1Version.name + "'."));
 
     Assert.That(_versionFinder.FindVersions(c_jiraProjectKey, "6.0.1-alpha.2").SingleOrDefault(x => x.name == "6.0.1-alpha.2"), Is.Not.Null);

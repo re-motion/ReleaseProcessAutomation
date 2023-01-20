@@ -61,15 +61,15 @@ public class ConfigReader
     }
 
     var allPaths = new[] { config.MSBuildSettings.MSBuildPath };
-    
+
     // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
     if (config.MSBuildSettings.AlternativeMSBuildPaths != null)
       allPaths = allPaths.Concat(config.MSBuildSettings.AlternativeMSBuildPaths).ToArray();
-    
+
     try
     {
       var fullPath = allPaths.Select(Path.GetFullPath).First(File.Exists);
-      
+
       config.MSBuildSettings.MSBuildPath = fullPath;
       return config;
     }

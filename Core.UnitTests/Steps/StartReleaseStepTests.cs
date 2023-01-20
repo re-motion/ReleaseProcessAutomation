@@ -60,8 +60,8 @@ internal class StartReleaseStepTests
 
     Assert.That(
         () => startReleaseStep.Execute(commitHash, false, false),
-        Throws.InstanceOf<ArgumentException>()
-            .With.Message.EqualTo("The given commit hash was not found in the repository."));
+        Throws.InstanceOf<UserInteractionException>()
+            .With.Message.EqualTo($"The given commit hash '{commitHash}' was not found in the repository."));
   }
 
   [Test]

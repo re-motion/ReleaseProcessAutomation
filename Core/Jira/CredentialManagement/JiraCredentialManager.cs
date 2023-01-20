@@ -82,12 +82,12 @@ public class JiraCredentialManager
       {
         CheckJiraCredentials(tmpCredentials);
       }
-      catch (Exception e)
+      catch (UserInteractionException e)
       {
         _console.WriteLine("The input credentials didnt match, do you want to try again?");
         if (_inputReader.ReadConfirmation())
           continue;
-        throw new JiraAuthenticationException("Authentication not successful, user does not want to try again.", e);
+        throw new UserInteractionException("Authentication not successful, user does not want to try again.");
       }
 
       _console.WriteLine("Do you want to save the login information to the credential manager?");
@@ -116,7 +116,7 @@ public class JiraCredentialManager
           $"Jira Check Authentication has failed. Maybe wrong credentials? \nAlso be advised that the ProjectKey is case sensitive '{_config.Jira.JiraProjectKey}'\nJira Url: '{_config.Jira.JiraURL}'. \nException Message: '{e.Message}'";
       _log.Warning(errorMessage);
       _console.WriteLine(errorMessage);
-      throw;
+      throw new UserInteractionException(errorMessage);
     }
   }
 }

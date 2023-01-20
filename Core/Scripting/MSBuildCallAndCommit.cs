@@ -76,7 +76,7 @@ public class MSBuildCallAndCommit
       if (!string.IsNullOrEmpty(commitMessage) && !_gitClient.IsWorkingDirectoryClean())
       {
         const string message = "Working directory not clean before a call to MSBuild.exe with a commit message defined in config.";
-        throw new InvalidOperationException(message);
+        throw new UserInteractionException(message);
       }
 
       var msBuildCallArguments = MSBuildUtilities.GetMSBuildCallString(step, version, _console);
@@ -94,7 +94,7 @@ public class MSBuildCallAndCommit
         if (!_gitClient.IsWorkingDirectoryClean())
         {
           const string message = "Working directory not clean after call to MSBuild.exe without commit message. Check your targets in the config and make sure they do not create new files.";
-          throw new InvalidOperationException(message);
+          throw new UserInteractionException(message);
         }
       }
       else

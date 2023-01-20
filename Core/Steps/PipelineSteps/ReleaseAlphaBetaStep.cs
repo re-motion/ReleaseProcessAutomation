@@ -83,12 +83,12 @@ public class ReleaseAlphaBetaStep
     else
     {
       var currentBranch = GitClient.GetCurrentBranchName();
-      throw new InvalidOperationException("Cannot call ReleasePreReleaseFromDevelop from a non develop or hotfix/ branch.");
+      throw new UserInteractionException($"Cannot release a pre-release version when not on the 'develop' or a 'hotfix/*' branch. Current branch: '{currentBranch}'.");
     }
 
     var branchName = $"prerelease/v{nextVersion}";
     if (GitClient.DoesBranchExist(branchName))
-      throw new InvalidOperationException($"The branch '{branchName}' already exists.");
+      throw new UserInteractionException($"Cannot create branch '{branchName}' because it already exists.");
 
     GitClient.CheckoutCommitWithNewBranch(commitHash, branchName);
 

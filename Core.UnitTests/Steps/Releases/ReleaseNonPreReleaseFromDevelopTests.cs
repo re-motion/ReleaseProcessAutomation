@@ -93,6 +93,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     var gitClientStub = new Mock<IGitClient>();
     gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
+    gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("develop");
     gitClientStub.Setup(_ => _.DoesBranchExist($"release/v{nextVersion}")).Returns(true);
 
     var readInputStub = new Mock<IInputReader>();
@@ -126,6 +127,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     var gitClientStub = new Mock<IGitClient>();
     gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
+    gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("develop");
     gitClientStub.Setup(_ => _.DoesBranchExist($"release/v{nextVersion}")).Returns(false);
 
     var readInputStub = new Mock<IInputReader>();
@@ -160,6 +162,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     var gitClientStub = new Mock<IGitClient>();
     gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
+    gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("develop");
     gitClientStub.Setup(_ => _.DoesBranchExist($"release/v{nextVersion}")).Returns(false);
 
     _pushNewReleaseBranchMock.Setup(_ => _.Execute($"release/v{nextVersion}", "develop"));
@@ -198,6 +201,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     var gitClientStub = new Mock<IGitClient>();
     gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
     gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
+    gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("develop");
     gitClientStub.Setup(_ => _.DoesBranchExist($"release/v{nextVersion}")).Returns(false);
 
     var readInputStub = new Mock<IInputReader>();

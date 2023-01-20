@@ -56,8 +56,8 @@ public class PushMasterReleaseStep
 
     if (!_gitClient.DoesBranchExist(branchName))
     {
-      var message = $"The Branch '{branchName}' does not exist. Please create a release branch by using 'new-release-branch' first.";
-      throw new InvalidOperationException(message);
+      var message = $"The branch '{branchName}' does not exist. Please create a release branch by using 'New-Release-Branch' first.";
+      throw new UserInteractionException(message);
     }
 
     _gitBranchOperations.EnsureBranchUpToDate(branchName);

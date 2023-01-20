@@ -78,8 +78,8 @@ public class ReleaseFullVersionFromReleaseBranchStep : ReleaseProcessStepBase, I
     if (!GitClient.IsOnBranch("release/"))
     {
       var currentBranch = GitClient.GetCurrentBranchName();
-      var message = $"Cannot call ReleaseWithRC while not on a releaseBranch. Current branch: '{currentBranch}'.";
-      throw new InvalidOperationException(message);
+      var message = $"Cannot complete the release when not on a 'release/*' branch. Current branch: '{currentBranch}'.";
+      throw new UserInteractionException(message);
     }
 
     if (string.IsNullOrEmpty(ancestor))
@@ -92,8 +92,8 @@ public class ReleaseFullVersionFromReleaseBranchStep : ReleaseProcessStepBase, I
     _log.Debug("Will try to create tag with name '{TagName}'", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
-      var message = $"There is already a commit tagged with {tagName} while trying to create a tag.";
-      throw new InvalidOperationException(message);
+      var message = $"Cannot create tag '{tagName}' because it already exists.";
+      throw new UserInteractionException(message);
     }
 
     var releaseInformationMessage = $"You are releasing version '{nextVersion}'.";
@@ -114,8 +114,8 @@ public class ReleaseFullVersionFromReleaseBranchStep : ReleaseProcessStepBase, I
     }
     else
     {
-      var message = $"Could not get next possible Jira Versions from the next version '{nextVersion}', current branch is '{currentBranchName}' and ancestor is '{ancestor}'.";
-      throw new InvalidOperationException(message);
+      var message = $"Could not get next possible JIRA Versions from the next version '{nextVersion}', current branch is '{currentBranchName}' and ancestor is '{ancestor}'.";
+      throw new UserInteractionException(message);
     }
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Choose next version (open JIRA issues get moved there):", nextPossibleVersions);

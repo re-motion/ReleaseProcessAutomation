@@ -143,7 +143,7 @@ public class JiraProjectVersionService : IJiraProjectVersionService
                       version.name ?? throw new InvalidOperationException("The version did not have a name assigned."))
               });
         }
-        catch (ArgumentException)
+        catch (UserInteractionException)
         {
           //Empty Catch. Invalid versions are not interesting for us
         }
@@ -162,8 +162,8 @@ public class JiraProjectVersionService : IJiraProjectVersionService
         var toBeSquashedVersions = orderedVersions.Skip(currentVersionIndex + 1).Take(nextVersionIndex - currentVersionIndex - 1).ToList();
 
         if (toBeSquashedVersions.Any(IsReleased))
-          throw new JiraException(
-              $"Version '{currentVersion.name}' cannot be released, as there is already one or multiple released version(s) ({string.Join(",", toBeSquashedVersions.Where(IsReleased).Select(t => t.JiraProjectVersion.name))}) before the next version '{nextVersion!.name}'.");
+          throw new UserInteractionException(
+              $"Version '{currentVersion.name}' cannot be released, as there is already one or more released version ({string.Join(",", toBeSquashedVersions.Where(IsReleased).Select(t => t.JiraProjectVersion.name))}) before the next version '{nextVersion!.name}'.");
 
         var allClosedIssues = new List<JiraToBeMovedIssue>();
 

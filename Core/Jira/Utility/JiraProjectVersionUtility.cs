@@ -41,7 +41,7 @@ public class JiraProjectVersionUtility
                     version.name ?? throw new InvalidOperationException("The given version did not have a name assigned."))
             });
       }
-      catch (ArgumentException)
+      catch (UserInteractionException)
       {
         //Empty Catch. Invalid versions are not relevant for us
       }

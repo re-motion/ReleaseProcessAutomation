@@ -78,7 +78,7 @@ public class BranchFromReleaseForContinueVersionStep
     else
     {
       var message = $"Ancestor has to be either 'develop' or a 'hotfix/v*.*.*' branch but was '{ancestor}'.";
-      throw new InvalidOperationException(message);
+      throw new UserInteractionException(message);
     }
   }
 }

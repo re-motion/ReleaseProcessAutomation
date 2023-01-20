@@ -161,7 +161,7 @@ internal class MSBuildInvokerTests
         _consoleStub.Object);
 
     Assert.That(() => msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version),
-            Throws.InstanceOf<InvalidOperationException>()
+            Throws.InstanceOf<UserInteractionException>()
                     .With.Message.EqualTo("Working directory not clean after call to MSBuild.exe without commit message. Check your targets in the config and make sure they do not create new files."));
   }
 
@@ -187,7 +187,7 @@ internal class MSBuildInvokerTests
 
     Assert.That(
         () => msBuildInvoker.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, version),
-        Throws.InstanceOf<InvalidOperationException>()
+        Throws.InstanceOf<UserInteractionException>()
             .With.Message.EqualTo("Working directory not clean before a call to MSBuild.exe with a commit message defined in config."));
   }
 }

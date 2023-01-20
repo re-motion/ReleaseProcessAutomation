@@ -17,6 +17,7 @@
 
 using System;
 using NUnit.Framework;
+using Remotion.ReleaseProcessAutomation;
 
 namespace Remotion.ReleaseProcessAutomation.IntegrationTests;
 
@@ -31,7 +32,7 @@ internal class ReleaseFromSupportTests : IntegrationTestBase
     Program.Console = TestConsole;
 
     Assert.That(() => RunProgram(new[] { "Release-Version" }), 
-        Throws.InstanceOf<InvalidOperationException>().
+        Throws.InstanceOf<UserInteractionException>().
             With.Message.EqualTo("You have to be on either a 'hotfix/*' or 'release/*' or 'develop' or 'master' branch to release a version."));
   }
 }

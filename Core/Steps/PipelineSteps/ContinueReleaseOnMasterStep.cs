@@ -66,7 +66,7 @@ public class ContinueReleaseOnMasterStep
     if (!GitClient.IsOnBranch("release/"))
     {
       var currentBranch = GitClient.GetCurrentBranchName();
-      throw new InvalidOperationException("Cannot call ContinueReleaseOnMaster when not on release branch.");
+      throw new UserInteractionException($"Cannot complete the release when not on a 'master' branch. Current branch: '{currentBranch}'.");
     }
 
     CreateTagAndMerge();
@@ -85,7 +85,7 @@ public class ContinueReleaseOnMasterStep
 
     if (currentBranchName == null)
     {
-      const string message = "Could not create tag and merge because there was no current branch found.";
+      const string message = "Could not identify the currently checked-out branch in the repository's working directory.";
       throw new InvalidOperationException(message);
     }
 
@@ -100,8 +100,8 @@ public class ContinueReleaseOnMasterStep
     _log.Debug("Will try to create tag with name '{TagName}'.", tagName);
     if (GitClient.DoesTagExist(tagName))
     {
-      var message = $"There is already a commit tagged with '{tagName}'.";
-      throw new Exception(message);
+      var message = $"Cannot create tag '{tagName}' because it already exists.";
+      throw new UserInteractionException(message);
     }
 
     GitClient.Checkout("master");
