@@ -43,6 +43,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
 {
   private readonly IContinueReleasePatchStep _continueReleasePatchStep;
   private readonly IReleaseVersionAndMoveIssuesSubStep _releaseVersionAndMoveIssuesSubStep;
+  private readonly IAddFixVersionsForNewReleaseBranchSubStep _addFixVersionsForNewReleaseBranchSubStep;
   private readonly IPushNewReleaseBranchStep _pushNewReleaseBranchStep;
   private readonly IMSBuildCallAndCommit _msBuildCallAndCommit;
   private readonly ILogger _log = Log.ForContext<ReleasePatchStep>();
@@ -55,12 +56,14 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
       IContinueReleasePatchStep continueReleasePatchStep,
       IPushNewReleaseBranchStep pushNewReleaseBranchStep,
       IAnsiConsole console,
-      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep)
+      IReleaseVersionAndMoveIssuesSubStep releaseVersionAndMoveIssuesSubStep,
+      IAddFixVersionsForNewReleaseBranchSubStep addFixVersionsForNewReleaseBranchSubStep)
       : base(gitClient, config, inputReader, console)
   {
     _msBuildCallAndCommit = msBuildCallAndCommit;
     _continueReleasePatchStep = continueReleasePatchStep;
     _releaseVersionAndMoveIssuesSubStep = releaseVersionAndMoveIssuesSubStep;
+    _addFixVersionsForNewReleaseBranchSubStep = addFixVersionsForNewReleaseBranchSubStep;
     _pushNewReleaseBranchStep = pushNewReleaseBranchStep;
 
   }
@@ -120,6 +123,7 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
 
     if (startReleasePhase)
     {
+      _addFixVersionsForNewReleaseBranchSubStep.Execute(nextVersion, nextJiraVersion);
       _pushNewReleaseBranchStep.Execute(releaseBranchName, currentBranchName);
       return;
     }

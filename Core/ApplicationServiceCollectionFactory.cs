@@ -77,6 +77,7 @@ public class ApplicationServiceCollectionFactory
 
         //Sub steps
         .AddTransient<IReleaseVersionAndMoveIssuesSubStep, ReleaseVersionAndMoveIssuesSubStep>()
+        .AddTransient<IAddFixVersionsForNewReleaseBranchSubStep, AddFixVersionsForNewReleaseBranchSubStep>()
         .AddSingleton(
             _ =>
             {

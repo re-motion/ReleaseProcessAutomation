@@ -44,6 +44,7 @@ internal class ReleasePatchStepTests
   private Mock<IContinueReleasePatchStep> _contineReleasePatchMock;
   private Mock<IReleaseVersionAndMoveIssuesSubStep> _releaseVersionAndMoveIssueMock;
   private Mock<IPushNewReleaseBranchStep> _pushNewReleaseBranchMock;
+  private Mock<IAddFixVersionsForNewReleaseBranchSubStep> _addFixVersionsSubStepMock;
 
   [SetUp]
   public void Setup ()
@@ -55,6 +56,7 @@ internal class ReleasePatchStepTests
     _consoleStub = new Mock<IAnsiConsole>();
     _releaseVersionAndMoveIssueMock = new Mock<IReleaseVersionAndMoveIssuesSubStep>();
     _pushNewReleaseBranchMock = new Mock<IPushNewReleaseBranchStep>(MockBehavior.Strict);
+    _addFixVersionsSubStepMock = new Mock<IAddFixVersionsForNewReleaseBranchSubStep>();
 
     var path = Path.Join(TestContext.CurrentContext.TestDirectory, c_configFileName);
     _config = new ConfigReader().LoadConfig(path);
@@ -81,7 +83,8 @@ internal class ReleasePatchStepTests
         _contineReleasePatchMock.Object,
         _pushNewReleaseBranchMock.Object,
         _consoleStub.Object,
-        _releaseVersionAndMoveIssueMock.Object);
+        _releaseVersionAndMoveIssueMock.Object,
+        _addFixVersionsSubStepMock.Object);
 
     Assert.That(
         () => patchStep.Execute(nextVersion, "", false, false, false, true),
@@ -111,7 +114,8 @@ internal class ReleasePatchStepTests
         _contineReleasePatchMock.Object,
         _pushNewReleaseBranchMock.Object,
         _consoleStub.Object,
-        _releaseVersionAndMoveIssueMock.Object);
+        _releaseVersionAndMoveIssueMock.Object,
+        _addFixVersionsSubStepMock.Object);
 
     Assert.That(
         () => patchStep.Execute(nextVersion, "", false, false, false, false),
@@ -121,7 +125,7 @@ internal class ReleasePatchStepTests
   }
 
   [Test]
-  public void Execute_OnHotfixWithStartReleasePhase_DoesNotCallNextStepAndInvokeAndCommitButPushReleaseBranchStep ()
+  public void Execute_OnHotfixWithStartReleasePhase_PushesReleaseBranchStepAndCallsAddFixVersionSubStepButNoFurtherSteps ()
   {
     var nextVersion = new SemanticVersion { Patch = 1 };
     var nextJiraVersion = new SemanticVersion();
@@ -133,7 +137,6 @@ internal class ReleasePatchStepTests
     _inputReaderStub.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
     _pushNewReleaseBranchMock.Setup(_ => _.Execute("release/v0.0.1", "hotfix/v0.0.1" ));
 
-    
     var patchStep = new ReleasePatchStep(
         _gitClientStub.Object,
         _config,
@@ -142,16 +145,50 @@ internal class ReleasePatchStepTests
         _contineReleasePatchMock.Object,
         _pushNewReleaseBranchMock.Object,
         _consoleStub.Object,
-        _releaseVersionAndMoveIssueMock.Object);
+        _releaseVersionAndMoveIssueMock.Object,
+        _addFixVersionsSubStepMock.Object);
 
     Assert.That(
         () => patchStep.Execute(nextVersion, "", true, false, false, false),
         Throws.Nothing);
-    
+
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion), Times.Once);
     _pushNewReleaseBranchMock.Verify(_ => _.Execute("release/v0.0.1", "hotfix/v0.0.1" ));
     _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Never);
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(It.IsAny<MSBuildMode>(), It.IsAny<SemanticVersion>()), Times.Never);
     _contineReleasePatchMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
+  }
+
+  [Test]
+  public void Execute_OnHotfixWithoutStartReleasePhase_DoesNotPushesReleaseBranchStepAndCallsAddFixVersionSubStep ()
+  {
+    var nextVersion = new SemanticVersion { Patch = 1 };
+    var nextJiraVersion = new SemanticVersion();
+    _gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
+    _gitClientStub.Setup(_ => _.IsCommitHash("")).Returns(true);
+    _gitClientStub.Setup(_ => _.IsOnBranch("hotfix/")).Returns(true);
+    _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("hotfix/v0.0.1");
+    var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
+    _inputReaderStub.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
+    _pushNewReleaseBranchMock.Setup(_ => _.Execute("release/v0.0.1", "hotfix/v0.0.1" ));
+
+    var patchStep = new ReleasePatchStep(
+        _gitClientStub.Object,
+        _config,
+        _inputReaderStub.Object,
+        _msBuildInvokerMock.Object,
+        _contineReleasePatchMock.Object,
+        _pushNewReleaseBranchMock.Object,
+        _consoleStub.Object,
+        _releaseVersionAndMoveIssueMock.Object,
+        _addFixVersionsSubStepMock.Object);
+
+    Assert.That(
+        () => patchStep.Execute(nextVersion, "", false, false, false, false),
+        Throws.Nothing);
+
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<SemanticVersion>()), Times.Never);
+    _pushNewReleaseBranchMock.Verify(_ => _.Execute(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
   }
 
   [Test]
@@ -174,7 +211,8 @@ internal class ReleasePatchStepTests
         _contineReleasePatchMock.Object,
         _pushNewReleaseBranchMock.Object,
         _consoleStub.Object,
-        _releaseVersionAndMoveIssueMock.Object);
+        _releaseVersionAndMoveIssueMock.Object,
+        _addFixVersionsSubStepMock.Object);
 
     Assert.That(
         () => patchStep.Execute(nextVersion, "", false, true, false, false),

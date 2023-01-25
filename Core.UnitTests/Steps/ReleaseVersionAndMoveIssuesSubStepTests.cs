@@ -403,7 +403,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
     Assert.That(() => jiraSubStep.Execute(currentVersion, nextVersion, true), Throws.Nothing);
     Assert.That(_console.Output, Does.Contain("Releasing version '0.0.0' on JIRA."));
     Assert.That(_console.Output, Does.Contain("Moving open issues to '0.0.1'"));
-    Assert.That(_console.Output, Does.Contain("These are some of the issues that will be moved by releasing the version on\njira:"));
+    Assert.That(_console.Output, Does.Contain("These are some of the issues that will be moved by releasing version \n'0.0.0' on JIRA:"));
     Assert.That(_console.Output, Does.Contain("* firstKey - firstSummary"));
     Assert.That(_console.Output, Does.Contain("* secondKey - secondSummary"));
     Assert.That(_console.Output, Does.Contain("* thirdKey - thirdSummary"));

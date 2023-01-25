@@ -42,6 +42,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   private Mock<IContinueReleaseOnMasterStep> _continueReleaseOnMasterMock;
   private Mock<IPushNewReleaseBranchStep> _pushNewReleaseBranchMock;
   private Mock<IReleaseVersionAndMoveIssuesSubStep> _releaseVersionAndMoveIssuesMock;
+  private Mock<IAddFixVersionsForNewReleaseBranchSubStep> _addFixVersionsSubStepMock;
 
   [SetUp]
   public void Setup ()
@@ -53,6 +54,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     _consoleMock = new Mock<IAnsiConsole>();
     _pushNewReleaseBranchMock = new Mock<IPushNewReleaseBranchStep>(MockBehavior.Strict);
     _releaseVersionAndMoveIssuesMock = new Mock<IReleaseVersionAndMoveIssuesSubStep>();
+    _addFixVersionsSubStepMock = new Mock<IAddFixVersionsForNewReleaseBranchSubStep>();
   }
 
   [Test]
@@ -73,7 +75,8 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _releaseVersionAndMoveIssuesMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object,
+        _addFixVersionsSubStepMock.Object);
 
     Assert.That(
         () => step.Execute(new SemanticVersion(), "", false, false, false),
@@ -106,7 +109,8 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _releaseVersionAndMoveIssuesMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object,
+        _addFixVersionsSubStepMock.Object);
 
     Assert.That(
         () => step.Execute(nextVersion, "commitHash", false, false, false),
@@ -141,7 +145,8 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _releaseVersionAndMoveIssuesMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object,
+        _addFixVersionsSubStepMock.Object);
 
     step.Execute(nextVersion, "commitHash", false, false, false);
 
@@ -150,7 +155,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
   }
 
   [Test]
-  public void Execute_WithStartReleasePhase_DoesNotCallNextStepButPushReleaseBranchStep ()
+  public void Execute_WithStartReleasePhase_DoesNotCallNextStepButPushReleaseBranchStepAndAddFixVersionSubStep ()
   {
     var nextVersion = new SemanticVersion
                       {
@@ -178,13 +183,53 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _releaseVersionAndMoveIssuesMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object,
+        _addFixVersionsSubStepMock.Object);
 
     step.Execute(nextVersion, "commitHash", true, false, false);
 
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion), Times.Once);
     _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Never);
     _pushNewReleaseBranchMock.Verify(_ => _.Execute($"release/v{nextVersion}", "develop"));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
+  }
+
+  [Test]
+  public void Execute_WithoutStartReleasePhase_DoesNotCallPushReleaseBranchStepAndAddFixVersionSubStep ()
+  {
+    var nextVersion = new SemanticVersion
+                      {
+                          Major = 1,
+                          Minor = 1,
+                          Patch = 1
+                      };
+    var nextJiraVersion = new SemanticVersion();
+    var gitClientStub = new Mock<IGitClient>();
+    gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
+    gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
+    gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("develop");
+    gitClientStub.Setup(_ => _.DoesBranchExist($"release/v{nextVersion}")).Returns(false);
+
+    _pushNewReleaseBranchMock.Setup(_ => _.Execute($"release/v{nextVersion}", "develop"));
+
+    var readInputStub = new Mock<IInputReader>();
+    readInputStub.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), It.IsAny<IReadOnlyCollection<SemanticVersion>>())).Returns(nextJiraVersion);
+
+    var step = new ReleaseOnMasterStep(
+        gitClientStub.Object,
+        readInputStub.Object,
+        _continueReleaseOnMasterMock.Object,
+        _pushNewReleaseBranchMock.Object,
+        _config,
+        _msBuildInvokerMock.Object,
+        _consoleMock.Object,
+        _releaseVersionAndMoveIssuesMock.Object,
+        _addFixVersionsSubStepMock.Object);
+
+    step.Execute(nextVersion, "commitHash", false, false, false);
+
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<SemanticVersion>()), Times.Never);
+    _pushNewReleaseBranchMock.Verify(_ => _.Execute(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
   }
 
   [Test]
@@ -215,7 +260,8 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _config,
         _msBuildInvokerMock.Object,
         _consoleMock.Object,
-        _releaseVersionAndMoveIssuesMock.Object);
+        _releaseVersionAndMoveIssuesMock.Object,
+        _addFixVersionsSubStepMock.Object);
 
     step.Execute(nextVersion, "commitHash", false, true, false);
     _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
