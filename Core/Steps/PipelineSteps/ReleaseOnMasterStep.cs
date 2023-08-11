@@ -94,7 +94,7 @@ public class ReleaseOnMasterStep
 
     _log.Debug("Getting next possible jira versions for develop from version '{NextVersion}'.", nextVersion);
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
-    var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version(open JIRA issues get moved there):", nextPossibleVersions);
+    var nextJiraVersion = InputReader.ReadVersionChoiceForFollowingRelease(nextPossibleVersions);
 
     _ = GitClient.CheckoutCommitWithNewBranch(commitHash, releaseBranchName);
 

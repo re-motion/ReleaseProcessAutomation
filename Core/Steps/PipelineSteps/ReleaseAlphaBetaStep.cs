@@ -92,7 +92,7 @@ public class ReleaseAlphaBetaStep
 
     GitClient.CheckoutCommitWithNewBranch(commitHash, branchName);
 
-    var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there):", nextPossibleJiraVersions);
+    var nextJiraVersion = InputReader.ReadVersionChoiceForFollowingRelease(nextPossibleJiraVersions);
 
     _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion, false, true);
 

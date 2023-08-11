@@ -87,9 +87,9 @@ public class BranchFromDevelopStep
       var mostRecentVersion = new[] { developVersion, masterVersion }.Max()!;
       var possibleNextVersions = mostRecentVersion.GetNextPossibleVersionsDevelop(isPreRelease);
 
-      return _inputReader.ReadVersionChoice("Please choose the next version:", possibleNextVersions);
+      return _inputReader.ReadVersionChoiceForCurrentRelease(possibleNextVersions);
     }
 
-    return _inputReader.ReadVersionChoice("Please choose the next version:", developVersion!.GetNextPossibleVersionsDevelop(isPreRelease));
+    return _inputReader.ReadVersionChoiceForCurrentRelease(developVersion!.GetNextPossibleVersionsDevelop(isPreRelease));
   }
 }
