@@ -105,7 +105,7 @@ public class ReleaseRCOnReleaseBranchStep : ReleaseProcessStepBase, IReleaseRCOn
       throw new UserInteractionException(message);
     }
 
-    var nextJiraVersion = InputReader.ReadVersionChoice("Please choose next version (open JIRA issues get moved there): ", nextPossibleVersions);
+    var nextJiraVersion = InputReader.ReadVersionChoiceForFollowingRelease(nextPossibleVersions);
     _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
 
     var preReleaseBranchName = $"prerelease/v{nextVersion}";

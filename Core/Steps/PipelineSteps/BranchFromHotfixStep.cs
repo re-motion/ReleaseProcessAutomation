@@ -92,6 +92,6 @@ public class BranchFromHotfixStep
     var mostRecent = _semanticVersionedGitRepository.GetMostRecentHotfixVersion();
 
     var possibleVersions = mostRecent.GetCurrentPossibleVersionsHotfix();
-    return _inputReader.ReadVersionChoice("Please choose version to be released:", possibleVersions);
+    return _inputReader.ReadVersionChoiceForCurrentRelease(possibleVersions);
   }
 }
