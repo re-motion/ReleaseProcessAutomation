@@ -21,6 +21,7 @@ using System.IO;
 using Moq;
 using NUnit.Framework;
 using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
 using Remotion.ReleaseProcessAutomation.Git;
 using Remotion.ReleaseProcessAutomation.ReadInput;
 using Remotion.ReleaseProcessAutomation.Scripting;
@@ -191,6 +192,61 @@ internal class ReleaseNonPreReleaseFromDevelopTests
     _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion), Times.Once);
     _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Never);
     _pushNewReleaseBranchMock.Verify(_ => _.Execute($"release/v{nextVersion}", "develop"));
+    _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
+  }
+
+  [Test]
+  public void Execute_WithStartReleasePhase_UpdatesTheVersionPropsToTheFullVersionOnDevelop ()
+  {
+    var nextVersion = new SemanticVersion
+      {
+        Major = 1,
+        Minor = 1,
+        Patch = 1
+      };
+    var nextJiraVersion = new SemanticVersion
+      {
+        Major = 2,
+        Minor = 1,
+        Patch = 3,
+        Pre = PreReleaseStage.alpha,
+        PreReleaseCounter = 1
+      };
+
+    var gitClientStub = new Mock<IGitClient>();
+    gitClientStub.Setup(_ => _.IsWorkingDirectoryClean()).Returns(true);
+    gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
+    gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("develop");
+    gitClientStub.Setup(_ => _.DoesBranchExist($"release/v{nextVersion}")).Returns(false);
+    _pushNewReleaseBranchMock.Setup(_ => _.Execute($"release/v{nextVersion}", "develop"));
+
+
+    var readInputStub = new Mock<IInputReader>();
+    readInputStub.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), It.IsAny<IReadOnlyCollection<SemanticVersion>>())).Returns(nextJiraVersion);
+
+    var step = new ReleaseOnMasterStep(
+        gitClientStub.Object,
+        readInputStub.Object,
+        _continueReleaseOnMasterMock.Object,
+        _pushNewReleaseBranchMock.Object,
+        _config,
+        _msBuildInvokerMock.Object,
+        _consoleMock.Object,
+        _releaseVersionAndMoveIssuesMock.Object,
+        _addFixVersionsSubStepMock.Object);
+
+    step.Execute(nextVersion, "commitHash", true, false, false);
+
+    var fullVersionForNextJiraVersion = new SemanticVersion
+      {
+        Major = 2,
+        Minor = 1,
+        Patch = 3
+      };
+    _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, fullVersionForNextJiraVersion));
+
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion), Times.Once);
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Never);
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
   }
 
