@@ -308,9 +308,9 @@ public class CommandLineGitClient : IGitClient
     }
   }
 
-  public void Reset (string fileName)
+  public void Reset (string fileName, string whereTo = "HEAD")
   {
-    ExecuteGitCommand($"reset HEAD {fileName}");
+    ExecuteGitCommand($"reset {whereTo} {fileName}");
   }
 
   public void CheckoutDiscard (string fileName)

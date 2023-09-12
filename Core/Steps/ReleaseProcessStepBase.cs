@@ -46,12 +46,28 @@ public abstract class ReleaseProcessStepBase
     Console = console;
   }
 
-  protected void MergeBranchAndSkipIgnoredFiles (string currentBranchName, string mergeBranchName, IgnoreListType ignoreListType)
+  protected void ResetItemsForMerge (string intoBranchName, string mergeBranchName, IgnoreListType ignoreListType)
   {
-    GitClient.Checkout(currentBranchName);
+    GitClient.Checkout(mergeBranchName);
+
+    var ignoredFiles = Config.GetIgnoredFiles(ignoreListType);
+
+    foreach (var ignoredFile in ignoredFiles)
+    {
+      _log.Debug("Resetting '{IgnoredFile}'.", ignoredFile);
+
+      GitClient.Reset(ignoredFile, intoBranchName);
+
+      GitClient.CheckoutDiscard(ignoredFile);
+    }
+    GitClient.CommitAll("Reset metadata for merge.");
+  }
+
+  protected void MergeBranch (string intoBranchName, string mergeBranchName)
+  {
+    GitClient.Checkout(intoBranchName);
     GitClient.MergeBranchWithoutCommit(mergeBranchName);
-    ResetItemsOfIgnoreList(ignoreListType);
-    GitClient.CommitAll($" Merge branch '{mergeBranchName}' into {currentBranchName}");
+    GitClient.CommitAll($"Merge branch '{mergeBranchName}' into {intoBranchName}");
     GitClient.ResolveMergeConflicts();
   }
 
@@ -71,19 +87,6 @@ public abstract class ReleaseProcessStepBase
     }
 
     throw new UserInteractionException("Working directory not clean, user does not want to continue. Release process stopped.");
-  }
-
-  protected void ResetItemsOfIgnoreList (IgnoreListType ignoreListType)
-  {
-    var ignoredFiles = Config.GetIgnoredFiles(ignoreListType);
-
-    foreach (var ignoredFile in ignoredFiles)
-    {
-      _log.Debug("Resetting '{IgnoredFile}'.", ignoredFile);
-
-      GitClient.Reset(ignoredFile);
-      GitClient.CheckoutDiscard(ignoredFile);
-    }
   }
 
   protected void CreateTagWithMessage (string tagName)

@@ -127,7 +127,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestBase
     var correctLogs =
         @"*    (HEAD -> release/v1.3.5, origin/release/v1.3.5)Merge branch 'prerelease/v1.3.5-rc.1' into release/v1.3.5
           |\  
-          | *  (tag: v1.3.5-rc.1, origin/prerelease/v1.3.5-rc.1, prerelease/v1.3.5-rc.1)Update metadata to version '1.3.5-rc.1'.
+          | * (origin/prerelease/v1.3.5-rc.1, prerelease/v1.3.5-rc.1)Reset metadata for merge.
+          | *  (tag: v1.3.5-rc.1)Update metadata to version '1.3.5-rc.1'.
           |/  
           *  (hotfix/v1.3.5)feature4
           * feature3
@@ -166,7 +167,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestBase
     var correctLogs =
         @"*    (HEAD -> release/v1.3.5, origin/release/v1.3.5)Merge branch 'prerelease/v1.3.5-rc.1' into release/v1.3.5
           |\  
-          | *  (tag: v1.3.5-rc.1, origin/prerelease/v1.3.5-rc.1, prerelease/v1.3.5-rc.1)Update metadata to version '1.3.5-rc.1'.
+          | * (origin/prerelease/v1.3.5-rc.1, prerelease/v1.3.5-rc.1)Reset metadata for merge.
+          | *  (tag: v1.3.5-rc.1)Update metadata to version '1.3.5-rc.1'.
           |/  
           *  (develop)feature4
           * feature3
@@ -304,7 +306,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestBase
     var correctLogs =
         @"*    (HEAD -> release/v1.2.0)Merge branch 'prerelease/v1.2.0-rc.2' into release/v1.2.0
           |\  
-          | *  (tag: v1.2.0-rc.2, origin/prerelease/v1.2.0-rc.2, prerelease/v1.2.0-rc.2)Another commit on prerelease
+          | *  (origin/prerelease/v1.2.0-rc.2, prerelease/v1.2.0-rc.2)Reset metadata for merge.
+          | *  (tag: v1.2.0-rc.2)Another commit on prerelease
           | * Update metadata to version '1.2.0-rc.2'.
           |/  
           *    Merge branch 'prerelease/v1.2.0-rc.1' into release/v1.2.0
@@ -346,7 +349,8 @@ internal class ReleaseFromReleaseTests : IntegrationTestBase
     var correctLogs =
         @"*    (HEAD -> release/v1.2.0)Merge branch 'prerelease/v1.2.0-rc.1' into release/v1.2.0
           |\  
-          | *  (tag: v1.2.0-rc.1, origin/prerelease/v1.2.0-rc.1, prerelease/v1.2.0-rc.1)Commit on prerelease branch
+          | * (origin/prerelease/v1.2.0-rc.1, prerelease/v1.2.0-rc.1)Reset metadata for merge.
+          | *  (tag: v1.2.0-rc.1)Commit on prerelease branch
           | * Update metadata to version '1.2.0-rc.1'.
           |/  
           *  (master, develop)ConfigAndBuildProject

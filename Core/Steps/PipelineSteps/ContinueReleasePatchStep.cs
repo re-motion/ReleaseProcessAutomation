@@ -85,7 +85,7 @@ public class ContinueReleasePatchStep
 
     GitClient.Checkout(mergeTargetBranchName);
 
-    MergeBranchAndSkipIgnoredFiles(mergeTargetBranchName, toMergeBranchName, IgnoreListType.TagStableMergeIgnoreList);
+    MergeBranch(mergeTargetBranchName, toMergeBranchName);
 
     GitClient.Checkout(mergeTargetBranchName);
     CreateTagWithMessage(tagName);

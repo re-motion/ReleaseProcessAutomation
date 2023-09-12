@@ -55,7 +55,7 @@ public interface IGitClient
 
   void ResolveMergeConflicts ();
 
-  void Reset (string fileName);
+  void Reset (string fileName, string whereTo = "HEAD");
 
   void CheckoutDiscard (string fileName);
 

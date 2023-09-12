@@ -32,7 +32,7 @@ namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Steps;
 [TestFixture]
 internal class ReleaseProcessStepTests : GitBackedTestBase
 {
-  private Configuration.Data.Config _config;
+  private Config _config;
   private const string c_configFileName = "ReleaseProcessScript.Test.Config";
 
   private IAnsiConsole _console;
@@ -41,7 +41,7 @@ internal class ReleaseProcessStepTests : GitBackedTestBase
   {
     public NestedReleaseProcessStepBase (
         IGitClient gitClient,
-        Configuration.Data.Config config,
+        Config config,
         IInputReader inputReader,
         IAnsiConsole console)
         : base(gitClient, config, inputReader, console)
@@ -53,9 +53,9 @@ internal class ReleaseProcessStepTests : GitBackedTestBase
       base.EnsureWorkingDirectoryClean();
     }
 
-    public new void ResetItemsOfIgnoreList (IgnoreListType ignoreListType)
+    public new void ResetItemsForMerge (string intoBranchName, string mergeBranchName, IgnoreListType ignoreListType)
     {
-      base.ResetItemsOfIgnoreList(ignoreListType);
+      base.ResetItemsForMerge(intoBranchName, mergeBranchName, ignoreListType);
     }
   }
 
@@ -110,82 +110,93 @@ internal class ReleaseProcessStepTests : GitBackedTestBase
   }
 
   [Test]
-  public void ResetItemsOfIgnoreList_DoesRevertChanges ()
+  public void ResetItemsForMerge_DoesRevertChanges ()
   {
     var fileName = "File.txt";
-    for (var index = 0; index < _config.DevelopStableMergeIgnoreList.FileName.Length; index++)
-      _config.DevelopStableMergeIgnoreList.FileName[index] = fileName;
+    _config.DevelopStableMergeIgnoreList.FileName = new[] { fileName };
+
     var combinePath = Path.Combine(RepositoryPath, fileName);
     using var fs = File.Create(combinePath);
     fs.Close();
+
+    ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand($"add {fileName}");
     ExecuteGitCommand("commit -m Commit");
+    ExecuteGitCommand("checkout -b prerelease/v1.0.0-alpha.1");
 
     File.WriteAllText(combinePath, "Temporary Text");
     var gitClient = new CommandLineGitClient();
     var inputReaderMock = new Mock<IInputReader>();
 
     var rps = new NestedReleaseProcessStepBase(gitClient, _config, inputReaderMock.Object, _console);
-    rps.ResetItemsOfIgnoreList(IgnoreListType.DevelopStableMergeIgnoreList);
+    rps.ResetItemsForMerge("develop", "prerelease/v1.0.0-alpha.1", IgnoreListType.DevelopStableMergeIgnoreList);
 
     Assert.That(File.ReadAllText(combinePath), Is.Empty);
   }
 
   [Test]
-  public void ResetItemsOfIgnoreList_WithFilesNotInIgnoreList_DoesOnlyRevertIgnoreListChanges ()
+  public void ResetItemsForMerge_WithFilesNotInIgnoreList_DoesOnlyRevertIgnoreListChanges ()
   {
     var fileName = "File.txt";
     var otherFileName = "OtherFile.txt";
-    for (var index = 0; index < _config.DevelopStableMergeIgnoreList.FileName.Length; index++)
-      _config.DevelopStableMergeIgnoreList.FileName[index] = fileName;
+    _config.DevelopStableMergeIgnoreList.FileName = new[] { fileName };
+
     var combinePath = Path.Combine(RepositoryPath, fileName);
     using var fs = File.Create(combinePath);
     fs.Close();
+
     var otherCombinePath = Path.Combine(RepositoryPath, otherFileName);
     using var ofs = File.Create(otherCombinePath);
     ofs.Close();
+
     File.WriteAllText(otherCombinePath, "Permanent Text");
+    ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand($"add {fileName}");
     ExecuteGitCommand($"add {otherFileName}");
     ExecuteGitCommand("commit -m Commit");
+    ExecuteGitCommand("checkout -b prerelease/v1.0.0-alpha.1");
+
     File.WriteAllText(combinePath, "Temporary Text");
     var gitClient = new CommandLineGitClient();
     var inputReaderMock = new Mock<IInputReader>();
 
     var rps = new NestedReleaseProcessStepBase(gitClient, _config, inputReaderMock.Object, _console);
-    rps.ResetItemsOfIgnoreList(IgnoreListType.DevelopStableMergeIgnoreList);
+    rps.ResetItemsForMerge("develop", "prerelease/v1.0.0-alpha.1", IgnoreListType.DevelopStableMergeIgnoreList);
 
     Assert.That(File.ReadAllText(combinePath), Is.Empty);
     Assert.That(File.ReadAllText(otherCombinePath), Is.EqualTo("Permanent Text"));
   }
 
   [Test]
-  public void ResetItemsOfIgnoreList_WithWrongIgnoreList_DoesNotRevertAnything ()
+  public void ResetItemsForMerge_WithWrongIgnoreList_DoesNotRevertAnything ()
   {
     var fileName = "File.txt";
     var otherFileName = "OtherFile.txt";
-    for (var index = 0; index < _config.DevelopStableMergeIgnoreList.FileName.Length; index++)
-      _config.DevelopStableMergeIgnoreList.FileName[index] = fileName;
 
-    for (var index = 0; index < _config.TagStableMergeIgnoreList.FileName.Length; index++)
-      _config.DevelopStableMergeIgnoreList.FileName[index] = "";
+    _config.DevelopStableMergeIgnoreList.FileName = new[] { fileName };
+    _config.TagStableMergeIgnoreList.FileName = new[] { "" };
+
     var combinePath = Path.Combine(RepositoryPath, fileName);
     using var fs = File.Create(combinePath);
     fs.Close();
+
     var otherCombinePath = Path.Combine(RepositoryPath, otherFileName);
     using var ofs = File.Create(otherCombinePath);
     ofs.Close();
+
     File.WriteAllText(otherCombinePath, "Permanent Text");
+    ExecuteGitCommand("checkout -b develop");
     ExecuteGitCommand($"add {fileName}");
     ExecuteGitCommand($"add {otherFileName}");
     ExecuteGitCommand("commit -m Commit");
+    ExecuteGitCommand("checkout -b prerelease/v1.0.0-alpha.1");
 
     File.WriteAllText(combinePath, "Temporary Text");
     var gitClient = new CommandLineGitClient();
     var inputReaderMock = new Mock<IInputReader>();
 
     var rps = new NestedReleaseProcessStepBase(gitClient, _config, inputReaderMock.Object, _console);
-    rps.ResetItemsOfIgnoreList(IgnoreListType.TagStableMergeIgnoreList);
+    rps.ResetItemsForMerge("develop", "prerelease/v1.0.0-alpha.1", IgnoreListType.TagStableMergeIgnoreList);
 
     Assert.That(File.ReadAllText(combinePath), Is.EqualTo("Temporary Text"));
     Assert.That(File.ReadAllText(otherCombinePath), Is.EqualTo("Permanent Text"));
