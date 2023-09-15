@@ -134,7 +134,7 @@ internal class ContinueReleaseOnMasterStepTests
     gitClientMock.Setup(_ => _.IsOnBranch("release/")).Returns(true);
     gitClientMock.Setup(_ => _.GetHash(It.IsAny<string>(), It.IsAny<string>())).Returns("branch");
     gitClientMock.Setup(_ => _.DoesTagExist("v1.0.0")).Returns(false);
-    gitClientMock.Setup(_ => _.Reset(It.IsAny<string>())).Verifiable();
+    gitClientMock.Setup(_ => _.Reset(It.IsAny<string>(), It.IsAny<string>())).Verifiable();
     gitClientMock.Setup(_ => _.Checkout("develop")).Callback(() => developLast = true);
     gitClientMock.Setup(_ => _.Checkout("master")).Callback(() => developLast = false);
 

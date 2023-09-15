@@ -97,7 +97,8 @@ public class ContinueAlphaBetaStep : ReleaseProcessStepBase, IContinueAlphaBetaS
 
     CreateTagWithMessage(tagName);
 
-    MergeBranchAndSkipIgnoredFiles(baseBranchName, preReleaseBranchName, IgnoreListType.PreReleaseMergeIgnoreList);
+    ResetItemsForMerge(baseBranchName, preReleaseBranchName, IgnoreListType.PreReleaseMergeIgnoreList);
+    MergeBranch(baseBranchName, preReleaseBranchName);
 
     if (noPush)
       return;

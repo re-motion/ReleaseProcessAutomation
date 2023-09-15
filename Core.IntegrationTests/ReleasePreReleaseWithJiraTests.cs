@@ -60,7 +60,8 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestBase
     var correctLogs =
         $@"*    (HEAD -> develop, origin/develop)Merge branch 'prerelease/v{nextVersionName}' into develop
           |\  
-          | *  (tag: v{nextVersionName}, origin/prerelease/v{nextVersionName}, prerelease/v{nextVersionName})Update metadata to version '{nextVersionName}'.
+          | * (origin/prerelease/v{nextVersionName}, prerelease/v{nextVersionName})Reset metadata for merge.
+          | *  (tag: v{nextVersionName})Update metadata to version '{nextVersionName}'.
           |/  
           * feature4
           * feature3
@@ -121,7 +122,8 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestBase
     var correctLogs =
         $@"*    (HEAD -> develop, origin/develop)Merge branch 'prerelease/v{nextVersionName}' into develop
           |\  
-          | *  (tag: v{nextVersionName}, origin/prerelease/v{nextVersionName}, prerelease/v{nextVersionName})Update metadata to version '{nextVersionName}'.
+          | * (origin/prerelease/v{nextVersionName}, prerelease/v{nextVersionName})Reset metadata for merge.
+          | *  (tag: v{nextVersionName})Update metadata to version '{nextVersionName}'.
           |/  
           * feature4
           * feature3

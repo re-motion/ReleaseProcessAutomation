@@ -28,7 +28,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestBase
     var correctLogs =
         @"*    (HEAD -> hotfix/v1.1.1-alpha.1, origin/hotfix/v1.1.1-alpha.1)Merge branch 'prerelease/v1.1.1-alpha.2' into hotfix/v1.1.1-alpha.1
           |\  
-          | *  (tag: v1.1.1-alpha.2, origin/prerelease/v1.1.1-alpha.2, prerelease/v1.1.1-alpha.2)Update metadata to version '1.1.1-alpha.2'.
+          | * (origin/prerelease/v1.1.1-alpha.2, prerelease/v1.1.1-alpha.2)Reset metadata for merge.
+          | *  (tag: v1.1.1-alpha.2)Update metadata to version '1.1.1-alpha.2'.
           |/  
           *  (support/v1.1, master)ConfigAndBuildProject
           *  (origin/master)Initial CommitAll
@@ -60,7 +61,8 @@ internal class ReleaseFromHotfixTests : IntegrationTestBase
     var correctLogs =
         @"*    (HEAD -> hotfix/v1.1.1-alpha.1)Merge branch 'prerelease/v1.1.1-beta.1' into hotfix/v1.1.1-alpha.1
           |\  
-          | *  (tag: v1.1.1-beta.1, origin/prerelease/v1.1.1-beta.1, prerelease/v1.1.1-beta.1)Commit on prerelease branch
+          | *  (origin/prerelease/v1.1.1-beta.1, prerelease/v1.1.1-beta.1)Reset metadata for merge.
+          | *  (tag: v1.1.1-beta.1)Commit on prerelease branch
           | * Update metadata to version '1.1.1-beta.1'.
           |/  
           *  (support/v1.1, master)ConfigAndBuildProject

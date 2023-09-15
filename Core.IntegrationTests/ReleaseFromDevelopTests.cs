@@ -331,7 +331,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestBase
     var correctLogs =
         @"*    (HEAD -> develop, origin/develop)Merge branch 'prerelease/v1.0.0-alpha.1' into develop
           |\  
-          | *  (tag: v1.0.0-alpha.1, origin/prerelease/v1.0.0-alpha.1, prerelease/v1.0.0-alpha.1)Update metadata to version '1.0.0-alpha.1'.
+          | *  (origin/prerelease/v1.0.0-alpha.1, prerelease/v1.0.0-alpha.1) Reset metadata for merge.
+          | *  (tag: v1.0.0-alpha.1)Update metadata to version '1.0.0-alpha.1'.
           |/  
           * feature4
           * feature3
@@ -367,7 +368,8 @@ internal class ReleaseFromDevelopTests : IntegrationTestBase
     var correctLogs =
         @"*    (HEAD -> develop)Merge branch 'prerelease/v1.2.0-alpha.1' into develop
           |\  
-          | *  (tag: v1.2.0-alpha.1, origin/prerelease/v1.2.0-alpha.1, prerelease/v1.2.0-alpha.1)Commit on prerelease branch
+          | *  (origin/prerelease/v1.2.0-alpha.1, prerelease/v1.2.0-alpha.1)Reset metadata for merge.
+          | *  (tag: v1.2.0-alpha.1)Commit on prerelease branch
           | * Update metadata to version '1.2.0-alpha.1'.
           |/  
           *  (master)ConfigAndBuildProject
