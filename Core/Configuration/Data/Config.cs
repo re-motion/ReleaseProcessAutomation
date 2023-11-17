@@ -33,9 +33,6 @@ public class Config
   [XmlElement("prereleaseMergeIgnoreList")]
   public IgnoreList PreReleaseMergeIgnoreList { get; set; }
 
-  [XmlElement("tagStableMergeIgnoreList")]
-  public IgnoreList TagStableMergeIgnoreList { get; set; }
-
   [XmlElement("developStableMergeIgnoreList")]
   public IgnoreList DevelopStableMergeIgnoreList { get; set; }
 

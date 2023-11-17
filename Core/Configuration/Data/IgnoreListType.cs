@@ -20,6 +20,5 @@ namespace Remotion.ReleaseProcessAutomation.Configuration.Data;
 public enum IgnoreListType
 {
   PreReleaseMergeIgnoreList,
-  TagStableMergeIgnoreList,
   DevelopStableMergeIgnoreList
 }

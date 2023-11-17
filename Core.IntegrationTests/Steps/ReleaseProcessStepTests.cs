@@ -174,7 +174,7 @@ internal class ReleaseProcessStepTests : GitBackedTestBase
     var otherFileName = "OtherFile.txt";
 
     _config.DevelopStableMergeIgnoreList.FileName = new[] { fileName };
-    _config.TagStableMergeIgnoreList.FileName = new[] { "" };
+    _config.PreReleaseMergeIgnoreList.FileName = new[] { "" };
 
     var combinePath = Path.Combine(RepositoryPath, fileName);
     using var fs = File.Create(combinePath);
@@ -196,7 +196,7 @@ internal class ReleaseProcessStepTests : GitBackedTestBase
     var inputReaderMock = new Mock<IInputReader>();
 
     var rps = new NestedReleaseProcessStepBase(gitClient, _config, inputReaderMock.Object, _console);
-    rps.ResetItemsForMerge("develop", "prerelease/v1.0.0-alpha.1", IgnoreListType.TagStableMergeIgnoreList);
+    rps.ResetItemsForMerge("develop", "prerelease/v1.0.0-alpha.1", IgnoreListType.PreReleaseMergeIgnoreList);
 
     Assert.That(File.ReadAllText(combinePath), Is.EqualTo("Temporary Text"));
     Assert.That(File.ReadAllText(otherCombinePath), Is.EqualTo("Permanent Text"));
