@@ -1,0 +1,14 @@
+**
+**  NOTICE file corresponding to the section 4 (4) of the Apache License, 
+**  Version 2.0.
+**
+
+re-motion SharedSource-Build
+www.re-motion.org
+Copyright (c) rubicon IT GmbH, www.rubicon.eu
+
+This software includes the following libraries:
+
+MSBuildExtensionPack (embedded within Remotion.BuildScript.dll)
+Copyright (c) 2017 Mike Fourie and Contributors
+Original software available from https://github.com/mikefourie-zz/MSBuildExtensionPack

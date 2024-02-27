@@ -2,19 +2,19 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <NormalTestConfiguration Condition="'$(NormalTestConfiguration)' == ''">
-      LocalMachine + NET45 + NoBrowser + NoDB + Debug     + x86;
-      LocalMachine + NET45 + NoBrowser + NoDB + Release   + x64;
-      LocalMachine + NET45 + NoBrowser + NoDB + Debug     + x86;
+      LocalMachine + NET60 + NoBrowser + NoDB + Debug     + x86;
+      LocalMachine + NET60 + NoBrowser + NoDB + Release   + x64;
+      LocalMachine + NET60 + NoBrowser + NoDB + Debug     + x86;
     </NormalTestConfiguration>
   </PropertyGroup>
   <ItemGroup>
-    <ReleaseProjectFiles Include="$(SolutionDirectory)\BuildScript\Buildscript.csproj" />
-    <ReleaseProjectFiles Include="$(SolutionDirectory)\ReleaseProcessScript\ReleaseProcessScript.csproj" />
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\BuildScript.UnitTests\BuildScript.UnitTests.csproj">
+    <ReleaseProjectFiles Include="$(SolutionDirectory)\Core\Core.csproj" />
+    <UnitTestProjectFiles Include="$(SolutionDirectory)\Core.UnitTests\Core.UnitTests.csproj">
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
     </UnitTestProjectFiles>
-    <UnitTestProjectFiles Include="$(SolutionDirectory)\ReleaseProcessScript.UnitTests\ReleaseProcessScript.UnitTests.csproj">
+    <IntegrationTestProjectFiles Include="$(SolutionDirectory)\Core.IntegrationTests\Core.IntegrationTests.csproj">
       <TestConfiguration>$(NormalTestConfiguration)</TestConfiguration>
-    </UnitTestProjectFiles>
+    </IntegrationTestProjectFiles>
+
   </ItemGroup>
 </Project>

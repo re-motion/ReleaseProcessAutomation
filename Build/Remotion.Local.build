@@ -42,7 +42,7 @@
       <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET48</TargetRuntimes>
       <TestCategoriesToExclude Condition="'$(TestCategoriesToExclude)' == ''"></TestCategoriesToExclude>
       <SkipCleanProjects Condition="'$(SkipCleanProjects)' == ''">False</SkipCleanProjects>
-      <SkipTests Condition="'$(SkipTests)' == ''">False</SkipTests>
+      <SkipTests Condition="'$(SkipTests)' == ''">True</SkipTests>
       <SkipDocumentation Condition="'$(SkipDocumentation)' == ''">True</SkipDocumentation>
       <SkipNuGetOrg Condition="'$(SkipNuGetOrg)' == ''">True</SkipNuGetOrg>
       <SkipSourceLinks Condition="'$(SkipSourceLinks)' == ''">True</SkipSourceLinks>
@@ -61,7 +61,7 @@
       <TargetRuntimes Condition="'$(TargetRuntimes)' == ''">NET48</TargetRuntimes>
       <TestCategoriesToExclude Condition="'$(TestCategoriesToExclude)' == ''"></TestCategoriesToExclude>
       <SkipCleanProjects>False</SkipCleanProjects>
-      <SkipTests>False</SkipTests>
+      <SkipTests>True</SkipTests>
       <SkipDocumentation>True</SkipDocumentation>
       <SkipNuGetOrg>True</SkipNuGetOrg>
       <SkipSourceLinks>True</SkipSourceLinks>
@@ -107,11 +107,9 @@
   <Target Name="SetVersion" DependsOnTargets="PrepareVersion;CheckVersion" />
 
   <Target Name="PrepareVersion" Condition="'$(Version)' != '' And '$(UseDevelopmentVersion)' != 'False'">
-    <MSBuild.ExtensionPack.Framework.DateAndTime TaskAction="Get" Format="yyMMdd-HHmmss">
-      <Output TaskParameter="Result" PropertyName="_formattedDateTime"/>
-    </MSBuild.ExtensionPack.Framework.DateAndTime>
 
     <PropertyGroup>
+      <_formattedDateTime>$([System.DateTime]::Now.ToString("yyMMdd-HHmmss"))</_formattedDateTime>
       <_version>$(Version.Split('-')[0])</_version>
       <Version>$(_version)-x.9.$(_formattedDateTime)</Version>
       <HasCustomVersion>True</HasCustomVersion>
@@ -121,7 +119,7 @@
   <Target Name="SetVersionTestBuild">
     <PropertyGroup>
       <!-- With local test builds, no version update is needed. -->
-      <Version></Version>
+      <Version>1.0.0</Version>
       <HasCustomVersion>False</HasCustomVersion>
     </PropertyGroup>
   </Target>

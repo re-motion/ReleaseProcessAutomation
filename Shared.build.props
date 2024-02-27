@@ -1,0 +1,29 @@
+<Project>
+    <Import Project="$(MSBuildThisFileDirectory)Build\Customizations\Properties.props" />
+    <Import Project="$(MSBuildThisFileDirectory)Build\Customizations\Version.props" Condition="'$(Version)' == ''" />
+
+    <PropertyGroup>
+        <Product>$(ProductName)</Product>
+        <Company>$(CompanyName)</Company>
+        <Copyright>$(Copyright)</Copyright>
+        <Authors>$(Company)</Authors>
+        <PackageLicenseExpression>$(PackageLicenseExpression)</PackageLicenseExpression>
+        <PackageProjectUrl>$(PackageProjectURL)</PackageProjectUrl>
+        <RepositoryUrl>$(RepositoryUrl)</RepositoryUrl>
+        <RepositoryType>$(RepositoryType)</RepositoryType>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <_version>$(Version.Split('-')[0])</_version>
+        <AssemblyVersion>$(_version).0</AssemblyVersion>
+        <FileVersion>$(_version).24009</FileVersion>
+        <InformationalVersion>$(_version)-x.9+$(Configuration)</InformationalVersion>
+        <PackageVersion>$(_version)-x.9</PackageVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(ProjectType)' == 'Package'">
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <IsPackable>True</IsPackable>
+    </PropertyGroup>
+    
+</Project>

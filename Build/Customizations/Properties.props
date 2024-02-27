@@ -6,5 +6,10 @@
     <CompanyUrl>http://www.rubicon.eu</CompanyUrl>
     <Copyright>Copyright (c) rubicon IT GmbH, www.rubicon.eu - Licensed under Apache License, Version 2.0</Copyright>
     <ProductName>re-motion Build Infrastructure (www.re-motion.org)</ProductName>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageProjectUrl>http://www.re-motion.org/</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/re-motion/ReleaseProcessAutomation</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <DocumentationFileName>ReleaseProcessAutomation</DocumentationFileName>
   </PropertyGroup>
 </Project>
