@@ -72,7 +72,7 @@ internal class ReleaseAlphaBetaStepTests
     _gitClientStub.Setup(_ => _.IsOnBranch("develop")).Returns(true);
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("develop");
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
-    _releaseVersionAndMoveIssuesMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, true)).Verifiable();
+    _releaseVersionAndMoveIssuesMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, true)).Verifiable();
 
     _inputReaderStub.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
 
@@ -108,7 +108,7 @@ internal class ReleaseAlphaBetaStepTests
     _gitClientStub.Setup(_ => _.GetCurrentBranchName()).Returns("develop");
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsDevelop();
     _inputReaderStub.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion);
-    _releaseVersionAndMoveIssuesMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, true)).Verifiable();
+    _releaseVersionAndMoveIssuesMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, true)).Verifiable();
 
     var alphaBetaStep = new ReleaseAlphaBetaStep(
         _gitClientStub.Object,
@@ -124,7 +124,7 @@ internal class ReleaseAlphaBetaStepTests
         Throws.Nothing);
 
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(It.IsAny<MSBuildMode>(), nextVersion));
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, true), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, true), Times.Exactly(1));
     _continueAlphaBetaMock.Verify(_ => _.Execute(nextVersion, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
     _releaseVersionAndMoveIssuesMock.Verify();
   }

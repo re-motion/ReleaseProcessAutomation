@@ -94,7 +94,7 @@ public class ReleaseAlphaBetaStep
 
     var nextJiraVersion = InputReader.ReadVersionChoiceForFollowingRelease(nextPossibleJiraVersions);
 
-    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion, false, true);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion, Config.Jira.JiraProjectKey, false, true);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

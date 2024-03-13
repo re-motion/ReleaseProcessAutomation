@@ -9,7 +9,7 @@ namespace Remotion.ReleaseProcessAutomation.Steps.SubSteps;
 
 public interface IAddFixVersionsForNewReleaseBranchSubStep
 {
-  void Execute (SemanticVersion currentVersion, SemanticVersion nextJiraVersion);
+  void Execute (SemanticVersion currentVersion, SemanticVersion nextJiraVersion, string jiraProjectKey);
 }
 
 public class AddFixVersionsForNewReleaseBranchSubStep : AddMoveCreateFixVersionsSubStepBase, IAddFixVersionsForNewReleaseBranchSubStep
@@ -23,9 +23,9 @@ public class AddFixVersionsForNewReleaseBranchSubStep : AddMoveCreateFixVersions
   {
   }
 
-  public void Execute (SemanticVersion currentVersion, SemanticVersion nextJiraVersion)
+  public void Execute (SemanticVersion currentVersion, SemanticVersion nextJiraVersion, string jiraProjectKey)
   {
-    var issues = JiraIssueService.FindAllNonClosedIssues(currentVersion.ToString());
+    var issues = JiraIssueService.FindAllNonClosedIssues(currentVersion.ToString(), jiraProjectKey);
     Console.WriteLine($"These are some of the issues that are open for the current version '{currentVersion}':");
     PrintIssueListing(issues);
 

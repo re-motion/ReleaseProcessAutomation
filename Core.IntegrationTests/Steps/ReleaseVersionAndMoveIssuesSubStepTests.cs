@@ -102,7 +102,8 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
         _issueService,
         _jiraVersionCreator,
         _jiraVersionReleaser);
-    jiraSubStep.Execute(parser.ParseVersion("4.1.0"), parser.ParseVersion("4.1.1"));
+
+    jiraSubStep.Execute(parser.ParseVersion("4.1.0"), parser.ParseVersion("4.1.1"), _config.Jira.JiraProjectKey);
 
     // Get latest unreleased version again
     versions = _versionFinder.FindUnreleasedVersions(c_jiraProjectKey, "4.1.").ToList();
@@ -112,11 +113,11 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
     Assert.That(versionThatFollowed.name, Is.EqualTo("4.1.1"));
 
     // Check whether versionThatFollowed has all the non-closed issues from versionToRelease
-    var issues = _issueService.FindAllNonClosedIssues(versionThatFollowed.id);
+    var issues = _issueService.FindAllNonClosedIssues(versionThatFollowed.id, _config.Jira.JiraProjectKey);
     Assert.That(issues.Count(), Is.EqualTo(2));
 
     // Check whether the additionalVersion still has its issue
-    var additionalVersionIssues = _issueService.FindAllNonClosedIssues(additionalVersion.id);
+    var additionalVersionIssues = _issueService.FindAllNonClosedIssues(additionalVersion.id, _config.Jira.JiraProjectKey);
     Assert.That(additionalVersionIssues.Count(), Is.EqualTo(1));
 
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1", "4.1.2", "4.2.0");
@@ -148,17 +149,18 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
         _issueService,
         _jiraVersionCreator,
         _jiraVersionReleaser);
-    jiraSubStep.Execute(_parser.ParseVersion("4.1.0"), _parser.ParseVersion("4.1.1"));
+
+    jiraSubStep.Execute(_parser.ParseVersion("4.1.0"), _parser.ParseVersion("4.1.1"), _config.Jira.JiraProjectKey);
 
     Assert.That(_console.Output, Does.Contain("Test open Issue 1"));
     Assert.That(_console.Output, Does.Contain("Test open Issue 2"));
     Assert.That(_console.Output, Does.Not.Contain("Test closed Issue 3"));
     Assert.That(_console.Output, Does.Not.Contain("Test closed Issue 4"));
 
-    var afterwardsVersionIssues = _issueService.FindAllNonClosedIssues(afterwardsVersion.id);
+    var afterwardsVersionIssues = _issueService.FindAllNonClosedIssues(afterwardsVersion.id, _config.Jira.JiraProjectKey);
     Assert.That(afterwardsVersionIssues.Count(), Is.EqualTo(2));
 
-    var initialVersionIssues = _issueService.FindAllClosedIssues(initialVersion.id);
+    var initialVersionIssues = _issueService.FindAllClosedIssues(initialVersion.id, _config.Jira.JiraProjectKey);
     Assert.That(initialVersionIssues.Count(), Is.EqualTo(2));
 
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1");
@@ -190,18 +192,19 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
         _issueService,
         _jiraVersionCreator,
         _jiraVersionReleaser);
-    jiraSubStep.Execute(_parser.ParseVersion("4.1.0"), _parser.ParseVersion("4.1.1"));
+
+    jiraSubStep.Execute(_parser.ParseVersion("4.1.0"), _parser.ParseVersion("4.1.1"), _config.Jira.JiraProjectKey);
 
     Assert.That(_console.Output, Does.Contain("Test open Issue 1"));
     Assert.That(_console.Output, Does.Contain("Test open Issue 2"));
     Assert.That(_console.Output, Does.Not.Contain("Test closed Issue 3"));
     Assert.That(_console.Output, Does.Not.Contain("Test closed Issue 4"));
 
-    var closedIssues = _issueService.FindAllClosedIssues(initialVersion.id);
+    var closedIssues = _issueService.FindAllClosedIssues(initialVersion.id, _config.Jira.JiraProjectKey);
     Assert.That(closedIssues.Count(), Is.EqualTo(2));
-    var openIssues = _issueService.FindAllNonClosedIssues(initialVersion.id);
+    var openIssues = _issueService.FindAllNonClosedIssues(initialVersion.id, _config.Jira.JiraProjectKey);
     Assert.That(openIssues.Count(), Is.EqualTo(2));
-    var afterwardsOpenIssues = _issueService.FindAllNonClosedIssues(afterwardsVersion.id);
+    var afterwardsOpenIssues = _issueService.FindAllNonClosedIssues(afterwardsVersion.id, _config.Jira.JiraProjectKey);
     Assert.That(afterwardsOpenIssues.Count(), Is.EqualTo(0));
 
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "4.1.0", "4.1.1");
