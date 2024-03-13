@@ -62,9 +62,9 @@ public class JiraIssueService
     }
   }
 
-  public IReadOnlyList<JiraToBeMovedIssue> FindAllNonClosedIssues (string versionId)
+  public IReadOnlyList<JiraToBeMovedIssue> FindAllNonClosedIssues (string versionId, string projectKey)
   {
-    var jql = $"fixVersion={versionId} and resolution = \"unresolved\"";
+    var jql = $"fixVersion={versionId} and resolution = \"unresolved\" and project = \"{projectKey}\"";
     var resource = $"search?jql={jql}&fields=id,fixVersions,summary";
     var request = _jiraRestClientProvider.GetJiraRestClient().CreateRestRequest(resource, Method.GET);
 
@@ -72,9 +72,9 @@ public class JiraIssueService
     return response.Data.Issues ?? throw new InvalidOperationException($"Could not get non closed issue data from jira with request '{resource}'");
   }
 
-  public IReadOnlyList<JiraToBeMovedIssue> FindAllClosedIssues (string versionId)
+  public IReadOnlyList<JiraToBeMovedIssue> FindAllClosedIssues (string versionId, string projectKey)
   {
-    var jql = $"fixVersion={versionId} and resolution != \"unresolved\"";
+    var jql = $"fixVersion={versionId} and resolution != \"unresolved\" and project = \"{projectKey}\"";
     var resource = $"search?jql={jql}&fields=id,fixVersions,summary";
     var request = _jiraRestClientProvider.GetJiraRestClient().CreateRestRequest(resource, Method.GET);
 
@@ -84,12 +84,13 @@ public class JiraIssueService
 
   public IReadOnlyList<JiraToBeMovedIssue> FindIssuesWithOnlyExactFixVersion (
       IEnumerable<JiraProjectVersion> allVersions,
-      JiraProjectVersion exactFixVersion)
+      JiraProjectVersion exactFixVersion,
+      string projectKey)
   {
     var allVersionLookup = allVersions.Select(v => v.id).ToHashSet();
     allVersionLookup.Remove(exactFixVersion.id);
 
-    var allClosedIssues = FindAllClosedIssues(exactFixVersion.id);
+    var allClosedIssues = FindAllClosedIssues(exactFixVersion.id, projectKey);
     var filteredIssues = allClosedIssues.Where(
         i => i.Fields.FixVersions.TrueForAll(
             v => !allVersionLookup.Contains(v.ID)));

@@ -93,10 +93,10 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestBase
     AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
 
-    var oldClosedIssues = _issueService.FindAllClosedIssues(originalVersionID);
+    var oldClosedIssues = _issueService.FindAllClosedIssues(originalVersionID, _config.Jira.JiraProjectKey);
     Assert.That(oldClosedIssues.Count(), Is.EqualTo(3));
 
-    var newClosedIssues = _issueService.FindAllClosedIssues(followingVersionID);
+    var newClosedIssues = _issueService.FindAllClosedIssues(followingVersionID, _config.Jira.JiraProjectKey);
     Assert.That(newClosedIssues.Count(), Is.EqualTo(3));
 
     JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, currentVersionName, nextVersionName);
@@ -155,10 +155,10 @@ public class ReleasePreReleaseWithJiraTests : IntegrationTestBase
     AssertValidLogs(correctLogs);
     Assert.That(act, Is.EqualTo(0));
 
-    var oldClosedIssues = _issueService.FindAllClosedIssues(originalVersionID);
+    var oldClosedIssues = _issueService.FindAllClosedIssues(originalVersionID, _config.Jira.JiraProjectKey);
     Assert.That(oldClosedIssues.Count(), Is.EqualTo(3));
 
-    var newClosedIssues = _issueService.FindAllClosedIssues(followingVersionID);
+    var newClosedIssues = _issueService.FindAllClosedIssues(followingVersionID, _config.Jira.JiraProjectKey);
     Assert.That(newClosedIssues.Count(), Is.Zero);
 
     JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, currentVersionName, nextVersionName);

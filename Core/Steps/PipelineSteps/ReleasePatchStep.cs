@@ -123,12 +123,12 @@ public class ReleasePatchStep : ReleaseProcessStepBase, IReleasePatchStep
 
     if (startReleasePhase)
     {
-      _addFixVersionsForNewReleaseBranchSubStep.Execute(nextVersion, nextJiraVersion);
+      _addFixVersionsForNewReleaseBranchSubStep.Execute(nextVersion, nextJiraVersion, Config.Jira.JiraProjectKey);
       _pushNewReleaseBranchStep.Execute(releaseBranchName, currentBranchName);
       return;
     }
 
-    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion, Config.Jira.JiraProjectKey);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 

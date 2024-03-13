@@ -120,7 +120,7 @@ public class ReleaseFullVersionFromReleaseBranchStep : ReleaseProcessStepBase, I
 
     var nextJiraVersion = InputReader.ReadVersionChoice("Choose next version (open JIRA issues get moved there):", nextPossibleVersions);
 
-    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion, Config.Jira.JiraProjectKey);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 
