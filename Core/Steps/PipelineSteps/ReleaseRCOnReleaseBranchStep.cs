@@ -106,7 +106,7 @@ public class ReleaseRCOnReleaseBranchStep : ReleaseProcessStepBase, IReleaseRCOn
     }
 
     var nextJiraVersion = InputReader.ReadVersionChoiceForFollowingRelease(nextPossibleVersions);
-    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion, Config.Jira.JiraProjectKey);
 
     var preReleaseBranchName = $"prerelease/v{nextVersion}";
     _log.Debug("Will try to create pre release branch with name '{PrereleaseBranchName}'.", preReleaseBranchName);

@@ -75,7 +75,7 @@ internal class ReleaseRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
 
-    _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, false)).Verifiable();
+    _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false)).Verifiable();
 
     var rcStep = new ReleaseRCOnReleaseBranchStep(
         _gitClientStub.Object,
@@ -107,7 +107,7 @@ internal class ReleaseRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsForReleaseBranchFromDevelop();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
 
-    _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, false)).Verifiable();
+    _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false)).Verifiable();
 
     var rcStep = new ReleaseRCOnReleaseBranchStep(
         _gitClientStub.Object,
@@ -139,7 +139,7 @@ internal class ReleaseRCStepTests
     var nextPossibleVersions = nextVersion.GetNextPossibleVersionsHotfix();
     _inputReaderMock.Setup(_ => _.ReadVersionChoice(It.IsAny<string>(), nextPossibleVersions)).Returns(nextJiraVersion).Verifiable();
 
-    _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, false, false)).Verifiable();
+    _releaseVersionAndMoveIssueMock.Setup(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false)).Verifiable();
 
     var rcStep = new ReleaseRCOnReleaseBranchStep(
         _gitClientStub.Object,
@@ -185,7 +185,7 @@ internal class ReleaseRCStepTests
         () => rcStep.Execute(nextVersion, "", true, false, "hotfix/v1.3.5"),
         Throws.Nothing);
 
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Exactly(1));
     _continueAlphaBetaMock.Verify(_ => _.Execute(nextVersion, It.IsAny<string>(), It.IsAny<string>(), false), Times.Never);
   }
 
@@ -215,7 +215,7 @@ internal class ReleaseRCStepTests
 
     rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5");
 
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Exactly(1));
     _continueAlphaBetaMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<string>(), It.IsAny<string>(), false));
   }
 
@@ -247,7 +247,7 @@ internal class ReleaseRCStepTests
         () => rcStep.Execute(nextVersion, "", false, false, "hotfix/v1.3.5"),
         Throws.Nothing);
 
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Exactly(1));
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion));
   }
 }

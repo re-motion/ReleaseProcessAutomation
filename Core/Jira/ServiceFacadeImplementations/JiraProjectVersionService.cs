@@ -168,7 +168,7 @@ public class JiraProjectVersionService : IJiraProjectVersionService
         var allClosedIssues = new List<JiraToBeMovedIssue>();
 
         foreach (var toBeSquashedVersion in toBeSquashedVersions)
-          allClosedIssues.AddRange(_jiraIssueService.FindAllClosedIssues(toBeSquashedVersion.JiraProjectVersion.id));
+          allClosedIssues.AddRange(_jiraIssueService.FindAllClosedIssues(toBeSquashedVersion.JiraProjectVersion.id, toBeSquashedVersion.JiraProjectVersion.project));
 
         if (allClosedIssues.Count != 0)
           throw new JiraException(
@@ -182,7 +182,7 @@ public class JiraProjectVersionService : IJiraProjectVersionService
           {
             var toBeSquashedVersionID = toBeSquashedJiraProjectVersion.id;
 
-            var nonClosedIssues = _jiraIssueService.FindAllNonClosedIssues(toBeSquashedVersionID);
+            var nonClosedIssues = _jiraIssueService.FindAllNonClosedIssues(toBeSquashedVersionID, toBeSquashedJiraProjectVersion.project);
             _jiraIssueService.MoveIssuesToVersion(nonClosedIssues, toBeSquashedVersionID, nextVersionID);
 
             DeleteVersion(

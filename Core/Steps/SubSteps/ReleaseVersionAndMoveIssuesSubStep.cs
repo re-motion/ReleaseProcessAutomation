@@ -29,7 +29,7 @@ namespace Remotion.ReleaseProcessAutomation.Steps.SubSteps;
 
 public interface IReleaseVersionAndMoveIssuesSubStep
 {
-  void Execute (SemanticVersion currentVersion, SemanticVersion nextVersion, bool squashUnreleased = false, bool movePreReleaseIssues = false);
+  void Execute (SemanticVersion currentVersion, SemanticVersion nextVersion, string jiraProjectKey, bool squashUnreleased = false, bool movePreReleaseIssues = false);
 }
 
 public class ReleaseVersionAndMoveIssuesSubStep
@@ -49,7 +49,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
     _jiraVersionReleaser = jiraVersionReleaser;
   }
 
-  public void Execute (SemanticVersion currentVersion, SemanticVersion nextVersion, bool squashUnreleased = false, bool movePreReleaseIssues = false)
+  public void Execute (SemanticVersion currentVersion, SemanticVersion nextVersion, string jiraProjectKey, bool squashUnreleased = false, bool movePreReleaseIssues = false)
   {
     var currentVersionID = CreateVersion(currentVersion);
     var nextVersionID = CreateVersion(nextVersion);
@@ -58,7 +58,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
     _log.Information(releaseMessage);
     Console.WriteLine(releaseMessage);
 
-    if (ShouldMoveIssuesToNextVersion(currentVersionID, nextVersionID, currentVersion, nextVersion, out var issuesToMove))
+    if (ShouldMoveIssuesToNextVersion(currentVersionID, nextVersionID, jiraProjectKey, currentVersion, nextVersion, out var issuesToMove))
     {
       var moveMessage = $"Moving open issues to '{nextVersion}'.";
       _log.Information(moveMessage);
@@ -72,10 +72,10 @@ public class ReleaseVersionAndMoveIssuesSubStep
       _jiraVersionReleaser.ReleaseVersion(currentVersionID, false);
 
     if (movePreReleaseIssues)
-      AddNewlyReleasedVersionToClosedIssuesOnlyAssociatedWithFullVersion(currentVersion);
+      AddNewlyReleasedVersionToClosedIssuesOnlyAssociatedWithFullVersion(currentVersion, jiraProjectKey);
   }
 
-  private bool ShouldMoveIssuesToNextVersion (string versionID, string nextVersionID, SemanticVersion currentVersion,SemanticVersion nextVersion, out IReadOnlyList<JiraToBeMovedIssue> issuesToMove)
+  private bool ShouldMoveIssuesToNextVersion (string versionID, string nextVersionID, string jiraProjectKey, SemanticVersion currentVersion, SemanticVersion nextVersion, out IReadOnlyList<JiraToBeMovedIssue> issuesToMove)
   {
     if (versionID == nextVersionID)
     {
@@ -83,7 +83,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
       return false;
     }
 
-    issuesToMove = JiraIssueService.FindAllNonClosedIssues(versionID);
+    issuesToMove = JiraIssueService.FindAllNonClosedIssues(versionID, jiraProjectKey);
     if (issuesToMove.Count == 0)
       return false;
 
@@ -94,7 +94,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
     return InputReader.ReadConfirmation();
   }
 
-  private void AddNewlyReleasedVersionToClosedIssuesOnlyAssociatedWithFullVersion (SemanticVersion currentVersion)
+  private void AddNewlyReleasedVersionToClosedIssuesOnlyAssociatedWithFullVersion (SemanticVersion currentVersion, string jiraProjectKey)
   {
     var currentFullVersion = currentVersion.GetCurrentFullVersion().ToString();
     try
@@ -109,7 +109,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
           ?? throw new UserInteractionException($"Version '{currentFullVersion}' does not exist in JIRA.");
 
       var closedIssuesOnlyAssociatedWithFullVersion =
-          JiraIssueService.FindIssuesWithOnlyExactFixVersion(allJiraVersionsStartingWithFullVersion, currentFullJiraVersion);
+          JiraIssueService.FindIssuesWithOnlyExactFixVersion(allJiraVersionsStartingWithFullVersion, currentFullJiraVersion, jiraProjectKey);
 
       if (closedIssuesOnlyAssociatedWithFullVersion.Count == 0)
       {
@@ -129,7 +129,7 @@ public class ReleaseVersionAndMoveIssuesSubStep
 
       AddFixVersionToIssues(currentVersion.ToString(), closedIssuesOnlyAssociatedWithFullVersion);
     }
-    catch (Exception e)
+    catch (UserInteractionException e)
     {
       Console.WriteLine(e.Message);
       Console.WriteLine($"Could not move closed JIRA issues from version '{currentFullVersion}' to '{currentVersion}'. \nDo you wish to continue?");
