@@ -106,11 +106,11 @@ public class ReleaseOnMasterStep
 
     if (startReleasePhase)
     {
-      _addFixVersionsForNewReleaseBranchSubStep.Execute(nextVersion, nextJiraVersion);
+      _addFixVersionsForNewReleaseBranchSubStep.Execute(nextVersion, nextJiraVersion, Config.Jira.JiraProjectKey);
       _pushNewReleaseBranchStep.Execute(releaseBranchName, "develop");
       return;
     }
-    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion);
+    _releaseVersionAndMoveIssuesSubStep.Execute(nextVersion, nextJiraVersion, Config.Jira.JiraProjectKey);
 
     _msBuildCallAndCommit.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, nextVersion);
 
