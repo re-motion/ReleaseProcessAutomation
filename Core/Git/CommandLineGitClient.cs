@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Microsoft.VisualBasic.CompilerServices;
 using Remotion.ReleaseProcessAutomation;
 using Remotion.ReleaseProcessAutomation.Git;
 using Serilog;
@@ -483,13 +484,13 @@ public class CommandLineGitClient : IGitClient
 
       process.Start();
 
-      var timeout = 30_000;
+      var mainTimeout = TimeSpan.FromSeconds(30);
+      var streamTimeout = TimeSpan.FromSeconds(5);
 
       process.BeginOutputReadLine();
       process.BeginErrorReadLine();
-      if (process.WaitForExit(timeout) &&
-          outputWaitHandle.WaitOne(timeout) &&
-          errorWaitHandle.WaitOne(timeout))
+
+      if (process.WaitForExit(mainTimeout.Milliseconds))
       {
         _log.Information($"git output: {output}");
 
@@ -499,9 +500,15 @@ public class CommandLineGitClient : IGitClient
 
         return new CommandLineResult(success, output.ToString().Trim());
       }
+      else if (!outputWaitHandle.WaitOne(streamTimeout.Milliseconds) || !errorWaitHandle.WaitOne(streamTimeout.Milliseconds))
+      {
+        process.Kill();
+        throw new TimeoutException($"Could not close error or output stream after '{streamTimeout}' seconds.");
+      }
       else
       {
-        throw new InvalidOperationException($"Could not successfully call 'git' with arguments '{arguments}'.");
+        process.Kill();
+        throw new TimeoutException($"The 'git' process with arguments '{arguments}' did not close within '{mainTimeout.ToString()}' seconds and has therefore been aborted.");
       }
     }
   }
