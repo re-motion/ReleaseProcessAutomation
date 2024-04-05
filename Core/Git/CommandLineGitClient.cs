@@ -484,13 +484,13 @@ public class CommandLineGitClient : IGitClient
 
       process.Start();
 
-      var mainTimeout = TimeSpan.FromSeconds(30);
-      var streamTimeout = TimeSpan.FromSeconds(5);
+      var mainTimeout = 30_000;
+      var streamTimeout = 5_000;
 
       process.BeginOutputReadLine();
       process.BeginErrorReadLine();
 
-      if (process.WaitForExit(mainTimeout.Milliseconds))
+      if (process.WaitForExit(mainTimeout) && outputWaitHandle.WaitOne(streamTimeout) && errorWaitHandle.WaitOne(streamTimeout))
       {
         _log.Information($"git output: {output}");
 
@@ -500,15 +500,10 @@ public class CommandLineGitClient : IGitClient
 
         return new CommandLineResult(success, output.ToString().Trim());
       }
-      else if (!outputWaitHandle.WaitOne(streamTimeout.Milliseconds) || !errorWaitHandle.WaitOne(streamTimeout.Milliseconds))
-      {
-        process.Kill();
-        throw new TimeoutException($"Could not close error or output stream after '{streamTimeout}' seconds.");
-      }
       else
       {
         process.Kill();
-        throw new TimeoutException($"The 'git' process with arguments '{arguments}' did not close within '{mainTimeout.ToString()}' seconds and has therefore been aborted.");
+        throw new TimeoutException($"The 'git' process with arguments '{arguments}' did not close within '{mainTimeout}' ms and has therefore been aborted.");
       }
     }
   }
