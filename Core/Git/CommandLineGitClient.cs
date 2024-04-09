@@ -453,58 +453,33 @@ public class CommandLineGitClient : IGitClient
     process.StartInfo.RedirectStandardOutput = true;
     process.StartInfo.RedirectStandardError = true;
 
-    StringBuilder output = new StringBuilder();
-    StringBuilder error = new StringBuilder();
+    var output = new StringBuilder();
+    var error = new StringBuilder();
 
-    using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
-    using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
+    process.OutputDataReceived += (_, e) => { output.AppendLine(e.Data); };
+    process.ErrorDataReceived += (_, e) => { error.AppendLine(e.Data); };
+
+    process.Start();
+
+    var mainTimeout = 30_000;
+
+    process.BeginOutputReadLine();
+    process.BeginErrorReadLine();
+
+    if (process.WaitForExit(mainTimeout))
     {
-      process.OutputDataReceived += (_, e) =>
-      {
-        if (e.Data == null)
-        {
-          outputWaitHandle.Set();
-        }
-        else
-        {
-          output.AppendLine(e.Data);
-        }
-      };
-      process.ErrorDataReceived += (_, e) =>
-      {
-        if (e.Data == null)
-        {
-          errorWaitHandle.Set();
-        }
-        else
-        {
-          error.AppendLine(e.Data);
-        }
-      };
+      _log.Information("git output:\n{Output}", output);
 
-      process.Start();
+      var success = process.ExitCode == 0;
+      if (!success)
+        return new CommandLineResult(success, error.ToString());
 
-      var mainTimeout = 30_000;
-      var streamTimeout = 5_000;
-
-      process.BeginOutputReadLine();
-      process.BeginErrorReadLine();
-
-      if (process.WaitForExit(mainTimeout) && outputWaitHandle.WaitOne(streamTimeout) && errorWaitHandle.WaitOne(streamTimeout))
-      {
-        _log.Information($"git output: {output}");
-
-        var success = process.ExitCode == 0;
-        if (!success)
-          return new CommandLineResult(success, error.ToString());
-
-        return new CommandLineResult(success, output.ToString().Trim());
-      }
-      else
-      {
-        process.Kill();
-        throw new TimeoutException($"The 'git' process with arguments '{arguments}' did not close within '{mainTimeout}' ms and has therefore been aborted.");
-      }
+      return new CommandLineResult(success, output.ToString().Trim());
+    }
+    else
+    {
+      process.Kill();
+      throw new TimeoutException($"The 'git' process with arguments '{arguments}' did not close within '{mainTimeout}' ms and has therefore been aborted.");
     }
   }
 
