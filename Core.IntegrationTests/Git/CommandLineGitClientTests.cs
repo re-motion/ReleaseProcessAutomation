@@ -259,7 +259,7 @@ internal class CommandLineGitClientTests : GitBackedTestBase
   [Test]
   public void IsCommitHash_CorrectHash_ReturnsTrue ()
   {
-    var commitHash = ExecuteGitCommandWithOutput("log --pretty=%h").Replace("\n", "");
+    var commitHash = ExecuteGitCommandWithOutput("log --pretty=%h").Replace("\n", "").Trim();
     var client = new CommandLineGitClient();
 
     var check = client.IsCommitHash(commitHash);
