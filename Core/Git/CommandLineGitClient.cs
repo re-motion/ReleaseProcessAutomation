@@ -19,7 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using Microsoft.VisualBasic.CompilerServices;
 using Remotion.ReleaseProcessAutomation;
 using Remotion.ReleaseProcessAutomation.Git;
 using Serilog;
@@ -124,7 +127,7 @@ public class CommandLineGitClient : IGitClient
     if (!name.Success)
       return null;
 
-    return name.Output.Trim('*', ' ').Replace("\n", string.Empty);
+    return name.Output.Trim('*', ' ');
   }
 
   public IReadOnlyCollection<string> GetAncestors (params string[] expectedAncestor)
@@ -161,7 +164,7 @@ public class CommandLineGitClient : IGitClient
   {
     var hashValidation = ExecuteGitCommandWithOutput($"cat-file -t {commitHash}");
 
-    return hashValidation.Success && string.Equals(hashValidation.Output, "commit\n");
+    return hashValidation.Success && string.Equals(hashValidation.Output, "commit");
   }
 
   public bool IsOnBranch (string branchName)
@@ -171,7 +174,7 @@ public class CommandLineGitClient : IGitClient
     if (!git.Success)
       return false;
 
-    var output = git.Output.Replace("\n", string.Empty);
+    var output = git.Output;
 
     return string.Equals(output, branchName) || branchName.EndsWith('/') && output.StartsWith(branchName);
   }
@@ -442,25 +445,42 @@ public class CommandLineGitClient : IGitClient
   private CommandLineResult ExecuteGitCommandWithOutput (string arguments)
   {
     _log.Debug("Executing git command with output: git '{Arguments}'.", arguments);
+    using var process = new Process();
 
-    var psi = new ProcessStartInfo("git", arguments)
-              {
-                  UseShellExecute = false,
-                  RedirectStandardOutput = true,
-                  RedirectStandardError = true
-              };
+    process.StartInfo.FileName = "git";
+    process.StartInfo.Arguments = arguments;
+    process.StartInfo.UseShellExecute = false;
+    process.StartInfo.RedirectStandardOutput = true;
+    process.StartInfo.RedirectStandardError = true;
 
-    using var command = Process.Start(psi);
-    var output = command!.StandardOutput.ReadToEnd();
-    command!.WaitForExit(c_gitProcessWaitTimeout);
+    var output = new StringBuilder();
+    var error = new StringBuilder();
 
-    _log.Information($"git output: {output}");
+    process.OutputDataReceived += (_, e) => { output.AppendLine(e.Data); };
+    process.ErrorDataReceived += (_, e) => { error.AppendLine(e.Data); };
 
-    var success = command.ExitCode == 0;
-    if (!success)
-      return new CommandLineResult(success, command.StandardError.ReadToEnd());
+    process.Start();
 
-    return new CommandLineResult(success, output);
+    var mainTimeout = 30_000;
+
+    process.BeginOutputReadLine();
+    process.BeginErrorReadLine();
+
+    if (process.WaitForExit(mainTimeout))
+    {
+      _log.Information("git output:\n{Output}", output);
+
+      var success = process.ExitCode == 0;
+      if (!success)
+        return new CommandLineResult(success, error.ToString());
+
+      return new CommandLineResult(success, output.ToString().Trim());
+    }
+    else
+    {
+      process.Kill();
+      throw new TimeoutException($"The 'git' process with arguments '{arguments}' did not close within '{mainTimeout}' ms and has therefore been aborted.");
+    }
   }
 
   private void ExecuteGitCommand (string arguments)
