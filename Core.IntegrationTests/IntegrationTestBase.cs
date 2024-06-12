@@ -66,7 +66,7 @@ public abstract class IntegrationTestBase : GitBackedTestBase
     var services = new ApplicationServiceCollectionFactory().CreateServiceCollection();
     var releaseVersionAndMoveIssuesMock = new Mock<IReleaseVersionAndMoveIssuesSubStep>();
     releaseVersionAndMoveIssuesMock
-        .Setup(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<SemanticVersion>(), It.IsAny<bool>(), It.IsAny<bool>()));
+        .Setup(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<SemanticVersion>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>()));
     var releaseVersionAndMoveIssuesDescriptor = new ServiceDescriptor(
         typeof(IReleaseVersionAndMoveIssuesSubStep),
         x => releaseVersionAndMoveIssuesMock.Object,

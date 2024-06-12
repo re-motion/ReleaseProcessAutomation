@@ -16,9 +16,13 @@
 //
 
 #nullable enable
+using System;
 using System.Collections.Generic;
+using System.IO;
 using Moq;
 using NUnit.Framework;
+using Remotion.ReleaseProcessAutomation.Configuration;
+using Remotion.ReleaseProcessAutomation.Configuration.Data;
 using Remotion.ReleaseProcessAutomation.Jira;
 using Remotion.ReleaseProcessAutomation.Jira.ServiceFacadeImplementations;
 using Remotion.ReleaseProcessAutomation.ReadInput;
@@ -36,6 +40,13 @@ public class AddFixVersionsForNewReleaseBranchStepTests
   [Test]
   public void Execute_WithConfirmationToAddRCAndNextJiraVersion_AddsRcVersionAndNextJiraVersion ()
   {
+    var config = new Configuration.Data.Config
+      {
+        Jira = new JiraConfig
+          {
+            JiraProjectKey = "dummyProjectKey"
+          }
+      };
 
     var currentVersion = _parser.ParseVersion("1.0.0");
     var nextJiraVersion = _parser.ParseVersion("1.1.0");
@@ -74,11 +85,11 @@ public class AddFixVersionsForNewReleaseBranchStepTests
     jiraVersionCreatorMock.Setup(_ => _.CreateNewVersionWithVersionNumber(rcVersion.ToString())).Returns(rcVersionId).Verifiable();
     jiraVersionCreatorMock.Setup(_ => _.FindVersionWithVersionNumber(rcVersion.ToString())).Returns(nullVersion).Verifiable();
     jiraVersionCreatorMock.Setup(_ => _.FindVersionWithVersionNumber(nextJiraVersion.ToString())).Returns(new JiraProjectVersion { id = nextJiraVersionId }).Verifiable();
-    jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(currentVersion.ToString())).Returns(issues).Verifiable();
+    jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(currentVersion.ToString(), config.Jira.JiraProjectKey)).Returns(issues).Verifiable();
 
     var step = new AddFixVersionsForNewReleaseBranchSubStep(testConsole, inputReaderMock.Object, jiraIssueServiceMock.Object, jiraVersionCreatorMock.Object);
 
-    step.Execute(currentVersion, nextJiraVersion);
+    step.Execute(currentVersion, nextJiraVersion, config.Jira.JiraProjectKey);
 
     jiraVersionCreatorMock.Verify();
     jiraIssueServiceMock.Verify();
@@ -91,6 +102,13 @@ public class AddFixVersionsForNewReleaseBranchStepTests
   [Test]
   public void Execute_WithNoConfirmationGiven_DoesNotAddAnyVersionToIssues()
   {
+    var config = new Configuration.Data.Config
+      {
+        Jira = new JiraConfig
+          {
+            JiraProjectKey = "dummyProjectKey"
+          }
+      };
 
     var currentVersion = _parser.ParseVersion("1.0.0");
     var nextJiraVersion = _parser.ParseVersion("1.1.0");
@@ -121,11 +139,11 @@ public class AddFixVersionsForNewReleaseBranchStepTests
     var jiraIssueServiceMock = new Mock<IJiraIssueService>();
     var jiraVersionCreatorMock = new Mock<IJiraVersionCreator>();
     inputReaderMock.Setup(_ => _.ReadConfirmation(It.IsAny<bool>())).Returns(false);
-    jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(currentVersion.ToString())).Returns(issues).Verifiable();
+    jiraIssueServiceMock.Setup(_ => _.FindAllNonClosedIssues(currentVersion.ToString(), config.Jira.JiraProjectKey)).Returns(issues).Verifiable();
 
     var step = new AddFixVersionsForNewReleaseBranchSubStep(testConsole, inputReaderMock.Object, jiraIssueServiceMock.Object, jiraVersionCreatorMock.Object);
 
-    step.Execute(currentVersion, nextJiraVersion);
+    step.Execute(currentVersion, nextJiraVersion, config.Jira.JiraProjectKey);
 
     jiraVersionCreatorMock.Verify(_ => _.FindVersionWithVersionNumber(It.IsAny<string>()), Times.Never);
     jiraVersionCreatorMock.Verify(_ => _.CreateNewVersionWithVersionNumber(It.IsAny<string>()), Times.Never);

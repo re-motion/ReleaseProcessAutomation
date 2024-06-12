@@ -89,7 +89,7 @@ internal class ReleasePatchStepTests
     Assert.That(
         () => patchStep.Execute(nextVersion, "", false, false, false, true),
         Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Exactly(1));
     _contineReleasePatchMock.Verify();
   }
 
@@ -120,7 +120,7 @@ internal class ReleasePatchStepTests
     Assert.That(
         () => patchStep.Execute(nextVersion, "", false, false, false, false),
         Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Exactly(1));
     _contineReleasePatchMock.Verify();
   }
 
@@ -152,9 +152,9 @@ internal class ReleasePatchStepTests
         () => patchStep.Execute(nextVersion, "", true, false, false, false),
         Throws.Nothing);
 
-    _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion), Times.Once);
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey), Times.Once);
     _pushNewReleaseBranchMock.Verify(_ => _.Execute("release/v0.0.1", "hotfix/v0.0.1" ));
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Never);
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey,false, false), Times.Never);
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(It.IsAny<MSBuildMode>(), It.IsAny<SemanticVersion>()), Times.Never);
     _contineReleasePatchMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
   }
@@ -187,7 +187,7 @@ internal class ReleasePatchStepTests
         () => patchStep.Execute(nextVersion, "", false, false, false, false),
         Throws.Nothing);
 
-    _addFixVersionsSubStepMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<SemanticVersion>()), Times.Never);
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<SemanticVersion>(), It.IsAny<string>()), Times.Never);
     _pushNewReleaseBranchMock.Verify(_ => _.Execute(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
   }
 
@@ -217,7 +217,7 @@ internal class ReleasePatchStepTests
     Assert.That(
         () => patchStep.Execute(nextVersion, "", false, true, false, false),
         Throws.Nothing);
-    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssueMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Exactly(1));
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(It.IsAny<MSBuildMode>(), It.IsAny<SemanticVersion>()));
     _contineReleasePatchMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>(), It.IsAny<bool>()), Times.Never);
   }

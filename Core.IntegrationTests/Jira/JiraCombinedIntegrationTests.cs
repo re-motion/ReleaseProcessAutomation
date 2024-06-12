@@ -428,27 +428,42 @@ public class JiraCombinedIntegrationTests : IntegrationTestBase
         _issueService,
         jiraVersionCreator,
         jiraVersionReleaser);
+
     var parser = new SemanticVersionParser();
 
     Assert.That(
-        () => releaseVersionAndMoveIssues.Execute(parser.ParseVersion(currentVersionName), parser.ParseVersion(nextVersionName), false, true),
+        () => releaseVersionAndMoveIssues.Execute(parser.ParseVersion(currentVersionName), parser.ParseVersion(nextVersionName), _config.Jira.JiraProjectKey, false, true),
         Throws.Nothing);
 
-    var movedAndOldClosedIssues = _issueService.FindAllClosedIssues(originalVersionID);
-    Assert.That(movedAndOldClosedIssues.Count(), Is.EqualTo(2));
+    //Should be moved to the next version, was 1 issue before
+    var movedAndOldClosedIssues = _issueService.FindAllNonClosedIssues(originalVersionID, _config.Jira.JiraProjectKey);
+    Assert.That(movedAndOldClosedIssues.Count(), Is.EqualTo(0));
 
-    var shouldContainAdditionalFixVersion = _issueService.FindAllClosedIssues(previousFullVersionID);
+    //Should contain both the full version and the newly released version. There should be 2 issues
+    var shouldContainAdditionalFixVersion = _issueService.FindAllClosedIssues(previousFullVersionID, _config.Jira.JiraProjectKey);
 
-    Assert.That(shouldContainAdditionalFixVersion, Is.Not.Empty);
+    Assert.That(shouldContainAdditionalFixVersion.Count, Is.EqualTo(2));
     Assert.That(shouldContainAdditionalFixVersion.All(
-        i => i.Fields.FixVersions.Exists(
-            v => v.ID == followingVersionID || v.ID == previousFullVersionID)));
+        i =>
+        {
+          var fixVersions = i.Fields.FixVersions;
+          if (fixVersions.Count != 2)
+            return false;
+          if (!fixVersions.Exists(v => v.ID == followingVersionID || v.ID == previousFullVersionID))
+            return false;
 
-    var additionalClosedIssues = _issueService.FindAllClosedIssues(additionalPreviousVersionID);
+          return true;
+        }));
+
+    //Should be a single issue which has not had any changes
+    var additionalClosedIssues = _issueService.FindAllClosedIssues(additionalPreviousVersionID, _config.Jira.JiraProjectKey);
     Assert.That(additionalClosedIssues.Count(), Is.EqualTo(1));
+    Assert.That(additionalClosedIssues.First().Fields.FixVersions.Single().ID, Is.EqualTo(additionalPreviousVersionID));
 
-    var newOpenIssues = _issueService.FindAllNonClosedIssues(followingVersionID);
+    //Should be the issue which previously had the original version id
+    var newOpenIssues = _issueService.FindAllNonClosedIssues(followingVersionID, _config.Jira.JiraProjectKey);
     Assert.That(newOpenIssues.Count(), Is.EqualTo(1));
+    Assert.That(newOpenIssues.First().Fields.FixVersions.Single().ID, Is.EqualTo(followingVersionID));
 
     JiraTestUtility.DeleteVersionsIfExistent(
         _config.Jira.JiraProjectKey,
@@ -500,16 +515,17 @@ public class JiraCombinedIntegrationTests : IntegrationTestBase
         _issueService,
         jiraVersionCreator,
         jiraVersionReleaser);
+
     var parser = new SemanticVersionParser();
 
     Assert.That(
-        () => releaseVersionAndMoveIssues.Execute(parser.ParseVersion(currentVersionName), parser.ParseVersion(nextVersionName), false, true),
+        () => releaseVersionAndMoveIssues.Execute(parser.ParseVersion(currentVersionName), parser.ParseVersion(nextVersionName), _config.Jira.JiraProjectKey, true),
         Throws.Nothing);
 
-    var movedAndOldClosedIssues = _issueService.FindAllClosedIssues(originalVersionID);
+    var movedAndOldClosedIssues = _issueService.FindAllNonClosedIssues(originalVersionID, _config.Jira.JiraProjectKey);
     Assert.That(movedAndOldClosedIssues.Count(), Is.EqualTo(0));
 
-    var newOpenIssues = _issueService.FindAllNonClosedIssues(followingVersionID);
+    var newOpenIssues = _issueService.FindAllNonClosedIssues(followingVersionID, _config.Jira.JiraProjectKey);
     Assert.That(newOpenIssues.Count(), Is.EqualTo(1));
 
     JiraTestUtility.DeleteVersionsIfExistent(_config.Jira.JiraProjectKey, _restClient, currentVersionName, nextVersionName);
@@ -587,7 +603,7 @@ public class JiraCombinedIntegrationTests : IntegrationTestBase
         alphaVersionID,
         fullVersionID);
 
-    var outputIssues = _issueService.FindAllClosedIssues(fullVersionID)
+    var outputIssues = _issueService.FindAllClosedIssues(fullVersionID, _config.Jira.JiraProjectKey)
         .ToArray();
 
     var equivalentIssueIDs = new [] { closedIssueFull1.ID, closedIssueOnlyFull.ID };
@@ -595,7 +611,7 @@ public class JiraCombinedIntegrationTests : IntegrationTestBase
 
     _issueService.AddFixVersionToIssues(outputIssues, betaVersionID);
 
-    outputIssues = _issueService.FindAllClosedIssues(fullVersionID)
+    outputIssues = _issueService.FindAllClosedIssues(fullVersionID, _config.Jira.JiraProjectKey)
         .ToArray();
 
     Assert.That(outputIssues, Is.Not.Empty);
@@ -649,7 +665,7 @@ public class JiraCombinedIntegrationTests : IntegrationTestBase
 
     var allVersionsWithFullVersion = versionCreator.FindAllVersionsStartingWithVersionNumber(fullVersionName);
 
-    var outputIssues = _issueService.FindIssuesWithOnlyExactFixVersion(allVersionsWithFullVersion, new JiraProjectVersion { id = fullVersionID })
+    var outputIssues = _issueService.FindIssuesWithOnlyExactFixVersion(allVersionsWithFullVersion, new JiraProjectVersion { id = fullVersionID}, _config.Jira.JiraProjectKey)
         .ToArray();
 
     Assert.That(outputIssues.Select(i => i.ID), Does.Contain(closedIssueOnlyFull.ID));

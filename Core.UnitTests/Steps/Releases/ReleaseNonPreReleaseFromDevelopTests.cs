@@ -18,6 +18,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Moq;
 using NUnit.Framework;
 using Remotion.ReleaseProcessAutomation.Configuration;
@@ -151,7 +152,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
 
     step.Execute(nextVersion, "commitHash", false, false, false);
 
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Exactly(1));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()));
   }
 
@@ -189,8 +190,8 @@ internal class ReleaseNonPreReleaseFromDevelopTests
 
     step.Execute(nextVersion, "commitHash", true, false, false);
 
-    _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion), Times.Once);
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Never);
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey), Times.Once);
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Never);
     _pushNewReleaseBranchMock.Verify(_ => _.Execute($"release/v{nextVersion}", "develop"));
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
   }
@@ -245,8 +246,8 @@ internal class ReleaseNonPreReleaseFromDevelopTests
       };
     _msBuildInvokerMock.Verify(_ => _.CallMSBuildStepsAndCommit(MSBuildMode.PrepareNextVersion, fullVersionForNextJiraVersion));
 
-    _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion), Times.Once);
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Never);
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey), Times.Once);
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Never);
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
   }
 
@@ -284,7 +285,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
 
     step.Execute(nextVersion, "commitHash", false, false, false);
 
-    _addFixVersionsSubStepMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<SemanticVersion>()), Times.Never);
+    _addFixVersionsSubStepMock.Verify(_ => _.Execute(It.IsAny<SemanticVersion>(), It.IsAny<SemanticVersion>(), It.IsAny<string>()), Times.Never);
     _pushNewReleaseBranchMock.Verify(_ => _.Execute(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
   }
 
@@ -320,7 +321,7 @@ internal class ReleaseNonPreReleaseFromDevelopTests
         _addFixVersionsSubStepMock.Object);
 
     step.Execute(nextVersion, "commitHash", false, true, false);
-    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, false, false), Times.Exactly(1));
+    _releaseVersionAndMoveIssuesMock.Verify(_ => _.Execute(nextVersion, nextJiraVersion, _config.Jira.JiraProjectKey, false, false), Times.Exactly(1));
 
     _continueReleaseOnMasterMock.Verify(_ => _.Execute(nextVersion, It.IsAny<bool>()), Times.Never);
   }
