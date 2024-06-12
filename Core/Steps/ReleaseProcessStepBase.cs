@@ -93,16 +93,4 @@ public abstract class ReleaseProcessStepBase
   {
     GitClient.Tag(tagName, $"Create tag with version {tagName}");
   }
-
-  protected SemanticVersion? CreateNewSupportBranch (SemanticVersion nextVersion)
-  {
-    Console.WriteLine("Do you wish to create a new support branch?");
-    if (!InputReader.ReadConfirmation())
-      return null;
-
-    var splitHotfixVersion = nextVersion.GetNextMinor();
-    GitClient.CheckoutNewBranch($"support/v{splitHotfixVersion.Major}.{splitHotfixVersion.Minor}");
-    GitClient.CheckoutNewBranch($"hotfix/v{splitHotfixVersion}");
-    return splitHotfixVersion;
-  }
 }
