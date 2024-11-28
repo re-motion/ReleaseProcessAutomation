@@ -61,7 +61,7 @@ internal class ConfigReaderTests
 
     var config = reader.LoadConfig(configFilePath);
 
-    Assert.That(config.Jira.UseNTLM, Is.False);
+    Assert.That(config.Jira.UseBearer, Is.False);
     Assert.That(config.Jira.JiraURL, Is.EqualTo("https://re-motion.atlassian.net"));
     Assert.That(config.ResourceStrings.Resources, Does.Contain("v{version}"));
     Assert.That(config.PrepareNextVersionMSBuildSteps.Steps[0].MSBuildCallArguments.Arguments[0], Is.EqualTo("TestBuild.build"));

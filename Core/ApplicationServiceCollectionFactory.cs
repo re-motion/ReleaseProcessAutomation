@@ -34,7 +34,9 @@ public class ApplicationServiceCollectionFactory
         //Jira things
         .AddTransient<IJiraCredentialManager, JiraCredentialManager>()
         .AddTransient<IJiraCredentialAPI, AdysTechCredentialApi>()
-        .AddTransient<IJiraAuthenticator, JiraAuthenticator>()
+
+        .AddTransient<IJiraAuthenticatorProvider, JiraAuthenticatorProvider>()
+        .AddTransient<IJiraAuthenticator>(provider => provider.GetService<IJiraAuthenticatorProvider>()!.GetAuthenticator())
         .AddSingleton<IJiraRestClientProvider, JiraRestClientProvider>()
         .AddTransient<IJiraVersionCreator, JiraVersionCreator>()
         .AddTransient<IJiraVersionReleaser, JiraVersionReleaser>()

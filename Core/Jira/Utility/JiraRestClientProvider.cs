@@ -23,13 +23,13 @@ public class JiraRestClientProvider
     if (_jiraRestClient != null)
       return _jiraRestClient;
 
-    if (_config.Jira.UseNTLM)
+    var credentials = _jiraCredentialManager.GetCredential (_config.Jira.JiraURL);
+    if (_config.Jira.UseBearer)
     {
-      _jiraRestClient = JiraRestClient.CreateWithNtlmAuthentication(_config.Jira.JiraURL);
+      _jiraRestClient = JiraRestClient.CreateWithBearerTokenAuthentication(_config.Jira.JiraURL, credentials);
     }
     else
     {
-      var credentials = _jiraCredentialManager.GetCredential(_config.Jira.JiraURL);
       _jiraRestClient = JiraRestClient.CreateWithBasicAuthentication(_config.Jira.JiraURL, credentials);
     }
 

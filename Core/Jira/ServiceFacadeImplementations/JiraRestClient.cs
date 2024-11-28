@@ -32,6 +32,11 @@ public class JiraRestClient
     return new JiraRestClient(jiraUrl, new NtlmAuthenticator());
   }
 
+  public static JiraRestClient CreateWithBearerTokenAuthentication (string jiraUrl, Credentials credentials)
+  {
+    return new JiraRestClient (jiraUrl, new OAuth2AuthorizationRequestHeaderAuthenticator (credentials.Password, "Bearer"));
+  }
+
   public static JiraRestClient CreateWithBasicAuthentication (string jiraUrl, Credentials credentials)
   {
     return new JiraRestClient(jiraUrl, new HttpBasicAuthenticator(credentials.Username, credentials.Password));

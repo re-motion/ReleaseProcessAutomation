@@ -6,7 +6,7 @@ namespace Remotion.ReleaseProcessAutomation.IntegrationTests.Jira;
 
 [TestFixture]
 [Explicit]
-public class JiraAuthenticatorTests
+public class JiraBasicAuthenticatorTests
 {
   private const string c_jiraUrl = "https://re-motion.atlassian.net/";
   private const string c_jiraProjectKey = "SRCBLDTEST";
@@ -16,7 +16,7 @@ public class JiraAuthenticatorTests
   {
     var testCredentials = JiraTestUtility.GetLocallySavedCredentials();
 
-    var authenticator = new JiraAuthenticator();
+    var authenticator = new JiraBasicAuthenticator();
 
     Assert.That(() => authenticator.CheckAuthentication(testCredentials, c_jiraProjectKey, c_jiraUrl), Throws.Nothing);
   }
@@ -26,7 +26,7 @@ public class JiraAuthenticatorTests
   {
     var testCredentials = new Credentials { Username = "DefinetlyNotAUsername", Password = "DefinetlyNotAPassword" };
 
-    var authenticator = new JiraAuthenticator();
+    var authenticator = new JiraBasicAuthenticator();
 
     Assert.That(() => authenticator.CheckAuthentication(testCredentials, c_jiraProjectKey, c_jiraUrl), Throws.Exception);
   }

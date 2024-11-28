@@ -6,7 +6,7 @@ using RestSharp;
 
 namespace Remotion.ReleaseProcessAutomation.Jira.Authentication;
 
-public class JiraAuthenticator
+public class JiraBasicAuthenticator
     : IJiraAuthenticator
 {
   public void CheckAuthentication (Credentials credentials, string projectKey, string jiraURL)
