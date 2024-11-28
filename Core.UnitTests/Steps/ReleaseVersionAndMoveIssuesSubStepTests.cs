@@ -39,7 +39,7 @@ public class ReleaseVersionAndMoveIssuesSubStepTests
     _console.Width(int.MaxValue);
     _config = new Configuration.Data.Config();
     _config.Jira = new JiraConfig();
-    _config.Jira.StringUseNTLM = "true";
+    _config.Jira.StringUseBearer = "true";
     _config.Jira.JiraURL = "https://www.JiraURL.com/url";
     _config.Jira.JiraProjectKey = "JiraProjectKey";
   }

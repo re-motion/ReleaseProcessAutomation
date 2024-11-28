@@ -23,8 +23,15 @@ namespace Remotion.ReleaseProcessAutomation.Configuration.Data;
 
 public class JiraConfig
 {
-  public bool UseNTLM => StringUseNTLM.ToUpper().Equals("Y") || StringUseNTLM.ToUpper().Equals("YES") || StringUseNTLM.ToUpper().Equals("T")
-                         || StringUseNTLM.ToUpper().Equals("TRUE");
+  public bool UseBearer =>
+      StringUseBearer.ToUpper() switch
+        {
+          "Y" => true,
+          "YES" => true,
+          "T" => true,
+          "TRUE" => true,
+          _ => false
+        };
 
   [XmlElement("jiraUrl")]
   public string JiraURL { get; set; }
@@ -32,6 +39,7 @@ public class JiraConfig
   [XmlElement("jiraProjectKey")]
   public string JiraProjectKey { get; set; }
 
-  [XmlElement("useNTLM")]
-  public string StringUseNTLM { get; set; }
+
+  [XmlElement("useBearerAuth")]
+  public string StringUseBearer { get; set; } = "false";
 }

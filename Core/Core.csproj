@@ -26,6 +26,7 @@
         <PackageTags>re-motion ReleaseAutomation</PackageTags>
         <DevelopmentDependency>true</DevelopmentDependency>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <Version>5.0.0-test</Version>
     </PropertyGroup>
 
     <ItemGroup>
