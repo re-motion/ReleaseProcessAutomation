@@ -74,9 +74,8 @@ public class JiraCredentialManager
   {
     while (true)
     {
-      var username = _inputReader.ReadString("Please enter your Jira username");
-      var password = _inputReader.ReadHiddenString("Please enter your Jira password");
-      var tmpCredentials = new Credentials(username, password);
+
+      var tmpCredentials = _config.Jira.UseBearer ? AskUserForBearerToken() : AskUserForUsernameAndPassword();
 
       try
       {
@@ -95,7 +94,7 @@ public class JiraCredentialManager
       {
         _jiraCredentialAPI.SaveCredentials(tmpCredentials, target);
 
-        const string message = "Saved Password";
+        const string message = "Saved credentials successfully.";
         _console.WriteLine(message);
         _log.Information(message);
       }
@@ -118,5 +117,19 @@ public class JiraCredentialManager
       _console.WriteLine(errorMessage);
       throw new UserInteractionException(errorMessage);
     }
+  }
+
+  private Credentials AskUserForUsernameAndPassword()
+  {
+    var username = _inputReader.ReadString("Please enter your Jira username");
+    var password = _inputReader.ReadHiddenString("Please enter your Jira password");
+
+    return new Credentials(username, password);
+  }
+
+  private Credentials AskUserForBearerToken()
+  {
+    var accessToken = _inputReader.ReadHiddenString("Please enter your Jira access token");
+    return new Credentials(string.Empty, accessToken);
   }
 }

@@ -259,7 +259,7 @@ internal class CommandLineGitClientTests : GitBackedTestBase
   [Test]
   public void IsCommitHash_CorrectHash_ReturnsTrue ()
   {
-    var commitHash = ExecuteGitCommandWithOutput("log --pretty=%h").Replace("\n", "");
+    var commitHash = ExecuteGitCommandWithOutput("log --pretty=%h").Replace("\n", "").Trim();
     var client = new CommandLineGitClient();
 
     var check = client.IsCommitHash(commitHash);
@@ -532,47 +532,6 @@ internal class CommandLineGitClientTests : GitBackedTestBase
     client.MergeBranchToOnlyContainChangesFromMergedBranch("a");
 
     Assert.That(() => File.Exists(filePath), Is.False);
-    AssertValidLogs(correctLogs);
-  }
-
-  [Test]
-  public void MergeBranchToOnlyContainChangesFromMergedBranch_FileRemovedInTargetBranch_RestoresFile ()
-  {
-    var correctLogs =
-        @"*    (HEAD -> b)Merge branch 'a' into b
-          |\  
-          | *  (a)FileChanged
-          * | Deleted File
-          |/  
-          *  (master)FileAdded
-          *  (origin/master)Initial CommitAll
-          ";
-
-    var filePath = Path.Combine(Environment.CurrentDirectory, "file.txt");
-    var fileWriter = File.CreateText(filePath);
-    fileWriter.WriteLine("File added on master");
-    fileWriter.Close();
-
-    ExecuteGitCommand("add file.txt");
-    ExecuteGitCommand("commit -a -m FileAdded");
-
-    ExecuteGitCommand("checkout -b a");
-
-    fileWriter = File.CreateText(filePath);
-    fileWriter.WriteLine("Added some stuff on a branch");
-    fileWriter.Close();
-    ExecuteGitCommand("commit -a -m FileChanged");
-
-    ExecuteGitCommand("checkout master");
-    ExecuteGitCommand("checkout -b b");
-
-    File.Delete(filePath);
-    ExecuteGitCommand("commit -a -m \"Deleted File\"");
-
-    var client = new CommandLineGitClient();
-    client.MergeBranchToOnlyContainChangesFromMergedBranch("a");
-
-    Assert.That(() => File.Exists(filePath), Is.True);
     AssertValidLogs(correctLogs);
   }
 

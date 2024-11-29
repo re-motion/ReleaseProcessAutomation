@@ -158,7 +158,7 @@ public class JiraProjectVersionServiceTest
     Assert.That(_versionFinder.FindVersions(c_jiraProjectKey, "6.0.1-alpha.2").SingleOrDefault(x => x.name == "6.0.1-alpha.2"), Is.Null);
 
     //Assert that the Open Issues of deleted alpha2Version got moved to beta1Version
-    Assert.That(_issueService.FindAllNonClosedIssues(beta1Version.id).Count(), Is.EqualTo(1));
+    Assert.That(_issueService.FindAllNonClosedIssues(beta1Version.id, c_jiraProjectKey).Count(), Is.EqualTo(1));
 
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-beta.1");
     JiraTestUtility.DeleteIssue(_restClient, issue.ID);
@@ -189,7 +189,7 @@ public class JiraProjectVersionServiceTest
     Assert.That(_versionFinder.FindVersions(c_jiraProjectKey, "6.0.1-alpha.3").SingleOrDefault(x => x.name == "6.0.1-alpha.3"), Is.Null);
 
     //Assert that the Open Issues of deleted alpha2Version got moved to beta1Version
-    Assert.That(_issueService.FindAllNonClosedIssues(beta1Version.id).Count(), Is.EqualTo(2));
+    Assert.That(_issueService.FindAllNonClosedIssues(beta1Version.id, c_jiraProjectKey).Count(), Is.EqualTo(2));
 
     JiraTestUtility.DeleteVersionsIfExistent(c_jiraProjectKey, _restClient, "6.0.1-alpha.1", "6.0.1-alpha.2", "6.0.1-alpha.3", "6.0.1-beta.1");
 

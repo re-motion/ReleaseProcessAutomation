@@ -41,7 +41,7 @@ public class ContinueReleaseStepWithOptionalSupportBranchStepBase
   protected void CreateSupportBranchWithHotfixForRelease (SemanticVersion nextHotfixVersion, bool noPush)
   {
     Console.WriteLine("Do you wish to create a new support branch?");
-    if (!InputReader.ReadConfirmation())
+    if (!InputReader.ReadConfirmation(defaultValue: false))
       return;
 
     var supportBranchName = $"support/v{nextHotfixVersion.Major}.{nextHotfixVersion.Minor}";
